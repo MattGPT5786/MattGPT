@@ -40,20 +40,27 @@
   .note a{color:var(--accent)}
   .empty{color:var(--muted);font-size:14px;padding:8px 0}
   .err{background:#2a1620;border:1px solid #5b2436;color:#ffb3ba;border-radius:10px;padding:10px 14px;font-size:13px;margin:10px 0}
+  .ticker{display:flex;align-items:stretch;background:#05080f;border:1px solid var(--line);border-radius:12px;overflow:hidden;margin-top:28px}
+  .ticker-label{flex:0 0 auto;background:var(--live);color:#fff;font-weight:800;font-size:12px;letter-spacing:.12em;display:flex;align-items:center;padding:0 14px;z-index:2}
+  .ticker-view{flex:1;overflow:hidden}
+  .ticker-track{display:inline-flex;white-space:nowrap;padding:11px 0;animation:scroll linear infinite;will-change:transform}
+  .ticker-view:hover .ticker-track{animation-play-state:paused}
+  @keyframes scroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+  @media (prefers-reduced-motion: reduce){.ticker-track{animation:none}}
+  .tick{display:inline-flex;align-items:center;gap:7px;padding:0 18px;border-right:1px solid var(--line);font-size:14px}
+  .tick .lg{color:var(--accent);font-weight:700;font-size:11px;letter-spacing:.08em}
+  .tick img{width:20px;height:20px;object-fit:contain}
+  .tick .st{color:var(--muted);font-size:12px}
+  .tick .st.live{color:var(--live);font-weight:700}
+  .tick.fav{background:rgba(77,163,255,.10)}
   footer{max-width:1100px;margin:0 auto;padding:0 18px 30px;color:var(--muted);font-size:12px}
 </style>
 </head>
 <body>
 <header>
   <h1>🏆 Scher Scores</h1>
-  <div class="sub">My teams first, then the full boards — live from ESPN's public API. No API key, auto-refreshes every 60 seconds.</div>
-  <div class="bar" id="tabs">
-    <button data-view="all" class="active">All</button>
-    <button data-view="nfl">NFL</button>
-    <button data-view="nba">NBA</button>
-    <button data-view="nhl">NHL</button>
-    <button data-view="mlb">MLB</button>
-    <button data-view="ncaam">College Hoops</button>
+  <div class="sub">My teams up top, every other score in the ticker below — live from ESPN's public API. No API key, auto-refreshes every 60 seconds.</div>
+  <div class="bar">
     <button id="refresh">↻ Refresh now</button>
     <span id="updated"></span>
   </div>
@@ -61,7 +68,10 @@
 <main>
   <h2>⭐ My Teams</h2>
   <div class="grid" id="favorites"><div class="empty">Loading your teams…</div></div>
-  <div id="leagues"></div>
+  <div class="ticker" aria-label="Score ticker">
+    <div class="ticker-label">SCORES</div>
+    <div class="ticker-view"><div class="ticker-track" id="tickerTrack"><span class="tick">Loading scores…</span></div></div>
+  </div>
 </main>
 <footer>Data: ESPN public scoreboard API (site.api.espn.com).</footer>
 
@@ -96,7 +106,6 @@ const SCHEDULE_PATH = {
 };
 
 let board = {};       // league -> events[]
-let currentView = "all";
 
 async function fetchJSON(url){
   const r = await fetch(url);
@@ -174,34 +183,54 @@ async function renderFavorites(){
   el.innerHTML = cards.join("");
 }
 
-function renderLeagues(){
-  const wrap = document.getElementById("leagues");
-  const keys = currentView === "all" ? Object.keys(LEAGUES) : [currentView];
-  wrap.innerHTML = keys.map(key => {
-    const events = board[key] || [];
-    const body = events.length
-      ? `<div class="grid">${events.map(ev => gameCard(ev, key)).join("")}</div>`
-      : `<div class="empty">No games on this board right now.</div>`;
-    return `<h2>${LEAGUES[key].label}</h2>${body}`;
-  }).join("");
+const TICKER_LABEL = { nfl:"NFL", nba:"NBA", nhl:"NHL", mlb:"MLB", ncaam:"NCAAM" };
+
+function tickerItem(ev, leagueKey){
+  const comp = (ev.competitions || [])[0] || {};
+  const competitors = [...(comp.competitors || [])]
+    .sort((a,b) => (a.homeAway === "home" ? 1 : 0) - (b.homeAway === "home" ? 1 : 0));
+  if(competitors.length < 2) return "";
+  const [away, home] = competitors;
+  const state = ev.status && ev.status.type ? ev.status.type.state : "pre";
+  const short = (ev.status && ev.status.type && (ev.status.type.shortDetail || ev.status.type.detail)) || "";
+  const fav = competitors.some(c => FAV_KEYS.has(leagueKey + ":" + (c.team||{}).id));
+  const side = c => {
+    const t = c.team || {};
+    const logo = t.logo || (t.logos && t.logos[0] && t.logos[0].href) || "";
+    const score = state === "pre" ? "" : ` ${c.score ?? ""}`;
+    return `${logo ? `<img src="${logo}" alt="">` : ""}<span>${t.abbreviation || ""}<b>${score}</b></span>`;
+  };
+  const stCls = state === "in" ? "st live" : "st";
+  return `<span class="tick ${fav ? "fav" : ""}"><span class="lg">${TICKER_LABEL[leagueKey]}</span>${side(away)}<span class="st">@</span>${side(home)}<span class="${stCls}">${short}</span></span>`;
+}
+
+function renderTicker(){
+  const track = document.getElementById("tickerTrack");
+  const items = [];
+  for(const key of Object.keys(LEAGUES)){
+    for(const ev of (board[key] || [])){
+      const html = tickerItem(ev, key);
+      if(html) items.push(html);
+    }
+  }
+  if(!items.length){
+    track.innerHTML = `<span class="tick">No games on any board right now.</span>`;
+    track.style.animationDuration = "0s";
+    return;
+  }
+  // duplicate the list so the -50% translate loops seamlessly
+  track.innerHTML = items.join("") + items.join("");
+  track.style.animationDuration = Math.max(25, items.length * 3.5) + "s";
 }
 
 async function loadAll(){
   await Promise.all(Object.keys(LEAGUES).map(loadLeague));
   await renderFavorites();
-  renderLeagues();
+  renderTicker();
   document.getElementById("updated").textContent =
     "Updated " + new Date().toLocaleTimeString([], {hour:"numeric", minute:"2-digit", second:"2-digit"});
 }
 
-document.getElementById("tabs").addEventListener("click", e => {
-  const btn = e.target.closest("button[data-view]");
-  if(btn){
-    currentView = btn.dataset.view;
-    document.querySelectorAll("#tabs button[data-view]").forEach(b => b.classList.toggle("active", b === btn));
-    renderLeagues();
-  }
-});
 document.getElementById("refresh").addEventListener("click", loadAll);
 
 loadAll();
