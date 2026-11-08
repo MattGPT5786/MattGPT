@@ -37,7 +37,7 @@ const html = `<div class="ff-vs">Week ${esc(d.week)} matchup</div>
           <tr><th>#</th><th>Team</th><th>W-L</th><th class="r">PF</th></tr>
           ${rows}
         </table>
-        <div class="ff-asof">Snapshot ${esc(d.asOf)} · refreshes daily + Sunday game windows</div>`;
+        <div class="ff-asof">Snapshot ${esc(d.asOf)}</div>`;
 
 const file = DIR + "index.html";
 const page = readFileSync(file, "utf8");
