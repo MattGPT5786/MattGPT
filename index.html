@@ -100,6 +100,10 @@
   .wx-stat{flex:1;min-width:86px;background:transparent;border-top:1px solid #c9c3b2;padding:7px 2px 0}
   .wx-stat .k{font-family:var(--sans);font-size:9.5px;font-weight:700;letter-spacing:.12em;color:var(--faint);text-transform:uppercase}
   .wx-stat .v{font-family:var(--serif);font-size:15px;margin-top:2px;font-variant-numeric:tabular-nums;color:#121212}
+  .wx-pairs{display:flex;flex-direction:column}
+  .wx-pair-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;border-top:1px solid #c9c3b2;padding:6px 2px 5px}
+  .wx-pair .k{font-family:var(--sans);font-size:9.5px;font-weight:700;letter-spacing:.12em;color:var(--faint);text-transform:uppercase}
+  .wx-pair .v{font-family:var(--serif);font-size:15px;margin-top:1px;font-variant-numeric:tabular-nums;color:#121212;white-space:nowrap}
   .wx-fc{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;border-left:1px solid var(--line-soft);padding-left:20px}
   @media (max-width:980px){.wx-fc{border-left:none;padding-left:0;border-top:1px solid var(--line-soft);padding-top:12px}}
   .wx-day{text-align:center}
@@ -576,15 +580,23 @@ async function loadWeather(){
         <div><div class="wx-temp">${Math.round(c.temperature_2m)}°F</div><div class="wx-cond">${cond}</div></div>
       </div>
       <div class="wx-mid">
-      <div class="wx-stats">
-        <div class="wx-stat"><div class="k">Feels like</div><div class="v">${Math.round(c.apparent_temperature)}°F</div></div>
-        <div class="wx-stat"><div class="k">Humidity</div><div class="v">${c.relative_humidity_2m}%</div></div>
-        <div class="wx-stat"><div class="k">Wind</div><div class="v">${Math.round(c.wind_speed_10m)} mph ${windDir}</div></div>
-      </div>
-      <div class="wx-stats">
-        <div class="wx-stat"><div class="k">High today</div><div class="v">${Math.round(daily.temperature_2m_max[0])}°</div></div>
-        <div class="wx-stat"><div class="k">Sunrise</div><div class="v">${fmtClock(daily.sunrise[0])}</div></div>
-        <div class="wx-stat"><div class="k">Sunset</div><div class="v">${fmtClock(daily.sunset[0])}</div></div>
+      <div class="wx-pairs">
+        <div class="wx-pair-row">
+          <div class="wx-pair"><div class="k">High</div><div class="v">${Math.round(daily.temperature_2m_max[0])}°</div></div>
+          <div class="wx-pair"><div class="k">Low</div><div class="v">${Math.round(daily.temperature_2m_min[0])}°</div></div>
+        </div>
+        <div class="wx-pair-row">
+          <div class="wx-pair"><div class="k">Sunrise</div><div class="v">${fmtClock(daily.sunrise[0])}</div></div>
+          <div class="wx-pair"><div class="k">Sunset</div><div class="v">${fmtClock(daily.sunset[0])}</div></div>
+        </div>
+        <div class="wx-pair-row">
+          <div class="wx-pair"><div class="k">Feels like</div><div class="v">${Math.round(c.apparent_temperature)}°F</div></div>
+          <div class="wx-pair"><div class="k">Humidity</div><div class="v">${c.relative_humidity_2m}%</div></div>
+        </div>
+        <div class="wx-pair-row">
+          <div class="wx-pair"><div class="k">Wind</div><div class="v">${Math.round(c.wind_speed_10m)} mph ${windDir}</div></div>
+          <div class="wx-pair"><div class="k">Precip</div><div class="v">${daily.precipitation_probability_max[0] == null ? "—" : daily.precipitation_probability_max[0] + "%"}</div></div>
+        </div>
       </div>
       </div>
       <div class="wx-fc">${fc}</div></div>`;
