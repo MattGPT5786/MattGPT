@@ -144,6 +144,14 @@
   .tick .st{font-family:var(--sans);color:var(--faint);font-size:10.5px;letter-spacing:.04em}
   .tick .st.live{color:var(--live);font-weight:700}
   .tick.fav{background:#f1eee3}
+  .game-link{display:block;text-decoration:none;color:inherit;cursor:pointer}
+  .game-link:hover{background:#f3efe2}
+  .block-link{display:block;text-decoration:none;color:inherit;cursor:pointer}
+  .block-link:hover .panel-title{text-decoration:underline}
+  a.mkt-cell{text-decoration:none;color:inherit;cursor:pointer}
+  a.mkt-cell:hover{background:#f3efe2}
+  a.tick{cursor:pointer}
+  a.tick:hover{background:#f3efe2}
   /* ---------- footer ---------- */
   footer{max-width:1120px;margin:0 auto;padding:14px 20px 30px;border-top:1px solid var(--line-soft);color:var(--faint);font-family:var(--sans);font-size:11px;display:flex;gap:10px;flex-wrap:wrap;justify-content:space-between}
   /* ---------- fantasy ---------- */
@@ -288,15 +296,17 @@
 
 <main>
   <section class="panel wx-panel" aria-label="Weather">
+      <a class="block-link" href="https://forecast.weather.gov/MapClick.php?lat=39.9351&lon=-75.0307" target="_blank" rel="noopener">
       <div class="panel-head"><span class="panel-title">🌤 Cherry Hill, NJ · 08003</span></div>
       <div id="wxBody"><div class="empty">Loading weather…</div></div>
+      </a>
     </section>
     <section class="panel mkt-panel" aria-label="Markets">
       <div class="panel-head"><span class="panel-title">📈 Markets</span><span class="panel-note">1-month</span></div>
       <div class="mkt-grid">
-        <div class="mkt-cell" id="mkt-spx"><div class="mk-empty">Loading markets…</div></div>
-        <div class="mkt-cell" id="mkt-dji"><div class="mk-empty">Loading markets…</div></div>
-        <div class="mkt-cell" id="mkt-ixic"><div class="mk-empty">Loading markets…</div></div>
+        <a class="mkt-cell" id="mkt-spx" href="https://www.cnbc.com/quotes/.SPX" target="_blank" rel="noopener"><div class="mk-empty">Loading markets…</div></a>
+        <a class="mkt-cell" id="mkt-dji" href="https://www.cnbc.com/quotes/.DJI" target="_blank" rel="noopener"><div class="mk-empty">Loading markets…</div></a>
+        <a class="mkt-cell" id="mkt-ixic" href="https://www.cnbc.com/quotes/.IXIC" target="_blank" rel="noopener"><div class="mk-empty">Loading markets…</div></a>
       </div>
     </section>
 
@@ -311,6 +321,7 @@
   </div>
 
   <section class="panel ff-panel" aria-label="Fantasy football">
+      <a class="block-link" href="https://football.fantasysports.yahoo.com/f1/490839" target="_blank" rel="noopener">
       <div class="panel-head"><span class="panel-title">🏈 Dinkers · Fantasy</span><span class="panel-note">Snapshot</span></div>
       <div id="ffBody"><!--FF_START-->
         <div class="ff-vs">Week 9 matchup</div>
@@ -338,6 +349,7 @@
         </table>
         <div class="ff-asof">Snapshot Sun, Nov 8 · 5:42 PM ET</div>
         <!--FF_END--></div>
+      </a>
     </section>
 
   <div class="ticker" aria-label="Score ticker">
@@ -384,6 +396,9 @@ const FAVORITES = [
 ];
 const FAV_KEYS = new Set(FAVORITES.map(f => f.league + ":" + f.id));
 
+const GAME_PATH = { nfl:"nfl", ncaaf:"college-football", nba:"nba", nhl:"nhl", mlb:"mlb", ncaam:"mens-college-basketball" };
+const gameUrl = (league, id) => `https://www.espn.com/${GAME_PATH[league]}/game/_/gameId/${id}`;
+const teamSchedUrl = (league, id) => `https://www.espn.com/${GAME_PATH[league]}/team/schedule/_/id/${id}`;
 const SCHEDULE_PATH = {
   nfl:"football/nfl", ncaaf:"football/college-football", nba:"basketball/nba", nhl:"hockey/nhl",
   mlb:"baseball/mlb", ncaam:"basketball/mens-college-basketball"
@@ -437,9 +452,9 @@ function gameCard(ev, leagueKey){
   const rows = [...competitors]
     .sort((a,b) => (a.homeAway === "home" ? 1 : 0) - (b.homeAway === "home" ? 1 : 0))
     .map(c => teamRow(c, state)).join("");
-  return `<div class="game" ${color ? `style="--tc:${color}"` : ""}>
+  return `<a class="game game-link" href="${gameUrl(leagueKey, ev.id)}" target="_blank" rel="noopener" ${color ? `style="--tc:${color}"` : ""}>
     <div class="game-head">${leagueTagHtml(leagueKey)}${statusChip(ev, state)}</div>
-    ${rows}</div>`;
+    ${rows}</a>`;
 }
 
 const recCache = {};
@@ -466,7 +481,7 @@ async function nextGame(fav){
     const upcoming = (data.events || [])
       .filter(e => new Date(e.date).getTime() >= now - 4*3600*1000)
       .sort((a,b) => new Date(a.date) - new Date(b.date))[0];
-    if(!upcoming) return `<div class="game"><div class="game-head">${leagueTagHtml(fav.league)}<span class="chip next">UP NEXT</span></div><div class="next-name">No upcoming game found on the schedule for the ${fav.name}.</div></div>`;
+    if(!upcoming) return `<a class="game game-link" href="${teamSchedUrl(fav.league, fav.id)}" target="_blank" rel="noopener"><div class="game-head">${leagueTagHtml(fav.league)}<span class="chip next">UP NEXT</span></div><div class="next-name">No upcoming game found on the schedule for the ${fav.name}.</div></a>`;
     const when = new Date(upcoming.date).toLocaleString([], {weekday:"short", month:"short", day:"numeric", hour:"numeric", minute:"2-digit"});
     const comps = (upcoming.competitions && upcoming.competitions[0] && upcoming.competitions[0].competitors) || [];
     await Promise.all(comps.map(async c => {
@@ -478,11 +493,11 @@ async function nextGame(fav){
     const rows = comps.length >= 2
       ? [...comps].sort((a,b) => (a.homeAway === "home" ? 1 : 0) - (b.homeAway === "home" ? 1 : 0)).map(c => teamRow(c, "pre")).join("")
       : `<div class="next-name">${upcoming.name}</div>`;
-    return `<div class="game"><div class="game-head">${leagueTagHtml(fav.league)}<span class="chip next">UP NEXT</span></div>
+    return `<a class="game game-link" href="${gameUrl(fav.league, upcoming.id)}" target="_blank" rel="noopener"><div class="game-head">${leagueTagHtml(fav.league)}<span class="chip next">UP NEXT</span></div>
       <div class="next-when">${when}</div>${rows}
-      <div class="note">No game today — this is the next one up.</div></div>`;
+      <div class="note">No game today — this is the next one up.</div></a>`;
   }catch(e){
-    return `<div class="game"><div class="game-head">${leagueTagHtml(fav.league)}<span class="chip next">UP NEXT</span></div><div class="next-name">No game today for the ${fav.name}.</div></div>`;
+    return `<a class="game game-link" href="${teamSchedUrl(fav.league, fav.id)}" target="_blank" rel="noopener"><div class="game-head">${leagueTagHtml(fav.league)}<span class="chip next">UP NEXT</span></div><div class="next-name">No game today for the ${fav.name}.</div></a>`;
   }
 }
 
@@ -513,7 +528,7 @@ function tickerItem(ev, leagueKey){
     return `${logo ? `<img src="${logo}" alt="">` : ""}<span>${t.abbreviation || ""}<b>${score}</b></span>`;
   };
   const stCls = state === "in" ? "st live" : "st";
-  return `<span class="tick ${fav ? "fav" : ""}"><span class="lg">${TICKER_LABEL[leagueKey]}</span>${side(away)}<span class="st">@</span>${side(home)}<span class="${stCls}">${short}</span></span>`;
+  return `<a class="tick ${fav ? "fav" : ""}" href="${gameUrl(leagueKey, ev.id)}" target="_blank" rel="noopener"><span class="lg">${TICKER_LABEL[leagueKey]}</span>${side(away)}<span class="st">@</span>${side(home)}<span class="${stCls}">${short}</span></a>`;
 }
 
 function renderTicker(){
