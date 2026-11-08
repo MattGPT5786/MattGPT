@@ -82,7 +82,9 @@
     background:linear-gradient(100deg,var(--surface-2) 40%,#16233a 50%,var(--surface-2) 60%);background-size:200% 100%;animation:shimmer 1.4s infinite}
   @keyframes shimmer{to{background-position:-200% 0}}
   /* ---------- overview panels ---------- */
-  .overview{display:flex;flex-direction:column;gap:14px;margin-bottom:30px}
+  .wx-panel{margin-bottom:14px}
+  .mkt-panel{margin-bottom:30px}
+  .wx-mid{display:flex;flex-direction:column;gap:10px}
   .wx-layout{display:grid;grid-template-columns:auto auto 1fr;gap:22px;align-items:center}
   @media (max-width:980px){.wx-layout{grid-template-columns:1fr;gap:14px}}
   .panel{position:relative;overflow:hidden;background:linear-gradient(180deg,var(--surface),var(--surface-2));
@@ -130,6 +132,41 @@
   .tick.fav{background:rgba(94,168,255,.09)}
   /* ---------- footer ---------- */
   footer{max-width:1120px;margin:0 auto;padding:0 20px 30px;color:var(--faint);font-size:12px;display:flex;gap:10px;flex-wrap:wrap;justify-content:space-between}
+  /* ---------- one-screen dashboard mode (wide + tall enough viewports) ---------- */
+  @media (min-width:1180px) and (min-height:720px){
+    body{display:flex;flex-direction:column;height:100dvh;overflow:hidden}
+    .topbar-in{padding-top:10px;padding-bottom:10px}
+    .mark{width:34px;height:34px;font-size:17px;border-radius:9px}
+    main{flex:1;min-height:0;width:100%;max-width:1500px;display:grid;gap:12px;padding:14px 20px 10px;
+      grid-template-columns:296px minmax(0,1fr) 308px;
+      grid-template-rows:minmax(0,1fr) auto;
+      grid-template-areas:"wx teams mkt" "ticker ticker ticker"}
+    .wx-panel{grid-area:wx;margin-bottom:0;overflow:auto}
+    .mkt-panel{grid-area:mkt;margin-bottom:0;display:flex;flex-direction:column;overflow:hidden}
+    .teams-wrap{grid-area:teams;display:flex;flex-direction:column;min-height:0;min-width:0}
+    .ticker{grid-area:ticker;margin-top:0}
+    footer{width:100%;max-width:1500px;padding:0 20px 10px}
+    .wx-layout{grid-template-columns:1fr;gap:12px;align-items:stretch}
+    .wx-fc{border-left:none;padding-left:0;border-top:1px solid var(--line-soft);padding-top:10px;grid-template-columns:1fr;gap:2px}
+    .wx-day{display:flex;align-items:center;gap:9px;text-align:left;padding:3px 0}
+    .wx-day .i{margin:0;font-size:16px}
+    .wx-day .d{width:40px;flex:0 0 auto}
+    .wx-day .t{margin-left:auto}
+    .wx-day .p{margin-top:0;width:42px;text-align:right}
+    .wx-temp{font-size:36px}
+    .wx-icon{font-size:38px}
+    .mkt-panel .mkt-grid{flex:1;grid-template-columns:1fr;grid-template-rows:repeat(3,minmax(0,1fr));min-height:0}
+    .mkt-cell{height:auto;min-height:0}
+    .teams-wrap .section-head{margin-bottom:10px;padding-bottom:8px}
+    #favorites{flex:1;grid-template-columns:1fr 1fr;grid-template-rows:repeat(3,minmax(0,1fr));grid-auto-rows:1fr;min-height:0}
+    .game{padding:12px 14px 10px}
+    .game-head{padding-bottom:7px;margin-bottom:4px}
+    .trow{padding:5px 0}
+    .logo{width:34px;height:34px}
+    .logo img{width:23px;height:23px}
+    .tname{font-size:14px}
+    .tscore{font-size:20px}
+  }
   @media (max-width:640px){
     .brand-sub{display:none}
     .date{display:none}
@@ -161,12 +198,11 @@
 </div>
 
 <main>
-  <div class="overview">
-    <section class="panel" aria-label="Weather">
+  <section class="panel wx-panel" aria-label="Weather">
       <div class="panel-head"><span class="panel-title">🌤 Cherry Hill, NJ · 08003</span><span class="panel-note">Open-Meteo</span></div>
       <div id="wxBody"><div class="empty">Loading weather…</div></div>
     </section>
-    <section class="panel" aria-label="Markets">
+    <section class="panel mkt-panel" aria-label="Markets">
       <div class="panel-head"><span class="panel-title">📈 Markets</span><span class="panel-note">S&P 500 · Dow · Nasdaq Composite — 1-month charts</span></div>
       <div class="mkt-grid">
         <div class="mkt-cell"><div class="tradingview-widget-container"><div class="tradingview-widget-container__widget" style="width:100%;height:100%"></div>
@@ -183,14 +219,15 @@
           </script></div></div>
       </div>
     </section>
-  </div>
 
+  <div class="teams-wrap">
   <div class="section-head">
     <h2>My Teams</h2>
     <span class="section-note">Giants · Penn State · Knicks · Capitals · Yankees · Saint Joseph's</span>
   </div>
   <div class="grid" id="favorites">
     <div class="skel"></div><div class="skel"></div><div class="skel"></div>
+  </div>
   </div>
 
   <div class="ticker" aria-label="Score ticker">
@@ -366,8 +403,10 @@ function renderTicker(){
 /* ---------- weather: Open-Meteo, Cherry Hill NJ (08003) ---------- */
 const WX_URL = "https://api.open-meteo.com/v1/forecast?latitude=39.9351&longitude=-75.0307"
   + "&current=temperature_2m,relative_humidity_2m,apparent_temperature,weather_code,wind_speed_10m,wind_direction_10m,is_day"
-  + "&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max"
+  + "&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max,sunrise,sunset"
   + "&temperature_unit=fahrenheit&wind_speed_unit=mph&timezone=America%2FNew_York&forecast_days=5";
+
+const fmtClock = iso => iso ? new Date(iso).toLocaleTimeString([], {hour: "numeric", minute: "2-digit"}).replace(/\s?[AP]M/i, m => m.trim().toLowerCase()) : "";
 
 function wxInfo(code, isDay){
   const m = {
@@ -405,10 +444,17 @@ async function loadWeather(){
       <div class="wx-now"><div class="wx-icon">${icon}</div>
         <div><div class="wx-temp">${Math.round(c.temperature_2m)}°F</div><div class="wx-cond">${cond}</div></div>
       </div>
+      <div class="wx-mid">
       <div class="wx-stats">
         <div class="wx-stat"><div class="k">Feels like</div><div class="v">${Math.round(c.apparent_temperature)}°F</div></div>
         <div class="wx-stat"><div class="k">Humidity</div><div class="v">${c.relative_humidity_2m}%</div></div>
         <div class="wx-stat"><div class="k">Wind</div><div class="v">${Math.round(c.wind_speed_10m)} mph ${windDir}</div></div>
+      </div>
+      <div class="wx-stats">
+        <div class="wx-stat"><div class="k">High today</div><div class="v">${Math.round(daily.temperature_2m_max[0])}°</div></div>
+        <div class="wx-stat"><div class="k">Sunrise</div><div class="v">${fmtClock(daily.sunrise[0])}</div></div>
+        <div class="wx-stat"><div class="k">Sunset</div><div class="v">${fmtClock(daily.sunset[0])}</div></div>
+      </div>
       </div>
       <div class="wx-fc">${fc}</div></div>`;
   }catch(e){
