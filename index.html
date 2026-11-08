@@ -33,7 +33,7 @@
   .topbar{background:var(--bg);position:relative;z-index:10;border-bottom:1px solid #121212;box-shadow:0 4px 0 -1px var(--bg),0 5px 0 0 #121212}
   .topbar-in{max-width:1120px;margin:0 auto;padding:16px 20px 13px;display:flex;flex-direction:column;align-items:center;gap:7px}
   .brand{display:flex;align-items:center;gap:12px;min-width:0}
-  .brand-name{font-family:"Engravers' Old English BT","Grenze Gotisch",serif;font-weight:700;font-size:48px;line-height:1.05;color:#121212;letter-spacing:.01em}
+  .brand-name{font-family:"Times New Roman",Times,Georgia,serif;font-weight:800;font-size:48px;line-height:1.05;color:#121212;letter-spacing:.01em}
   .top-right{width:100%;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:16px}
   .date{grid-column:2;justify-self:center}
   .top-actions{grid-column:3;justify-self:end}
@@ -54,7 +54,8 @@
   /* ---------- game cards (box scores) ---------- */
   .game{position:relative;background:transparent;border-top:1px solid #c9c3b2;padding:11px 4px 9px}
   .game-head{display:flex;align-items:center;justify-content:space-between;gap:10px;padding-bottom:7px;margin-bottom:4px;min-height:22px}
-  .league-tag{font-family:var(--sans);font-size:10px;font-weight:700;letter-spacing:.16em;color:var(--muted);text-transform:uppercase;white-space:nowrap}
+  .league-tag{font-family:var(--sans);font-size:10px;font-weight:700;letter-spacing:.16em;color:var(--muted);text-transform:uppercase;white-space:nowrap;display:inline-flex;align-items:center;gap:5px}
+  .sport-icon{font-size:12.5px;line-height:1;letter-spacing:0}
   .chip{display:inline-flex;align-items:center;gap:6px;font-family:var(--sans);font-size:10px;font-weight:600;letter-spacing:.08em;
     text-transform:uppercase;padding:3px 8px;border-radius:2px;border:1px solid #c9c3b2;color:var(--muted);white-space:nowrap;background:transparent}
   .chip.live{color:var(--live);border-color:var(--live)}
@@ -126,7 +127,7 @@
   .ticker-label{flex:0 0 auto;background:#121212;color:#fff;font-family:var(--sans);font-weight:800;font-size:11px;
     letter-spacing:.14em;display:flex;align-items:center;padding:0 16px;z-index:2;text-transform:uppercase}
   .ticker-label img{display:none}
-  .ticker-label::after{content:"MattGPT";font-family:"Engravers' Old English BT","Grenze Gotisch",serif;font-weight:700;font-size:22px;letter-spacing:.01em;text-transform:none;line-height:1}
+  .ticker-label::after{content:"MattGPT";font-family:"Times New Roman",Times,Georgia,serif;font-weight:800;font-size:22px;letter-spacing:.01em;text-transform:none;line-height:1}
   .ticker-view{flex:1;overflow:hidden;-webkit-mask-image:linear-gradient(90deg,transparent,#000 28px,#000 calc(100% - 28px),transparent);
     mask-image:linear-gradient(90deg,transparent,#000 28px,#000 calc(100% - 28px),transparent)}
   .ticker-track{display:inline-flex;white-space:nowrap;padding:11px 0;animation:scroll linear infinite;will-change:transform}
@@ -297,7 +298,7 @@
 
   <div class="teams-wrap">
   <div class="section-head">
-    <h2>My Teams</h2>
+    <h2>Sports</h2>
     <span class="section-note">Giants · Penn State · Knicks · Capitals · Yankees · Saint Joseph's</span>
   </div>
   <div class="grid" id="favorites">
@@ -364,6 +365,8 @@ const LEAGUES = {
              `${API}/basketball/mens-college-basketball/scoreboard?limit=100` ] },
 };
 const LG_SHORT = { nfl:"NFL", ncaaf:"NCAA FB", nba:"NBA", nhl:"NHL", mlb:"MLB", ncaam:"NCAA MBB" };
+const SPORT_ICON = { nfl:"🏈", ncaaf:"🏈", nba:"🏀", nhl:"🏒", mlb:"⚾", ncaam:"🏀" };
+function leagueTagHtml(key){ return `<span class="league-tag"><span class="sport-icon" aria-hidden="true">${SPORT_ICON[key] || ""}</span>${LG_SHORT[key] || ""}</span>`; }
 const TICKER_LABEL = { nfl:"NFL", ncaaf:"CFB", nba:"NBA", nhl:"NHL", mlb:"MLB", ncaam:"NCAAM" };
 
 // Matt's teams, by ESPN team id
@@ -431,7 +434,7 @@ function gameCard(ev, leagueKey){
     .sort((a,b) => (a.homeAway === "home" ? 1 : 0) - (b.homeAway === "home" ? 1 : 0))
     .map(c => teamRow(c, state)).join("");
   return `<div class="game" ${color ? `style="--tc:${color}"` : ""}>
-    <div class="game-head"><span class="league-tag">${LG_SHORT[leagueKey] || ""}</span>${statusChip(ev, state)}</div>
+    <div class="game-head">${leagueTagHtml(leagueKey)}${statusChip(ev, state)}</div>
     ${rows}</div>`;
 }
 
@@ -459,7 +462,7 @@ async function nextGame(fav){
     const upcoming = (data.events || [])
       .filter(e => new Date(e.date).getTime() >= now - 4*3600*1000)
       .sort((a,b) => new Date(a.date) - new Date(b.date))[0];
-    if(!upcoming) return `<div class="game"><div class="game-head"><span class="league-tag">${LG_SHORT[fav.league]}</span><span class="chip next">UP NEXT</span></div><div class="next-name">No upcoming game found on the schedule for the ${fav.name}.</div></div>`;
+    if(!upcoming) return `<div class="game"><div class="game-head">${leagueTagHtml(fav.league)}<span class="chip next">UP NEXT</span></div><div class="next-name">No upcoming game found on the schedule for the ${fav.name}.</div></div>`;
     const when = new Date(upcoming.date).toLocaleString([], {weekday:"short", month:"short", day:"numeric", hour:"numeric", minute:"2-digit"});
     const comps = (upcoming.competitions && upcoming.competitions[0] && upcoming.competitions[0].competitors) || [];
     await Promise.all(comps.map(async c => {
@@ -471,11 +474,11 @@ async function nextGame(fav){
     const rows = comps.length >= 2
       ? [...comps].sort((a,b) => (a.homeAway === "home" ? 1 : 0) - (b.homeAway === "home" ? 1 : 0)).map(c => teamRow(c, "pre")).join("")
       : `<div class="next-name">${upcoming.name}</div>`;
-    return `<div class="game"><div class="game-head"><span class="league-tag">${LG_SHORT[fav.league]}</span><span class="chip next">UP NEXT</span></div>
+    return `<div class="game"><div class="game-head">${leagueTagHtml(fav.league)}<span class="chip next">UP NEXT</span></div>
       <div class="next-when">${when}</div>${rows}
       <div class="note">No game today — this is the next one up.</div></div>`;
   }catch(e){
-    return `<div class="game"><div class="game-head"><span class="league-tag">${LG_SHORT[fav.league]}</span><span class="chip next">UP NEXT</span></div><div class="next-name">No game today for the ${fav.name}.</div></div>`;
+    return `<div class="game"><div class="game-head">${leagueTagHtml(fav.league)}<span class="chip next">UP NEXT</span></div><div class="next-name">No game today for the ${fav.name}.</div></div>`;
   }
 }
 
@@ -629,8 +632,7 @@ async function loadMarkets(){
         cell.innerHTML =
           `<div class="mk-top"><span class="mk-name">${m.name}</span><span class="mk-chg${down ? " dn" : ""}">${q.change} (${q.change_pct})</span></div>` +
           `<div class="mk-price">${q.last}</div>` +
-          `<div class="mk-chart">${mktChartSVG(bars, m.color)}</div>` +
-          `<div class="mk-range">O ${q.open} · H ${q.high} · L ${q.low} · Prev ${q.previous_day_closing}</div>`;
+          `<div class="mk-chart">${mktChartSVG(bars, m.color)}</div>`;
       }catch(e){ /* keep previous render for this cell */ }
     }));
   }catch(e){ /* keep previous render */ }
