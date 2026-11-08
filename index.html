@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Scher Scores — My Teams, Live from ESPN</title>
+<style>
+  :root{
+    --bg:#0b1220; --card:#131c2e; --card2:#182238; --line:#24314d;
+    --text:#e8eef7; --muted:#93a3bd; --accent:#4da3ff; --live:#ff4d5e;
+    --win:#3ddc84;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--text)}
+  header{padding:22px 18px 10px;max-width:1100px;margin:0 auto}
+  h1{margin:0;font-size:26px;letter-spacing:.2px}
+  .sub{color:var(--muted);font-size:13px;margin-top:4px}
+  .bar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:14px}
+  button{background:var(--card2);color:var(--text);border:1px solid var(--line);border-radius:999px;padding:7px 14px;font-size:13px;cursor:pointer}
+  button.active{background:var(--accent);border-color:var(--accent);color:#06121f;font-weight:600}
+  button:hover{opacity:.92}
+  #updated{color:var(--muted);font-size:12px;margin-left:auto}
+  main{max-width:1100px;margin:0 auto;padding:8px 18px 40px}
+  h2{font-size:15px;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);margin:26px 0 10px}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:12px}
+  .game{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 16px}
+  .game.fav{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent) inset}
+  .status{font-size:12px;color:var(--muted);display:flex;align-items:center;gap:6px;margin-bottom:10px;min-height:16px}
+  .dot{width:8px;height:8px;border-radius:50%;background:var(--live);animation:pulse 1.2s infinite}
+  @keyframes pulse{0%{opacity:1}50%{opacity:.35}100%{opacity:1}}
+  .live-txt{color:var(--live);font-weight:700}
+  .row{display:flex;align-items:center;gap:10px;padding:5px 0}
+  .row img{width:30px;height:30px;object-fit:contain}
+  .row .name{flex:1;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .row .rec{color:var(--muted);font-size:12px}
+  .row .score{font-size:19px;font-weight:700;min-width:30px;text-align:right}
+  .row.loser{opacity:.55}
+  .row.winner .name{font-weight:700}
+  .note{font-size:13px;color:var(--muted);line-height:1.5}
+  .note a{color:var(--accent)}
+  .empty{color:var(--muted);font-size:14px;padding:8px 0}
+  .err{background:#2a1620;border:1px solid #5b2436;color:#ffb3ba;border-radius:10px;padding:10px 14px;font-size:13px;margin:10px 0}
+  footer{max-width:1100px;margin:0 auto;padding:0 18px 30px;color:var(--muted);font-size:12px}
+</style>
+</head>
+<body>
+<header>
+  <h1>🏆 Scher Scores</h1>
+  <div class="sub">My teams first, then the full boards — live from ESPN's public API. No API key, auto-refreshes every 60 seconds.</div>
+  <div class="bar" id="tabs">
+    <button data-view="all" class="active">All</button>
+    <button data-view="nfl">NFL</button>
+    <button data-view="nba">NBA</button>
+    <button data-view="nhl">NHL</button>
+    <button data-view="mlb">MLB</button>
+    <button data-view="ncaam">College Hoops</button>
+    <button id="refresh">↻ Refresh now</button>
+    <span id="updated"></span>
+  </div>
+</header>
+<main>
+  <h2>⭐ My Teams</h2>
+  <div class="grid" id="favorites"><div class="empty">Loading your teams…</div></div>
+  <div id="leagues"></div>
+</main>
+<footer>Data: ESPN public scoreboard API (site.api.espn.com). Hershey Bears (AHL) aren't covered by ESPN's API — card above links to the AHL site instead of showing fake data.</footer>
+
+<script>
+const API = "https://site.api.espn.com/apis/site/v2/sports";
+
+// league key -> ESPN path + label. College uses Atlantic 10 (groups=3, Saint Joseph's)
+// plus the default Top-25 board, merged and deduped.
+const LEAGUES = {
+  nfl:   { label: "NFL",         urls: [`${API}/football/nfl/scoreboard`] },
+  nba:   { label: "NBA",         urls: [`${API}/basketball/nba/scoreboard`] },
+  nhl:   { label: "NHL",         urls: [`${API}/hockey/nhl/scoreboard`] },
+  mlb:   { label: "MLB",         urls: [`${API}/baseball/mlb/scoreboard`] },
+  ncaam: { label: "College Hoops (A-10 + Top 25)", urls: [
+             `${API}/basketball/mens-college-basketball/scoreboard?groups=3&limit=100`,
+             `${API}/basketball/mens-college-basketball/scoreboard?limit=100` ] },
+};
+
+// Matt's teams, by ESPN team id
+const FAVORITES = [
+  { league:"nfl",   id:"19",   name:"New York Giants" },
+  { league:"nba",   id:"18",   name:"New York Knicks" },
+  { league:"nhl",   id:"23",   name:"Washington Capitals" },
+  { league:"mlb",   id:"10",   name:"New York Yankees" },
+  { league:"ncaam", id:"2603", name:"Saint Joseph's Hawks" },
+];
+const FAV_KEYS = new Set(FAVORITES.map(f => f.league + ":" + f.id));
+
+const SCHEDULE_PATH = {
+  nfl:"football/nfl", nba:"basketball/nba", nhl:"hockey/nhl",
+  mlb:"baseball/mlb", ncaam:"basketball/mens-college-basketball"
+};
+
+let board = {};       // league -> events[]
+let currentView = "all";
+
+async function fetchJSON(url){
+  const r = await fetch(url);
+  if(!r.ok) throw new Error(url + " -> " + r.status);
+  return r.json();
+}
+
+async function loadLeague(key){
+  const seen = new Map();
+  for(const url of LEAGUES[key].urls){
+    try{
+      const data = await fetchJSON(url);
+      for(const ev of (data.events || [])) seen.set(ev.id, ev);
+    }catch(e){ /* one bad board shouldn't kill the page */ console.warn(e); }
+  }
+  board[key] = [...seen.values()];
+}
+
+function teamRow(comp, state){
+  const t = comp.team || {};
+  const logo = t.logo || (t.logos && t.logos[0] && t.logos[0].href) || "";
+  const rec = (comp.records && comp.records[0] && comp.records[0].summary) || "";
+  const cls = state === "post" ? (comp.winner ? "winner" : "loser") : "";
+  const score = (state === "pre") ? "" : (comp.score ?? "");
+  return `<div class="row ${cls}">
+    ${logo ? `<img src="${logo}" alt="">` : ""}
+    <span class="name">${t.displayName || t.name || ""}</span>
+    <span class="rec">${rec}</span>
+    <span class="score">${score}</span></div>`;
+}
+
+function gameCard(ev, leagueKey){
+  const comp = (ev.competitions || [])[0] || {};
+  const competitors = comp.competitors || [];
+  const state = ev.status && ev.status.type ? ev.status.type.state : "pre";
+  const detail = (ev.status && ev.status.type && ev.status.type.detail) || "";
+  const fav = competitors.some(c => FAV_KEYS.has(leagueKey + ":" + (c.team||{}).id));
+  const statusHtml = state === "in"
+    ? `<span class="dot"></span><span class="live-txt">LIVE</span> ${detail}`
+    : detail;
+  // home team second in ESPN's competitor order is not guaranteed; sort home first visually as listed
+  const rows = [...competitors]
+    .sort((a,b) => (a.homeAway === "home" ? 1 : 0) - (b.homeAway === "home" ? 1 : 0))
+    .map(c => teamRow(c, state)).join("");
+  return `<div class="game ${fav ? "fav" : ""}">
+    <div class="status">${statusHtml}</div>${rows}</div>`;
+}
+
+async function nextGame(fav){
+  // Fallback when a favorite has no game on today's board: pull its schedule.
+  try{
+    const data = await fetchJSON(`${API}/${SCHEDULE_PATH[fav.league]}/teams/${fav.id}/schedule`);
+    const now = Date.now();
+    const upcoming = (data.events || [])
+      .filter(e => new Date(e.date).getTime() >= now - 4*3600*1000)
+      .sort((a,b) => new Date(a.date) - new Date(b.date))[0];
+    if(!upcoming) return `<div class="game fav"><div class="status">${fav.name}</div><div class="note">No upcoming game found on the schedule.</div></div>`;
+    const when = new Date(upcoming.date).toLocaleString([], {weekday:"short", month:"short", day:"numeric", hour:"numeric", minute:"2-digit"});
+    return `<div class="game fav"><div class="status">Next game · ${when}</div>
+      <div class="row"><span class="name">${upcoming.name}</span></div>
+      <div class="note">No game today — this is the next one up.</div></div>`;
+  }catch(e){
+    return `<div class="game fav"><div class="status">${fav.name}</div><div class="note">No game today.</div></div>`;
+  }
+}
+
+async function renderFavorites(){
+  const el = document.getElementById("favorites");
+  const cards = [];
+  for(const fav of FAVORITES){
+    const ev = (board[fav.league] || []).find(e =>
+      (e.competitions[0].competitors || []).some(c => (c.team||{}).id === fav.id));
+    cards.push(ev ? gameCard(ev, fav.league) : await nextGame(fav));
+  }
+  // Hershey Bears: ESPN's API has no AHL board (verified — endpoint 400/404), so no fake scores.
+  cards.push(`<div class="game"><div class="status">Hershey Bears · AHL</div>
+    <div class="row"><span class="name">Hershey Bears</span></div>
+    <div class="note">ESPN doesn't publish AHL scores in its API. <a href="https://theahl.com/schedule" target="_blank" rel="noopener">See the AHL schedule &amp; scores →</a></div></div>`);
+  el.innerHTML = cards.join("");
+}
+
+function renderLeagues(){
+  const wrap = document.getElementById("leagues");
+  const keys = currentView === "all" ? Object.keys(LEAGUES) : [currentView];
+  wrap.innerHTML = keys.map(key => {
+    const events = board[key] || [];
+    const body = events.length
+      ? `<div class="grid">${events.map(ev => gameCard(ev, key)).join("")}</div>`
+      : `<div class="empty">No games on this board right now.</div>`;
+    return `<h2>${LEAGUES[key].label}</h2>${body}`;
+  }).join("");
+}
+
+async function loadAll(){
+  await Promise.all(Object.keys(LEAGUES).map(loadLeague));
+  await renderFavorites();
+  renderLeagues();
+  document.getElementById("updated").textContent =
+    "Updated " + new Date().toLocaleTimeString([], {hour:"numeric", minute:"2-digit", second:"2-digit"});
+}
+
+document.getElementById("tabs").addEventListener("click", e => {
+  const btn = e.target.closest("button[data-view]");
+  if(btn){
+    currentView = btn.dataset.view;
+    document.querySelectorAll("#tabs button[data-view]").forEach(b => b.classList.toggle("active", b === btn));
+    renderLeagues();
+  }
+});
+document.getElementById("refresh").addEventListener("click", loadAll);
+
+loadAll();
+setInterval(loadAll, 60000);
+</script>
+</body>
+</html>
