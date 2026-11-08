@@ -133,7 +133,16 @@
   @media (max-width:900px){.mkt-grid{grid-template-columns:1fr 1fr}}
   @media (max-width:560px){.mkt-grid{grid-template-columns:1fr}}
   .mkt-cell{height:192px;background:#000;border:1px solid var(--line);border-radius:5px;overflow:hidden}
-  .mkt-cell .tradingview-widget-container{width:100%;height:100%}
+  .mkt-cell{display:flex;flex-direction:column;padding:9px 11px 8px;box-sizing:border-box}
+  .mk-top{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+  .mk-name{font-family:var(--dot);font-size:12.5px;letter-spacing:.06em;color:var(--mc,#ffb000);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .mk-chg{font-size:11.5px;font-variant-numeric:tabular-nums;white-space:nowrap;color:var(--led-green)}
+  .mk-chg.dn{color:#ff5252}
+  .mk-price{font-family:var(--dot);font-size:27px;color:#fff3d6;margin-top:2px;text-shadow:0 0 9px rgba(255,214,120,.45)}
+  .mk-chart{flex:1;min-height:50px;margin-top:2px}
+  .mk-chart svg{width:100%;height:100%;display:block}
+  .mk-range{font-size:10.5px;color:var(--faint);font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .mk-empty{color:var(--faint);font-size:12px;margin:auto}
   /* ---------- ticker ---------- */
   .ticker{display:flex;align-items:stretch;background:#000;border:1px solid #3a2c00;border-radius:8px;overflow:hidden;margin-top:30px;
     box-shadow:0 0 16px rgba(255,176,0,.14),0 10px 30px rgba(0,0,0,.8)}
@@ -242,20 +251,11 @@
       <div id="wxBody"><div class="empty">Loading weather…</div></div>
     </section>
     <section class="panel mkt-panel" aria-label="Markets">
-      <div class="panel-head"><span class="panel-title">📈 Markets</span><span class="panel-note">1-month charts</span></div>
+      <div class="panel-head"><span class="panel-title">📈 Markets</span><span class="panel-note">CNBC · 1-month</span></div>
       <div class="mkt-grid">
-        <div class="mkt-cell"><div class="tradingview-widget-container"><div class="tradingview-widget-container__widget" style="width:100%;height:100%"></div>
-          <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-mini-symbol-overview.js" async>
-          { "symbol": "FOREXCOM:SPXUSD", "width": "100%", "height": "100%", "locale": "en", "dateRange": "1M", "colorTheme": "dark", "isTransparent": true, "autosize": true, "chartType": "area", "hideMarketStatus": true, "lineWidth": 2, "lineColor": "#ffb000", "topColor": "rgba(255,176,0,0.38)", "bottomColor": "rgba(255,176,0,0.0)" }
-          </script></div></div>
-        <div class="mkt-cell"><div class="tradingview-widget-container"><div class="tradingview-widget-container__widget" style="width:100%;height:100%"></div>
-          <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-mini-symbol-overview.js" async>
-          { "symbol": "FOREXCOM:DJI", "width": "100%", "height": "100%", "locale": "en", "dateRange": "1M", "colorTheme": "dark", "isTransparent": true, "autosize": true, "chartType": "area", "hideMarketStatus": true, "lineWidth": 2, "lineColor": "#28e6ff", "topColor": "rgba(40,230,255,0.38)", "bottomColor": "rgba(40,230,255,0.0)" }
-          </script></div></div>
-        <div class="mkt-cell"><div class="tradingview-widget-container"><div class="tradingview-widget-container__widget" style="width:100%;height:100%"></div>
-          <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-mini-symbol-overview.js" async>
-          { "symbol": "FOREXCOM:NSXUSD", "width": "100%", "height": "100%", "locale": "en", "dateRange": "1M", "colorTheme": "dark", "isTransparent": true, "autosize": true, "chartType": "area", "hideMarketStatus": true, "lineWidth": 2, "lineColor": "#ff4dff", "topColor": "rgba(255,77,255,0.38)", "bottomColor": "rgba(255,77,255,0.0)" }
-          </script></div></div>
+        <div class="mkt-cell" id="mkt-spx"><div class="mk-empty">Loading markets…</div></div>
+        <div class="mkt-cell" id="mkt-dji"><div class="mk-empty">Loading markets…</div></div>
+        <div class="mkt-cell" id="mkt-ixic"><div class="mk-empty">Loading markets…</div></div>
       </div>
     </section>
 
@@ -531,8 +531,55 @@ async function loadWeather(){
   }
 }
 
+
+/* ---------- markets (CNBC: CORS-open quotes + daily bars) ---------- */
+const MKTS = [
+  {cell:"mkt-spx", sym:".SPX", name:"S&P 500", color:"#ffb000"},
+  {cell:"mkt-dji", sym:".DJI", name:"DOW JONES", color:"#28e6ff"},
+  {cell:"mkt-ixic", sym:".IXIC", name:"NASDAQ COMPOSITE", color:"#ff4dff"}
+];
+function mktChartSVG(bars, color){
+  const closes = bars.slice(-22).map(b => parseFloat(b.close)).filter(n => isFinite(n));
+  if (closes.length < 2) return "";
+  const W = 300, H = 86, PAD = 6;
+  const min = Math.min(...closes), max = Math.max(...closes), span = (max - min) || 1;
+  const pts = closes.map((c, i) => [PAD + i * (W - 2 * PAD) / (closes.length - 1), H - PAD - (c - min) / span * (H - 2 * PAD)]);
+  const line = pts.map(p => p.map(n => n.toFixed(1)).join(",")).join(" ");
+  const area = "M" + pts[0][0].toFixed(1) + "," + H + " L" + pts.map(p => p.map(n => n.toFixed(1)).join(",")).join(" L") + " L" + pts[pts.length - 1][0].toFixed(1) + "," + H + " Z";
+  const dots = pts.map(p => `<circle cx="${p[0].toFixed(1)}" cy="${p[1].toFixed(1)}" r="3.8" fill="${color}" opacity="0.20"/><circle cx="${p[0].toFixed(1)}" cy="${p[1].toFixed(1)}" r="1.7" fill="${color}"/>`).join("");
+  return `<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" aria-hidden="true"><path d="${area}" fill="${color}" opacity="0.10"/><polyline points="${line}" fill="none" stroke="${color}" stroke-width="1.3" opacity="0.55"/>${dots}</svg>`;
+}
+async function loadMarkets(){
+  try{
+    const syms = MKTS.map(m => m.sym).join("|");
+    const qres = await fetch("https://quote.cnbc.com/quote-html-webservice/restQuote/symbolType/symbol?symbols=" + encodeURIComponent(syms) + "&requestMethod=itv&noform=1&partnerId=2&fund=1&exthrs=1&output=json", {cache:"no-store"});
+    const qjson = await qres.json();
+    const quotes = {};
+    ((qjson.FormattedQuoteResult || {}).FormattedQuote || []).forEach(q => { quotes[q.symbol] = q; });
+    await Promise.all(MKTS.map(async m => {
+      const cell = document.getElementById(m.cell);
+      if (!cell) return;
+      try{
+        const bres = await fetch("https://ts-api.cnbc.com/harmony/app/charts/1M.json?symbol=" + encodeURIComponent(m.sym), {cache:"no-store"});
+        const bjson = await bres.json();
+        const bars = (bjson.barData && bjson.barData.priceBars) || [];
+        const q = quotes[m.sym];
+        if (!q || !bars.length){ cell.innerHTML = `<div class="mk-empty">${m.name} unavailable</div>`; return; }
+        const down = String(q.change || "").trim().startsWith("-");
+        cell.style.setProperty("--mc", m.color);
+        cell.innerHTML =
+          `<div class="mk-top"><span class="mk-name">${m.name}</span><span class="mk-chg${down ? " dn" : ""}">${q.change} (${q.change_pct})</span></div>` +
+          `<div class="mk-price">${q.last}</div>` +
+          `<div class="mk-chart">${mktChartSVG(bars, m.color)}</div>` +
+          `<div class="mk-range">O ${q.open} · H ${q.high} · L ${q.low} · Prev ${q.previous_day_closing}</div>`;
+      }catch(e){ /* keep previous render for this cell */ }
+    }));
+  }catch(e){ /* keep previous render */ }
+}
+
 async function loadAll(){
   loadWeather();
+  loadMarkets();
   await Promise.all(Object.keys(LEAGUES).map(loadLeague));
   await renderFavorites();
   renderTicker();
