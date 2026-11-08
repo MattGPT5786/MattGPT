@@ -10,7 +10,7 @@
 <style>
   :root{
     --bg:#000000; --surface:#070707; --surface-2:#030303; --line:#2e2e2e; --line-soft:#1b1b1b;
-    --text:#f4f4f0; --muted:#a3a398; --faint:#62625b;
+    --text:#f4f4f0; --muted:#a3a398; --faint:#7d7d75;
     --amber:#ffb000; --led-red:#ff3131; --led-green:#3dff5e; --led-cyan:#28e6ff; --led-magenta:#ff4dff;
     --accent:var(--amber); --live:var(--led-red); --gold:var(--amber);
     --blue:var(--led-cyan); --dim:var(--muted); --panel2:#0a0a0a;
@@ -87,7 +87,7 @@
     text-shadow:0 0 6px rgba(255,255,255,.65),0 0 16px rgba(255,255,255,.3);font-variant-numeric:tabular-nums}
   .trow.winner .tname{font-weight:700}
   .trow.winner .tscore{color:var(--amber);text-shadow:0 0 6px rgba(255,176,0,.9),0 0 18px rgba(255,176,0,.5)}
-  .trow.loser{opacity:.45}
+  .trow.loser{opacity:.58}
   .next-when{font-size:14.5px;margin:2px 0 4px;color:#ffd34d;text-shadow:0 0 7px rgba(255,176,0,.5)}
   .next-name{font-size:13.5px;color:var(--muted);line-height:1.45}
   .note{font-size:12.5px;color:var(--faint);line-height:1.5;margin-top:6px}
@@ -198,6 +198,7 @@
     .wx-icon{font-size:38px}
     .mkt-panel .mkt-grid{flex:1;grid-template-columns:1fr;grid-template-rows:repeat(3,minmax(0,1fr));min-height:0}
     .mkt-cell{height:auto;min-height:0}
+    .panel-title{font-size:11.5px;letter-spacing:.12em}
     .teams-wrap .section-head{margin-bottom:10px;padding-bottom:8px}
     #favorites{flex:1;grid-template-columns:1fr 1fr;grid-template-rows:repeat(3,minmax(0,1fr));grid-auto-rows:1fr;min-height:0}
     .game{padding:9px 11px 8px}
