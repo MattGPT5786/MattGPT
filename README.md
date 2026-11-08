@@ -4,7 +4,7 @@ A single-file HTML dashboard (originally "Scher Scores"). Sports scores from ESP
 
 ## What it shows
 - **Weather:** current conditions and a 5-day forecast for Cherry Hill, NJ 08003 (Open-Meteo, keyless + CORS-open, coordinates 39.9351, -75.0307).
-- **Markets:** weekly (5-session) mini charts for just three indexes — S&P 500 (GSPC), Dow Jones (DJI), Nasdaq Composite (IXIC) — via TradingView's mini-symbol-overview embed widgets (free quote JSON APIs — Stooq/CNBC/Yahoo — were bot-walled or rate-limited when checked Nov 8, 2026, so the standard embeds are used instead).
+- **Markets:** 1-month mini charts for just three indexes — S&P 500 (GSPC), Dow Jones (DJI), Nasdaq Composite (IXIC) — via TradingView's mini-symbol-overview embed widgets (free quote JSON APIs — Stooq/CNBC/Yahoo — were bot-walled or rate-limited when checked Nov 8, 2026, so the standard embeds are used instead).
 - **My Teams first:** New York Giants (NFL), Penn State Nittany Lions (NCAA football, Big Ten), New York Knicks (NBA), Washington Capitals (NHL), New York Yankees (MLB), Saint Joseph's Hawks (NCAA basketball, Atlantic 10). If a team has no game today, its next scheduled game is shown instead — with both teams' logos.
 - **Score ticker:** every other game from the NFL, College Football (Big Ten + Top 25), NBA, NHL, MLB, and College Hoops (Atlantic 10 + Top 25) boards scrolls in an ESPN-style marquee under the favorites. Hover pauses it.
 - Live games get a pulsing LIVE indicator with clock/period; final games dim the loser.
