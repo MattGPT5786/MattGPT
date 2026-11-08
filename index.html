@@ -335,9 +335,9 @@
       <div id="ffBody"><!--FF_START-->
         <div class="ff-vs">Week 9 matchup</div>
         <div class="ff-match">
-          <div class="ff-team me"><span class="nm">ScherThing</span><span class="sc">112.50</span></div>
-          <div class="ff-team"><span class="nm">North American Clit Lickers</span><span class="sc">71.10</span></div>
-          <div class="ff-meta">Proj 149.15 – 131.32 · Win 69% · Yet to play 4 – 5</div>
+          <div class="ff-team me"><span class="nm">ScherThing</span><span class="sc">134.90</span></div>
+          <div class="ff-team"><span class="nm">North American Clit Lickers</span><span class="sc">77.40</span></div>
+          <div class="ff-meta">Proj 162.61 – 130.07 · Win 84% · Yet to play 4 – 5</div>
         </div>
         <table class="ff-std">
           <tr><th>#</th><th>Team</th><th>W-L</th><th class="r">PF</th></tr>
@@ -356,7 +356,7 @@
           <tr><td>13</td><td class="nm" title="One Armed Bandits">One Armed Bandits</td><td>2-6</td><td class="r">835.74</td></tr>
           <tr><td>14</td><td class="nm" title="You're Doing Great!">You're Doing Great!</td><td>0-8</td><td class="r">786.92</td></tr>
         </table>
-        <div class="ff-asof">Snapshot Sun, Nov 8 · 4:57 PM ET</div>
+        <div class="ff-asof">Snapshot Sun, Nov 8 · 5:42 PM ET</div>
         <!--FF_END--></div>
     </section>
 
@@ -460,6 +460,22 @@ function gameCard(ev, leagueKey){
     ${rows}</div>`;
 }
 
+const recCache = {};
+async function teamRecord(league, teamId){
+  if(!teamId) return "";
+  const k = league + ":" + teamId;
+  const hit = recCache[k];
+  if(hit && Date.now() - hit.ts < 300000) return hit.rec;
+  try{
+    const d = await fetchJSON(`${API}/${SCHEDULE_PATH[league]}/teams/${teamId}`);
+    const items = (d.team && d.team.record && d.team.record.items) || [];
+    const tot = items.find(i => i.type === "total") || items[0];
+    const rec = (tot && tot.summary) || "";
+    recCache[k] = {rec, ts: Date.now()};
+    return rec;
+  }catch(e){ return ""; }
+}
+
 async function nextGame(fav){
   // Fallback when a favorite has no game on today's board: pull its schedule.
   try{
@@ -471,6 +487,12 @@ async function nextGame(fav){
     if(!upcoming) return `<div class="game"><div class="game-head"><span class="league-tag">${LG_SHORT[fav.league]}</span><span class="chip next">UP NEXT</span></div><div class="next-name">No upcoming game found on the schedule for the ${fav.name}.</div></div>`;
     const when = new Date(upcoming.date).toLocaleString([], {weekday:"short", month:"short", day:"numeric", hour:"numeric", minute:"2-digit"});
     const comps = (upcoming.competitions && upcoming.competitions[0] && upcoming.competitions[0].competitors) || [];
+    await Promise.all(comps.map(async c => {
+      if(!c.records || !c.records.length || !c.records[0].summary){
+        const rec = await teamRecord(fav.league, (c.team || {}).id);
+        if(rec) c.records = [{summary: rec}];
+      }
+    }));
     const rows = comps.length >= 2
       ? [...comps].sort((a,b) => (a.homeAway === "home" ? 1 : 0) - (b.homeAway === "home" ? 1 : 0)).map(c => teamRow(c, "pre")).join("")
       : `<div class="next-name">${upcoming.name}</div>`;
