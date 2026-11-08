@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Scher Scores — Live Sports Dashboard</title>
+<title>MattGPT — Live Dashboard</title>
 <style>
   :root{
     --bg:#0a0e17; --surface:#101827; --surface-2:#0d1421; --line:#1f2c47; --line-soft:#182238;
@@ -80,6 +80,30 @@
   .skel{height:132px;border-radius:var(--radius);border:1px solid var(--line-soft);
     background:linear-gradient(100deg,var(--surface-2) 40%,#16233a 50%,var(--surface-2) 60%);background-size:200% 100%;animation:shimmer 1.4s infinite}
   @keyframes shimmer{to{background-position:-200% 0}}
+  /* ---------- overview panels ---------- */
+  .overview{display:grid;grid-template-columns:1fr 1.35fr;gap:14px;margin-bottom:30px}
+  @media (max-width:820px){.overview{grid-template-columns:1fr}}
+  .panel{position:relative;overflow:hidden;background:linear-gradient(180deg,var(--surface),var(--surface-2));
+    border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px;box-shadow:0 10px 30px rgba(0,0,0,.35)}
+  .panel-head{display:flex;align-items:baseline;justify-content:space-between;gap:10px;border-bottom:1px solid var(--line-soft);padding-bottom:10px;margin-bottom:12px}
+  .panel-title{font-size:11px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:var(--text)}
+  .panel-note{font-size:11.5px;color:var(--faint);white-space:nowrap}
+  .wx-now{display:flex;align-items:center;gap:16px}
+  .wx-icon{font-size:44px;line-height:1}
+  .wx-temp{font-size:42px;font-weight:750;font-variant-numeric:tabular-nums;line-height:1}
+  .wx-cond{font-size:13.5px;color:var(--muted);margin-top:4px}
+  .wx-stats{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap}
+  .wx-stat{flex:1;min-width:86px;background:rgba(255,255,255,.03);border:1px solid var(--line-soft);border-radius:10px;padding:8px 10px}
+  .wx-stat .k{font-size:10px;letter-spacing:.12em;color:var(--faint);text-transform:uppercase}
+  .wx-stat .v{font-size:14.5px;font-weight:650;margin-top:2px;font-variant-numeric:tabular-nums}
+  .wx-fc{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:14px;border-top:1px solid var(--line-soft);padding-top:12px}
+  .wx-day{text-align:center}
+  .wx-day .d{font-size:11px;font-weight:700;letter-spacing:.08em;color:var(--muted);text-transform:uppercase}
+  .wx-day .i{font-size:19px;margin:5px 0 3px}
+  .wx-day .t{font-size:12.5px;font-variant-numeric:tabular-nums}
+  .wx-day .t .lo{color:var(--faint)}
+  .wx-day .p{font-size:11px;color:#7cc0ff;margin-top:2px;font-variant-numeric:tabular-nums}
+  .panel .tradingview-widget-container{min-height:118px}
   /* ---------- ticker ---------- */
   .ticker{display:flex;align-items:stretch;background:#05080f;border:1px solid var(--line);border-radius:14px;overflow:hidden;margin-top:30px;box-shadow:0 10px 30px rgba(0,0,0,.35)}
   .ticker-label{flex:0 0 auto;background:linear-gradient(135deg,#d90429,#ff4655);color:#fff;font-weight:800;font-size:12px;
@@ -112,10 +136,10 @@
 <div class="topbar">
   <div class="topbar-in">
     <div class="brand">
-      <div class="mark">S</div>
+      <div class="mark">M</div>
       <div>
-        <div class="brand-name">SCHER SCORES</div>
-        <div class="brand-sub">Personal Sports Dashboard</div>
+        <div class="brand-name">MattGPT</div>
+        <div class="brand-sub">Personal Dashboard</div>
       </div>
     </div>
     <div class="top-right">
@@ -129,6 +153,33 @@
 </div>
 
 <main>
+  <div class="overview">
+    <section class="panel" aria-label="Weather">
+      <div class="panel-head"><span class="panel-title">🌤 Cherry Hill, NJ · 08003</span><span class="panel-note">Open-Meteo</span></div>
+      <div id="wxBody"><div class="empty">Loading weather…</div></div>
+    </section>
+    <section class="panel" aria-label="Markets">
+      <div class="panel-head"><span class="panel-title">📈 Markets</span><span class="panel-note">Major indexes · TradingView</span></div>
+      <div class="tradingview-widget-container">
+        <div class="tradingview-widget-container__widget"></div>
+        <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-tickers.js" async>
+        {
+          "symbols": [
+            { "proName": "FOREXCOM:SPXUSD", "title": "S&P 500" },
+            { "proName": "FOREXCOM:DJI", "title": "Dow Jones" },
+            { "proName": "FOREXCOM:NSXUSD", "title": "Nasdaq 100" },
+            { "proName": "TVC:RUT", "title": "Russell 2000" }
+          ],
+          "colorTheme": "dark",
+          "isTransparent": true,
+          "showSymbolLogo": true,
+          "locale": "en"
+        }
+        </script>
+      </div>
+    </section>
+  </div>
+
   <div class="section-head">
     <h2>My Teams</h2>
     <span class="section-note">Giants · Knicks · Capitals · Yankees · Saint Joseph's</span>
@@ -144,8 +195,8 @@
 </main>
 
 <footer>
-  <span>Live data from ESPN's public scoreboard API — no API key, refreshed every 60 seconds.</span>
-  <span>Built with GitHub Pages</span>
+  <span>Scores: ESPN · Weather: Open-Meteo · Markets: TradingView — refreshed every 60 seconds.</span>
+  <span>MattGPT · Built with GitHub Pages</span>
 </footer>
 
 <script>
@@ -299,7 +350,61 @@ function renderTicker(){
   track.style.animationDuration = Math.max(25, items.length * 3.5) + "s";
 }
 
+/* ---------- weather: Open-Meteo, Cherry Hill NJ (08003) ---------- */
+const WX_URL = "https://api.open-meteo.com/v1/forecast?latitude=39.9351&longitude=-75.0307"
+  + "&current=temperature_2m,relative_humidity_2m,apparent_temperature,weather_code,wind_speed_10m,wind_direction_10m,is_day"
+  + "&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max"
+  + "&temperature_unit=fahrenheit&wind_speed_unit=mph&timezone=America%2FNew_York&forecast_days=5";
+
+function wxInfo(code, isDay){
+  const m = {
+    0:["Clear sky", isDay ? "☀️" : "🌙"], 1:["Mainly clear", isDay ? "🌤️" : "🌙"],
+    2:["Partly cloudy","⛅"], 3:["Overcast","☁️"], 45:["Fog","🌫️"], 48:["Fog","🌫️"],
+    51:["Light drizzle","🌦️"], 53:["Drizzle","🌦️"], 55:["Drizzle","🌦️"],
+    56:["Freezing drizzle","🌦️"], 57:["Freezing drizzle","🌦️"],
+    61:["Light rain","🌧️"], 63:["Rain","🌧️"], 65:["Heavy rain","🌧️"],
+    66:["Freezing rain","🌧️"], 67:["Freezing rain","🌧️"],
+    71:["Light snow","🌨️"], 73:["Snow","🌨️"], 75:["Heavy snow","🌨️"], 77:["Snow","🌨️"],
+    80:["Light showers","🌦️"], 81:["Showers","🌦️"], 82:["Heavy showers","🌦️"],
+    85:["Snow showers","🌨️"], 86:["Snow showers","🌨️"],
+    95:["Thunderstorm","⛈️"], 96:["Thunderstorm, hail","⛈️"], 99:["Thunderstorm, hail","⛈️"]
+  };
+  return m[code] || ["Conditions unavailable","🌡️"];
+}
+
+async function loadWeather(){
+  const el = document.getElementById("wxBody");
+  try{
+    const d = await fetchJSON(WX_URL);
+    const c = d.current, daily = d.daily;
+    const [cond, icon] = wxInfo(c.weather_code, c.is_day === 1);
+    const dirs = ["N","NE","E","SE","S","SW","W","NW"];
+    const windDir = dirs[Math.round((c.wind_direction_10m || 0) / 45) % 8];
+    const fc = daily.time.map((dateStr, i) => {
+      const [fCond, fIcon] = wxInfo(daily.weather_code[i], true);
+      const day = i === 0 ? "Today" : new Date(dateStr + "T12:00:00").toLocaleDateString([], {weekday:"short"});
+      const p = daily.precipitation_probability_max[i];
+      return `<div class="wx-day"><div class="d">${day}</div><div class="i" title="${fCond}">${fIcon}</div>`
+        + `<div class="t">${Math.round(daily.temperature_2m_max[i])}° <span class="lo">${Math.round(daily.temperature_2m_min[i])}°</span></div>`
+        + `<div class="p">${p == null ? "" : "💧" + p + "%"}</div></div>`;
+    }).join("");
+    el.innerHTML = `
+      <div class="wx-now"><div class="wx-icon">${icon}</div>
+        <div><div class="wx-temp">${Math.round(c.temperature_2m)}°F</div><div class="wx-cond">${cond}</div></div>
+      </div>
+      <div class="wx-stats">
+        <div class="wx-stat"><div class="k">Feels like</div><div class="v">${Math.round(c.apparent_temperature)}°F</div></div>
+        <div class="wx-stat"><div class="k">Humidity</div><div class="v">${c.relative_humidity_2m}%</div></div>
+        <div class="wx-stat"><div class="k">Wind</div><div class="v">${Math.round(c.wind_speed_10m)} mph ${windDir}</div></div>
+      </div>
+      <div class="wx-fc">${fc}</div>`;
+  }catch(e){
+    el.innerHTML = `<div class="empty">Weather is unavailable right now.</div>`;
+  }
+}
+
 async function loadAll(){
+  loadWeather();
   await Promise.all(Object.keys(LEAGUES).map(loadLeague));
   await renderFavorites();
   renderTicker();
