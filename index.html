@@ -82,7 +82,7 @@
   .logo img{width:27px;height:27px;object-fit:contain}
   .tmeta{flex:1;min-width:0}
   .tname{font-size:14px;line-height:1.25;color:#f4f4f0}
-  .trec{font-size:11.5px;color:var(--faint);margin-top:1px}
+  .trec{font-size:11.5px;color:var(--muted);margin-left:7px;font-variant-numeric:tabular-nums;white-space:nowrap}
   .tscore{font-family:var(--dotfont);font-size:24px;min-width:36px;text-align:right;color:#fff;
     text-shadow:0 0 6px rgba(255,255,255,.65),0 0 16px rgba(255,255,255,.3);font-variant-numeric:tabular-nums}
   .trow.winner .tname{font-weight:700}
@@ -432,9 +432,10 @@ function teamRow(comp, state){
   const rec = (comp.records && comp.records[0] && comp.records[0].summary) || "";
   const cls = state === "post" ? (comp.winner ? "winner" : "loser") : "";
   const score = state === "pre" ? "—" : (comp.score ?? "");
+  const recHtml = rec ? ` <span class="trec">${rec}</span>` : "";
   return `<div class="trow ${cls}">
     <div class="logo">${logo ? `<img src="${logo}" alt="">` : ""}</div>
-    <div class="tmeta"><div class="tname">${t.displayName || t.name || ""}</div><div class="trec">${rec}</div></div>
+    <div class="tmeta"><div class="tname">${t.displayName || t.name || ""}${recHtml}</div></div>
     <div class="tscore">${score}</div></div>`;
 }
 
