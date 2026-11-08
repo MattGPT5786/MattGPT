@@ -131,15 +131,32 @@
   /* ---------- footer ---------- */
   footer{max-width:1120px;margin:0 auto;padding:0 20px 30px;color:var(--faint);font-size:12px;display:flex;gap:10px;flex-wrap:wrap;justify-content:space-between}
   /* ---------- one-screen dashboard mode (wide + tall enough viewports) ---------- */
+  /* ---------- fantasy ---------- */
+  .ff-match{border:1px solid var(--line-soft);border-radius:10px;padding:10px 12px;background:var(--panel2)}
+  .ff-team{display:flex;align-items:baseline;gap:8px;padding:3px 0}
+  .ff-team .nm{font-weight:700;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .ff-team .sc{margin-left:auto;font-size:19px;font-weight:800;font-variant-numeric:tabular-nums}
+  .ff-team.me .nm{color:var(--blue)}
+  .ff-vs{font-size:10.5px;color:var(--dim);text-transform:uppercase;letter-spacing:.08em;padding:1px 0}
+  .ff-meta{margin-top:7px;font-size:12px;color:var(--dim);font-variant-numeric:tabular-nums}
+  .ff-std{width:100%;border-collapse:collapse;margin-top:10px;font-size:12px;font-variant-numeric:tabular-nums}
+  .ff-std th{font-size:10.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--dim);text-align:left;
+    padding:4px 4px;border-bottom:1px solid var(--line)}
+  .ff-std td{padding:3.5px 4px;border-bottom:1px solid var(--line-soft);white-space:nowrap}
+  .ff-std td.nm{max-width:150px;overflow:hidden;text-overflow:ellipsis}
+  .ff-std tr.me td{color:var(--blue);font-weight:700}
+  .ff-std .r{text-align:right}
+  .ff-asof{margin-top:8px;font-size:11px;color:var(--dim)}
   @media (min-width:1180px) and (min-height:720px){
     body{display:flex;flex-direction:column;height:100dvh;overflow:hidden}
     .topbar-in{padding-top:10px;padding-bottom:10px}
     main{flex:1;min-height:0;width:100%;max-width:1500px;display:grid;gap:12px;padding:14px 20px 10px;
-      grid-template-columns:296px minmax(0,1fr) 308px;
+      grid-template-columns:280px minmax(0,1fr) 296px 292px;
       grid-template-rows:minmax(0,1fr) auto;
-      grid-template-areas:"wx teams mkt" "ticker ticker ticker"}
+      grid-template-areas:"wx teams ff mkt" "ticker ticker ticker ticker"}
     .wx-panel{grid-area:wx;margin-bottom:0;overflow:auto}
     .mkt-panel{grid-area:mkt;margin-bottom:0;display:flex;flex-direction:column;overflow:hidden}
+    .ff-panel{grid-area:ff;margin-bottom:0;overflow:auto}
     .teams-wrap{grid-area:teams;display:flex;flex-direction:column;min-height:0;min-width:0}
     .ticker{grid-area:ticker;margin-top:0}
     footer{width:100%;max-width:1500px;padding:0 20px 10px}
@@ -156,13 +173,13 @@
     .mkt-cell{height:auto;min-height:0}
     .teams-wrap .section-head{margin-bottom:10px;padding-bottom:8px}
     #favorites{flex:1;grid-template-columns:1fr 1fr;grid-template-rows:repeat(3,minmax(0,1fr));grid-auto-rows:1fr;min-height:0}
-    .game{padding:12px 14px 10px}
-    .game-head{padding-bottom:7px;margin-bottom:4px}
-    .trow{padding:5px 0}
-    .logo{width:34px;height:34px}
-    .logo img{width:23px;height:23px}
-    .tname{font-size:14px}
-    .tscore{font-size:20px}
+    .game{padding:9px 11px 8px}
+    .game-head{padding-bottom:6px;margin-bottom:3px}
+    .trow{padding:3px 0}
+    .logo{width:28px;height:28px}
+    .logo img{width:19px;height:19px}
+    .tname{font-size:13px}
+    .tscore{font-size:17px}
   }
   @media (max-width:640px){
     .brand-sub{display:none}
@@ -225,6 +242,36 @@
     <div class="skel"></div><div class="skel"></div><div class="skel"></div>
   </div>
   </div>
+
+  <section class="panel ff-panel" aria-label="Fantasy football">
+      <div class="panel-head"><span class="panel-title">🏈 Dinkers · Fantasy</span><span class="panel-note">Yahoo · snapshot</span></div>
+      <div id="ffBody"><!--FF_START-->
+        <div class="ff-vs">Week 9 matchup</div>
+        <div class="ff-match">
+          <div class="ff-team me"><span class="nm">ScherThing</span><span class="sc">31.50</span></div>
+          <div class="ff-team"><span class="nm">North American Clit Lickers</span><span class="sc">19.40</span></div>
+          <div class="ff-meta">Proj 139.22 – 130.50 · Win 57% · Yet to play 8 – 7</div>
+        </div>
+        <table class="ff-std">
+          <tr><th>#</th><th>Team</th><th>W-L</th><th class="r">PF</th></tr>
+          <tr><td>1</td><td class="nm" title="Cakefarts.com">Cakefarts.com</td><td>7-1</td><td class="r">986.54</td></tr>
+          <tr><td>2</td><td class="nm" title="Premier League Rejects">Premier League Rejects</td><td>6-2</td><td class="r">924.30</td></tr>
+          <tr class="me"><td>3</td><td class="nm" title="ScherThing">ScherThing</td><td>5-3</td><td class="r">983.64</td></tr>
+          <tr><td>4</td><td class="nm" title="Charged Up Kyle">Charged Up Kyle</td><td>5-3</td><td class="r">914.50</td></tr>
+          <tr><td>5</td><td class="nm" title="Inflatable Volunteer Hero">Inflatable Volunteer Hero</td><td>5-3</td><td class="r">881.24</td></tr>
+          <tr><td>6</td><td class="nm" title="Micah Kurtz">Micah Kurtz</td><td>5-3</td><td class="r">871.92</td></tr>
+          <tr><td>7</td><td class="nm" title="North American Clit Lickers">North American Clit Lickers</td><td>4-4</td><td class="r">967.84</td></tr>
+          <tr><td>8</td><td class="nm" title="Glen's Sticky DVD Collection">Glen's Sticky DVD Collection</td><td>4-4</td><td class="r">914.62</td></tr>
+          <tr><td>9</td><td class="nm" title="Boob Words">Boob Words</td><td>4-4</td><td class="r">834.84</td></tr>
+          <tr><td>10</td><td class="nm" title="Biscuits and Gravy">Biscuits and Gravy</td><td>3-5</td><td class="r">995.20</td></tr>
+          <tr><td>11</td><td class="nm" title="Deep Dark Algo">Deep Dark Algo</td><td>3-5</td><td class="r">975.44</td></tr>
+          <tr><td>12</td><td class="nm" title="OOK &amp; the Baby Slides">OOK &amp; the Baby Slides</td><td>3-5</td><td class="r">921.04</td></tr>
+          <tr><td>13</td><td class="nm" title="One Armed Bandits">One Armed Bandits</td><td>2-6</td><td class="r">835.74</td></tr>
+          <tr><td>14</td><td class="nm" title="You're Doing Great!">You're Doing Great!</td><td>0-8</td><td class="r">786.92</td></tr>
+        </table>
+        <div class="ff-asof">Snapshot Sun, Nov 8 · 12:56 PM ET · refreshes daily + Sunday game windows</div>
+        <!--FF_END--></div>
+    </section>
 
   <div class="ticker" aria-label="Score ticker">
     <div class="ticker-label"><img src="https://a.espncdn.com/redesign/assets/img/logos/logo-espn-82x20@2x.png" alt="ESPN"></div>
