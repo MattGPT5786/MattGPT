@@ -182,7 +182,7 @@
   .ff-std .r{text-align:right}
   .ff-asof{margin-top:8px;font-size:11px;color:var(--dim)}
   /* ---------- one-screen dashboard mode (wide + tall enough viewports) ---------- */
-  @media (min-width:1180px) and (min-height:720px){
+  @media (min-width:1000px) and (min-height:600px){
     body{display:flex;flex-direction:column;height:100dvh;overflow:hidden}
     .topbar-in{padding-top:10px;padding-bottom:10px}
     main{flex:1;min-height:0;width:100%;max-width:1500px;display:grid;gap:12px;padding:14px 20px 10px;
@@ -217,6 +217,63 @@
     .logo img{width:19px;height:19px}
     .tname{font-size:12.5px}
     .tscore{font-size:18px}
+  }
+  /* ---------- compact landscape (iPad Air 11" landscape = 1180 CSS px, less with zoom) ---------- */
+  @media (min-width:1000px) and (max-width:1420px) and (min-height:600px){
+    main{grid-template-columns:228px minmax(0,1fr) 244px 238px;gap:10px;padding:12px 14px 8px}
+    .wx-temp{font-size:32px}
+    .wx-icon{font-size:32px}
+    .game{padding:8px 9px 7px}
+    .mk-price{font-size:23px}
+    footer{padding:0 14px 8px}
+  }
+  @media (min-width:1000px) and (max-height:880px){
+    .topbar-in{padding-top:6px;padding-bottom:6px}
+    main{padding-top:10px}
+    .wx-temp{font-size:30px}
+    .wx-icon{font-size:30px}
+    .mk-price{font-size:21px}
+    .mk-chart{min-height:30px}
+    .trow{padding:2px 0}
+    .game{padding:7px 9px 6px}
+    .ticker{font-size:12px}
+    footer{padding-bottom:6px;font-size:11px}
+  }
+  /* ---------- portrait tablets (iPad 11" portrait = 820 x 1180 CSS px): 2x2 one-screen grid ---------- */
+  @media (min-width:700px) and (max-width:999px) and (min-height:980px){
+    body{display:flex;flex-direction:column;height:100dvh;overflow:hidden}
+    .topbar-in{padding-top:8px;padding-bottom:8px}
+    main{flex:1;min-height:0;width:100%;max-width:none;display:grid;gap:10px;padding:12px 14px 8px;
+      grid-template-columns:minmax(0,1fr) minmax(0,1fr);
+      grid-template-rows:minmax(0,1fr) minmax(0,1fr) auto;
+      grid-template-areas:"wx teams" "ff mkt" "ticker ticker"}
+    .wx-panel{grid-area:wx;margin-bottom:0;overflow:auto}
+    .mkt-panel{grid-area:mkt;margin-bottom:0;display:flex;flex-direction:column;overflow:hidden}
+    .ff-panel{grid-area:ff;margin-bottom:0;overflow:auto}
+    .teams-wrap{grid-area:teams;display:flex;flex-direction:column;min-height:0;min-width:0}
+    .ticker{grid-area:ticker;margin-top:0}
+    footer{width:100%;max-width:none;padding:0 14px 8px}
+    .wx-panel,.ff-panel{scrollbar-width:thin;scrollbar-color:#333 transparent}
+    .wx-layout{grid-template-columns:1fr;gap:12px;align-items:stretch}
+    .wx-fc{border-left:none;padding-left:0;border-top:1px solid var(--line-soft);padding-top:10px;grid-template-columns:1fr;gap:2px}
+    .wx-day{display:flex;align-items:center;gap:9px;text-align:left;padding:3px 0}
+    .wx-day .i{margin:0;font-size:16px}
+    .wx-day .d{width:40px;flex:0 0 auto}
+    .wx-day .t{margin-left:auto}
+    .wx-day .p{margin-top:0;width:42px;text-align:right}
+    .wx-temp{font-size:34px}
+    .wx-icon{font-size:34px}
+    .mkt-panel .mkt-grid{flex:1;grid-template-columns:1fr;grid-template-rows:repeat(3,minmax(0,1fr));min-height:0}
+    .mkt-cell{height:auto;min-height:0}
+    .panel-title{font-size:11.5px;letter-spacing:.12em}
+    .teams-wrap .section-head{margin-bottom:10px;padding-bottom:8px}
+    #favorites{flex:1;grid-template-columns:1fr 1fr;grid-template-rows:repeat(3,minmax(0,1fr));grid-auto-rows:1fr;min-height:0}
+    .game{padding:8px 9px 7px}
+    .tname{font-size:12px}
+    .tscore{font-size:17px}
+    .logo{width:26px;height:26px}
+    .logo img{width:18px;height:18px}
+    .mk-price{font-size:22px}
   }
   @media (max-width:640px){
     .date{display:none}
@@ -306,7 +363,7 @@
 </main>
 
 <footer>
-  <span>Scores: ESPN · Weather: Open-Meteo · Markets: TradingView — refreshed every 60 seconds.</span>
+  <span>Scores: ESPN · Weather: Open-Meteo · Markets: CNBC — refreshed every 60 seconds.</span>
   <span>MattGPT · Built with GitHub Pages</span>
 </footer>
 
