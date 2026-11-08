@@ -3,77 +3,150 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Scher Scores — My Teams, Live from ESPN</title>
+<title>Scher Scores — Live Sports Dashboard</title>
 <style>
   :root{
-    --bg:#0b1220; --card:#131c2e; --card2:#182238; --line:#24314d;
-    --text:#e8eef7; --muted:#93a3bd; --accent:#4da3ff; --live:#ff4d5e;
-    --win:#3ddc84;
+    --bg:#0a0e17; --surface:#101827; --surface-2:#0d1421; --line:#1f2c47; --line-soft:#182238;
+    --text:#eef2f9; --muted:#8fa1bd; --faint:#647691;
+    --accent:#5ea8ff; --live:#ff4655; --gold:#f5c451;
+    --radius:16px;
   }
   *{box-sizing:border-box}
-  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--text)}
-  header{padding:22px 18px 10px;max-width:1100px;margin:0 auto}
-  h1{margin:0;font-size:26px;letter-spacing:.2px}
-  .sub{color:var(--muted);font-size:13px;margin-top:4px}
-  .bar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:14px}
-  button{background:var(--card2);color:var(--text);border:1px solid var(--line);border-radius:999px;padding:7px 14px;font-size:13px;cursor:pointer}
-  button.active{background:var(--accent);border-color:var(--accent);color:#06121f;font-weight:600}
-  button:hover{opacity:.92}
-  #updated{color:var(--muted);font-size:12px;margin-left:auto}
-  main{max-width:1100px;margin:0 auto;padding:8px 18px 40px}
-  h2{font-size:15px;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);margin:26px 0 10px}
-  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:12px}
-  .game{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 16px}
-  .game.fav{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent) inset}
-  .status{font-size:12px;color:var(--muted);display:flex;align-items:center;gap:6px;margin-bottom:10px;min-height:16px}
-  .dot{width:8px;height:8px;border-radius:50%;background:var(--live);animation:pulse 1.2s infinite}
-  @keyframes pulse{0%{opacity:1}50%{opacity:.35}100%{opacity:1}}
-  .live-txt{color:var(--live);font-weight:700}
-  .row{display:flex;align-items:center;gap:10px;padding:5px 0}
-  .row img{width:30px;height:30px;object-fit:contain}
-  .row .name{flex:1;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-  .row .rec{color:var(--muted);font-size:12px}
-  .row .score{font-size:19px;font-weight:700;min-width:30px;text-align:right}
-  .row.loser{opacity:.55}
-  .row.winner .name{font-weight:700}
-  .note{font-size:13px;color:var(--muted);line-height:1.5}
-  .note a{color:var(--accent)}
-  .empty{color:var(--muted);font-size:14px;padding:8px 0}
-  .err{background:#2a1620;border:1px solid #5b2436;color:#ffb3ba;border-radius:10px;padding:10px 14px;font-size:13px;margin:10px 0}
-  .ticker{display:flex;align-items:stretch;background:#05080f;border:1px solid var(--line);border-radius:12px;overflow:hidden;margin-top:28px}
-  .ticker-label{flex:0 0 auto;background:var(--live);color:#fff;font-weight:800;font-size:12px;letter-spacing:.12em;display:flex;align-items:center;padding:0 14px;z-index:2}
-  .ticker-view{flex:1;overflow:hidden}
-  .ticker-track{display:inline-flex;white-space:nowrap;padding:11px 0;animation:scroll linear infinite;will-change:transform}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    margin:0; color:var(--text);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+    background:radial-gradient(1200px 600px at 50% -10%, #16233f 0%, var(--bg) 55%) fixed, var(--bg);
+  }
+  /* ---------- header ---------- */
+  .topbar{border-bottom:1px solid var(--line-soft);background:rgba(10,14,23,.72);backdrop-filter:blur(8px);position:sticky;top:0;z-index:10}
+  .topbar-in{max-width:1120px;margin:0 auto;padding:14px 20px;display:flex;align-items:center;gap:16px}
+  .brand{display:flex;align-items:center;gap:12px;min-width:0}
+  .mark{width:40px;height:40px;border-radius:11px;flex:0 0 auto;display:flex;align-items:center;justify-content:center;
+    font-size:20px;font-weight:800;color:#06121f;background:linear-gradient(135deg,#7cc0ff,#2f7fe0);box-shadow:0 6px 18px rgba(47,127,224,.35)}
+  .brand-name{font-size:17px;font-weight:800;letter-spacing:.14em;line-height:1.1}
+  .brand-sub{font-size:11px;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;margin-top:2px}
+  .top-right{margin-left:auto;display:flex;align-items:center;gap:14px;text-align:right}
+  .date{font-size:13px;font-weight:600}
+  .updated{font-size:11.5px;color:var(--faint);margin-top:1px}
+  #refresh{
+    appearance:none;border:1px solid var(--line);background:var(--surface);color:var(--text);
+    font-size:12.5px;font-weight:600;padding:8px 14px;border-radius:999px;cursor:pointer;transition:border-color .15s,transform .15s;
+  }
+  #refresh:hover{border-color:var(--accent)}
+  #refresh:active{transform:scale(.97)}
+  #refresh:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+  /* ---------- layout ---------- */
+  main{max-width:1120px;margin:0 auto;padding:26px 20px 34px}
+  .section-head{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;border-bottom:1px solid var(--line-soft);padding-bottom:10px;margin-bottom:16px}
+  .section-head h2{margin:0;font-size:13px;font-weight:800;letter-spacing:.18em;text-transform:uppercase}
+  .section-head h2::before{content:"★";color:var(--gold);margin-right:8px}
+  .section-note{font-size:12.5px;color:var(--faint)}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:14px}
+  /* ---------- game cards ---------- */
+  .game{
+    position:relative;overflow:hidden;background:linear-gradient(180deg,var(--surface),var(--surface-2));
+    border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px 14px;
+    box-shadow:0 10px 30px rgba(0,0,0,.35);transition:transform .15s ease,border-color .15s ease;
+  }
+  .game:hover{transform:translateY(-2px);border-color:#2a3c61}
+  .game::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--tc,var(--accent))}
+  .game-head{display:flex;align-items:center;justify-content:space-between;gap:10px;border-bottom:1px solid var(--line-soft);padding-bottom:10px;margin-bottom:8px;min-height:26px}
+  .league-tag{font-size:10.5px;font-weight:700;letter-spacing:.16em;color:var(--faint);text-transform:uppercase;white-space:nowrap}
+  .chip{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:700;letter-spacing:.04em;
+    padding:4px 10px;border-radius:999px;border:1px solid var(--line);color:var(--muted);white-space:nowrap}
+  .chip.live{color:#ff8f98;border-color:rgba(255,70,85,.4);background:rgba(255,70,85,.12)}
+  .chip.final{color:var(--muted);background:rgba(143,161,189,.08)}
+  .chip.pre{color:#9cc8ff;border-color:rgba(94,168,255,.35);background:rgba(94,168,255,.10)}
+  .chip.next{color:#ffd97a;border-color:rgba(245,196,81,.35);background:rgba(245,196,81,.10)}
+  .dot{width:7px;height:7px;border-radius:50%;background:var(--live);animation:pulse 1.2s infinite;flex:0 0 auto}
+  @keyframes pulse{0%{opacity:1}50%{opacity:.3}100%{opacity:1}}
+  .trow{display:flex;align-items:center;gap:12px;padding:7px 0}
+  .trow + .trow{border-top:1px dashed rgba(31,44,71,.55)}
+  .logo{width:40px;height:40px;flex:0 0 auto;border-radius:10px;background:rgba(255,255,255,.04);border:1px solid var(--line-soft);
+    display:flex;align-items:center;justify-content:center}
+  .logo img{width:27px;height:27px;object-fit:contain}
+  .tmeta{flex:1;min-width:0}
+  .tname{font-size:15px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .trec{font-size:11.5px;color:var(--faint);margin-top:1px}
+  .tscore{font-size:23px;font-weight:750;font-variant-numeric:tabular-nums;min-width:36px;text-align:right}
+  .trow.winner .tname{font-weight:750}
+  .trow.winner .tscore{color:#fff}
+  .trow.loser{opacity:.48}
+  .next-when{font-size:14.5px;font-weight:650;margin:2px 0 4px}
+  .next-name{font-size:13.5px;color:var(--muted);line-height:1.45}
+  .note{font-size:12.5px;color:var(--faint);line-height:1.5;margin-top:6px}
+  .empty{color:var(--muted);font-size:14px;padding:10px 0}
+  .skel{height:132px;border-radius:var(--radius);border:1px solid var(--line-soft);
+    background:linear-gradient(100deg,var(--surface-2) 40%,#16233a 50%,var(--surface-2) 60%);background-size:200% 100%;animation:shimmer 1.4s infinite}
+  @keyframes shimmer{to{background-position:-200% 0}}
+  /* ---------- ticker ---------- */
+  .ticker{display:flex;align-items:stretch;background:#05080f;border:1px solid var(--line);border-radius:14px;overflow:hidden;margin-top:30px;box-shadow:0 10px 30px rgba(0,0,0,.35)}
+  .ticker-label{flex:0 0 auto;background:linear-gradient(135deg,#d90429,#ff4655);color:#fff;font-weight:800;font-size:12px;
+    letter-spacing:.14em;display:flex;align-items:center;padding:0 16px;z-index:2}
+  .ticker-view{flex:1;overflow:hidden;-webkit-mask-image:linear-gradient(90deg,transparent,#000 28px,#000 calc(100% - 28px),transparent);
+    mask-image:linear-gradient(90deg,transparent,#000 28px,#000 calc(100% - 28px),transparent)}
+  .ticker-track{display:inline-flex;white-space:nowrap;padding:12px 0;animation:scroll linear infinite;will-change:transform}
   .ticker-view:hover .ticker-track{animation-play-state:paused}
   @keyframes scroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
-  @media (prefers-reduced-motion: reduce){.ticker-track{animation:none}}
-  .tick{display:inline-flex;align-items:center;gap:7px;padding:0 18px;border-right:1px solid var(--line);font-size:14px}
-  .tick .lg{color:var(--accent);font-weight:700;font-size:11px;letter-spacing:.08em}
+  @media (prefers-reduced-motion: reduce){.ticker-track{animation:none}.dot{animation:none}.skel{animation:none}}
+  .tick{display:inline-flex;align-items:center;gap:7px;padding:0 18px;border-right:1px solid var(--line-soft);font-size:13.5px;font-variant-numeric:tabular-nums}
+  .tick .lg{color:var(--accent);font-weight:700;font-size:10.5px;letter-spacing:.1em}
   .tick img{width:20px;height:20px;object-fit:contain}
-  .tick .st{color:var(--muted);font-size:12px}
+  .tick .st{color:var(--faint);font-size:12px}
   .tick .st.live{color:var(--live);font-weight:700}
-  .tick.fav{background:rgba(77,163,255,.10)}
-  footer{max-width:1100px;margin:0 auto;padding:0 18px 30px;color:var(--muted);font-size:12px}
+  .tick.fav{background:rgba(94,168,255,.09)}
+  /* ---------- footer ---------- */
+  footer{max-width:1120px;margin:0 auto;padding:0 20px 30px;color:var(--faint);font-size:12px;display:flex;gap:10px;flex-wrap:wrap;justify-content:space-between}
+  @media (max-width:640px){
+    .brand-sub{display:none}
+    .date{display:none}
+    .grid{grid-template-columns:1fr}
+    .tscore{font-size:21px}
+    main{padding:20px 14px 28px}
+    .topbar-in{padding:12px 14px}
+  }
 </style>
 </head>
 <body>
-<header>
-  <h1>🏆 Scher Scores</h1>
-  <div class="sub">My teams up top, every other score in the ticker below — live from ESPN's public API. No API key, auto-refreshes every 60 seconds.</div>
-  <div class="bar">
-    <button id="refresh">↻ Refresh now</button>
-    <span id="updated"></span>
+<div class="topbar">
+  <div class="topbar-in">
+    <div class="brand">
+      <div class="mark">S</div>
+      <div>
+        <div class="brand-name">SCHER SCORES</div>
+        <div class="brand-sub">Personal Sports Dashboard</div>
+      </div>
+    </div>
+    <div class="top-right">
+      <div>
+        <div class="date" id="today"></div>
+        <div class="updated" id="updated">Connecting to ESPN…</div>
+      </div>
+      <button id="refresh" type="button">↻ Refresh</button>
+    </div>
   </div>
-</header>
+</div>
+
 <main>
-  <h2>⭐ My Teams</h2>
-  <div class="grid" id="favorites"><div class="empty">Loading your teams…</div></div>
+  <div class="section-head">
+    <h2>My Teams</h2>
+    <span class="section-note">Giants · Knicks · Capitals · Yankees · Saint Joseph's</span>
+  </div>
+  <div class="grid" id="favorites">
+    <div class="skel"></div><div class="skel"></div><div class="skel"></div>
+  </div>
+
   <div class="ticker" aria-label="Score ticker">
     <div class="ticker-label">SCORES</div>
     <div class="ticker-view"><div class="ticker-track" id="tickerTrack"><span class="tick">Loading scores…</span></div></div>
   </div>
 </main>
-<footer>Data: ESPN public scoreboard API (site.api.espn.com).</footer>
+
+<footer>
+  <span>Live data from ESPN's public scoreboard API — no API key, refreshed every 60 seconds.</span>
+  <span>Built with GitHub Pages</span>
+</footer>
 
 <script>
 const API = "https://site.api.espn.com/apis/site/v2/sports";
@@ -89,6 +162,8 @@ const LEAGUES = {
              `${API}/basketball/mens-college-basketball/scoreboard?groups=3&limit=100`,
              `${API}/basketball/mens-college-basketball/scoreboard?limit=100` ] },
 };
+const LG_SHORT = { nfl:"NFL", nba:"NBA", nhl:"NHL", mlb:"MLB", ncaam:"NCAA MBB" };
+const TICKER_LABEL = { nfl:"NFL", nba:"NBA", nhl:"NHL", mlb:"MLB", ncaam:"NCAAM" };
 
 // Matt's teams, by ESPN team id
 const FAVORITES = [
@@ -129,29 +204,32 @@ function teamRow(comp, state){
   const logo = t.logo || (t.logos && t.logos[0] && t.logos[0].href) || "";
   const rec = (comp.records && comp.records[0] && comp.records[0].summary) || "";
   const cls = state === "post" ? (comp.winner ? "winner" : "loser") : "";
-  const score = (state === "pre") ? "" : (comp.score ?? "");
-  return `<div class="row ${cls}">
-    ${logo ? `<img src="${logo}" alt="">` : ""}
-    <span class="name">${t.displayName || t.name || ""}</span>
-    <span class="rec">${rec}</span>
-    <span class="score">${score}</span></div>`;
+  const score = state === "pre" ? "—" : (comp.score ?? "");
+  return `<div class="trow ${cls}">
+    <div class="logo">${logo ? `<img src="${logo}" alt="">` : ""}</div>
+    <div class="tmeta"><div class="tname">${t.displayName || t.name || ""}</div><div class="trec">${rec}</div></div>
+    <div class="tscore">${score}</div></div>`;
+}
+
+function statusChip(ev, state){
+  const type = (ev.status && ev.status.type) || {};
+  if(state === "in")  return `<span class="chip live"><span class="dot"></span>${type.detail || "Live"}</span>`;
+  if(state === "post") return `<span class="chip final">${type.shortDetail || type.detail || "Final"}</span>`;
+  return `<span class="chip pre">${type.shortDetail || type.detail || ""}</span>`;
 }
 
 function gameCard(ev, leagueKey){
   const comp = (ev.competitions || [])[0] || {};
   const competitors = comp.competitors || [];
   const state = ev.status && ev.status.type ? ev.status.type.state : "pre";
-  const detail = (ev.status && ev.status.type && ev.status.type.detail) || "";
-  const fav = competitors.some(c => FAV_KEYS.has(leagueKey + ":" + (c.team||{}).id));
-  const statusHtml = state === "in"
-    ? `<span class="dot"></span><span class="live-txt">LIVE</span> ${detail}`
-    : detail;
-  // home team second in ESPN's competitor order is not guaranteed; sort home first visually as listed
+  const favComp = competitors.find(c => FAV_KEYS.has(leagueKey + ":" + (c.team||{}).id));
+  const color = favComp && favComp.team && /^[0-9a-fA-F]{6}$/.test(favComp.team.color || "") ? "#" + favComp.team.color : "";
   const rows = [...competitors]
     .sort((a,b) => (a.homeAway === "home" ? 1 : 0) - (b.homeAway === "home" ? 1 : 0))
     .map(c => teamRow(c, state)).join("");
-  return `<div class="game ${fav ? "fav" : ""}">
-    <div class="status">${statusHtml}</div>${rows}</div>`;
+  return `<div class="game" ${color ? `style="--tc:${color}"` : ""}>
+    <div class="game-head"><span class="league-tag">${LG_SHORT[leagueKey] || ""}</span>${statusChip(ev, state)}</div>
+    ${rows}</div>`;
 }
 
 async function nextGame(fav){
@@ -162,13 +240,13 @@ async function nextGame(fav){
     const upcoming = (data.events || [])
       .filter(e => new Date(e.date).getTime() >= now - 4*3600*1000)
       .sort((a,b) => new Date(a.date) - new Date(b.date))[0];
-    if(!upcoming) return `<div class="game fav"><div class="status">${fav.name}</div><div class="note">No upcoming game found on the schedule.</div></div>`;
+    if(!upcoming) return `<div class="game"><div class="game-head"><span class="league-tag">${LG_SHORT[fav.league]}</span><span class="chip next">UP NEXT</span></div><div class="next-name">No upcoming game found on the schedule for the ${fav.name}.</div></div>`;
     const when = new Date(upcoming.date).toLocaleString([], {weekday:"short", month:"short", day:"numeric", hour:"numeric", minute:"2-digit"});
-    return `<div class="game fav"><div class="status">Next game · ${when}</div>
-      <div class="row"><span class="name">${upcoming.name}</span></div>
+    return `<div class="game"><div class="game-head"><span class="league-tag">${LG_SHORT[fav.league]}</span><span class="chip next">UP NEXT</span></div>
+      <div class="next-when">${when}</div><div class="next-name">${upcoming.name}</div>
       <div class="note">No game today — this is the next one up.</div></div>`;
   }catch(e){
-    return `<div class="game fav"><div class="status">${fav.name}</div><div class="note">No game today.</div></div>`;
+    return `<div class="game"><div class="game-head"><span class="league-tag">${LG_SHORT[fav.league]}</span><span class="chip next">UP NEXT</span></div><div class="next-name">No game today for the ${fav.name}.</div></div>`;
   }
 }
 
@@ -182,8 +260,6 @@ async function renderFavorites(){
   }
   el.innerHTML = cards.join("");
 }
-
-const TICKER_LABEL = { nfl:"NFL", nba:"NBA", nhl:"NHL", mlb:"MLB", ncaam:"NCAAM" };
 
 function tickerItem(ev, leagueKey){
   const comp = (ev.competitions || [])[0] || {};
@@ -231,6 +307,8 @@ async function loadAll(){
     "Updated " + new Date().toLocaleTimeString([], {hour:"numeric", minute:"2-digit", second:"2-digit"});
 }
 
+document.getElementById("today").textContent =
+  new Date().toLocaleDateString([], {weekday:"long", month:"long", day:"numeric", year:"numeric"});
 document.getElementById("refresh").addEventListener("click", loadAll);
 
 loadAll();
