@@ -103,7 +103,10 @@
   .wx-day .t{font-size:12.5px;font-variant-numeric:tabular-nums}
   .wx-day .t .lo{color:var(--faint)}
   .wx-day .p{font-size:11px;color:#7cc0ff;margin-top:2px;font-variant-numeric:tabular-nums}
-  .panel .tradingview-widget-container{min-height:118px}
+  .mkt-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  @media (max-width:520px){.mkt-grid{grid-template-columns:1fr}}
+  .mkt-cell{height:172px;background:rgba(255,255,255,.02);border:1px solid var(--line-soft);border-radius:12px;overflow:hidden}
+  .mkt-cell .tradingview-widget-container{width:100%;height:100%}
   /* ---------- ticker ---------- */
   .ticker{display:flex;align-items:stretch;background:#05080f;border:1px solid var(--line);border-radius:14px;overflow:hidden;margin-top:30px;box-shadow:0 10px 30px rgba(0,0,0,.35)}
   .ticker-label{flex:0 0 auto;background:linear-gradient(135deg,#d90429,#ff4655);color:#fff;font-weight:800;font-size:12px;
@@ -159,30 +162,35 @@
       <div id="wxBody"><div class="empty">Loading weather…</div></div>
     </section>
     <section class="panel" aria-label="Markets">
-      <div class="panel-head"><span class="panel-title">📈 Markets</span><span class="panel-note">Major indexes · TradingView</span></div>
-      <div class="tradingview-widget-container">
-        <div class="tradingview-widget-container__widget"></div>
-        <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-tickers.js" async>
-        {
-          "symbols": [
-            { "proName": "FOREXCOM:SPXUSD", "title": "S&P 500" },
-            { "proName": "FOREXCOM:DJI", "title": "Dow Jones" },
-            { "proName": "FOREXCOM:NSXUSD", "title": "Nasdaq 100" },
-            { "proName": "TVC:RUT", "title": "Russell 2000" }
-          ],
-          "colorTheme": "dark",
-          "isTransparent": true,
-          "showSymbolLogo": true,
-          "locale": "en"
-        }
-        </script>
+      <div class="panel-head"><span class="panel-title">📈 Markets</span><span class="panel-note">Weekly charts · TradingView</span></div>
+      <div class="mkt-grid">
+        <div class="mkt-cell"><div class="tradingview-widget-container"><div class="tradingview-widget-container__widget" style="width:100%;height:100%"></div>
+          <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-mini-symbol-overview.js" async>
+          { "symbol": "FOREXCOM:SPXUSD", "width": "100%", "height": "100%", "locale": "en", "dateRange": "5D", "colorTheme": "dark", "isTransparent": true, "autosize": true, "chartType": "area", "hideMarketStatus": true }
+          </script></div></div>
+        <div class="mkt-cell"><div class="tradingview-widget-container"><div class="tradingview-widget-container__widget" style="width:100%;height:100%"></div>
+          <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-mini-symbol-overview.js" async>
+          { "symbol": "FOREXCOM:DJI", "width": "100%", "height": "100%", "locale": "en", "dateRange": "5D", "colorTheme": "dark", "isTransparent": true, "autosize": true, "chartType": "area", "hideMarketStatus": true }
+          </script></div></div>
+        <div class="mkt-cell"><div class="tradingview-widget-container"><div class="tradingview-widget-container__widget" style="width:100%;height:100%"></div>
+          <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-mini-symbol-overview.js" async>
+          { "symbol": "NASDAQ:IXIC", "width": "100%", "height": "100%", "locale": "en", "dateRange": "5D", "colorTheme": "dark", "isTransparent": true, "autosize": true, "chartType": "area", "hideMarketStatus": true }
+          </script></div></div>
+        <div class="mkt-cell"><div class="tradingview-widget-container"><div class="tradingview-widget-container__widget" style="width:100%;height:100%"></div>
+          <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-mini-symbol-overview.js" async>
+          { "symbol": "FOREXCOM:NSXUSD", "width": "100%", "height": "100%", "locale": "en", "dateRange": "5D", "colorTheme": "dark", "isTransparent": true, "autosize": true, "chartType": "area", "hideMarketStatus": true }
+          </script></div></div>
+        <div class="mkt-cell"><div class="tradingview-widget-container"><div class="tradingview-widget-container__widget" style="width:100%;height:100%"></div>
+          <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-mini-symbol-overview.js" async>
+          { "symbol": "TVC:RUT", "width": "100%", "height": "100%", "locale": "en", "dateRange": "5D", "colorTheme": "dark", "isTransparent": true, "autosize": true, "chartType": "area", "hideMarketStatus": true }
+          </script></div></div>
       </div>
     </section>
   </div>
 
   <div class="section-head">
     <h2>My Teams</h2>
-    <span class="section-note">Giants · Knicks · Capitals · Yankees · Saint Joseph's</span>
+    <span class="section-note">Giants · Penn State · Knicks · Capitals · Yankees · Saint Joseph's</span>
   </div>
   <div class="grid" id="favorites">
     <div class="skel"></div><div class="skel"></div><div class="skel"></div>
@@ -206,6 +214,9 @@ const API = "https://site.api.espn.com/apis/site/v2/sports";
 // plus the default Top-25 board, merged and deduped.
 const LEAGUES = {
   nfl:   { label: "NFL",         urls: [`${API}/football/nfl/scoreboard`] },
+  ncaaf: { label: "College Football (Big Ten + Top 25)", urls: [
+             `${API}/football/college-football/scoreboard?groups=5&limit=100`,
+             `${API}/football/college-football/scoreboard?limit=100` ] },
   nba:   { label: "NBA",         urls: [`${API}/basketball/nba/scoreboard`] },
   nhl:   { label: "NHL",         urls: [`${API}/hockey/nhl/scoreboard`] },
   mlb:   { label: "MLB",         urls: [`${API}/baseball/mlb/scoreboard`] },
@@ -213,12 +224,13 @@ const LEAGUES = {
              `${API}/basketball/mens-college-basketball/scoreboard?groups=3&limit=100`,
              `${API}/basketball/mens-college-basketball/scoreboard?limit=100` ] },
 };
-const LG_SHORT = { nfl:"NFL", nba:"NBA", nhl:"NHL", mlb:"MLB", ncaam:"NCAA MBB" };
-const TICKER_LABEL = { nfl:"NFL", nba:"NBA", nhl:"NHL", mlb:"MLB", ncaam:"NCAAM" };
+const LG_SHORT = { nfl:"NFL", ncaaf:"NCAA FB", nba:"NBA", nhl:"NHL", mlb:"MLB", ncaam:"NCAA MBB" };
+const TICKER_LABEL = { nfl:"NFL", ncaaf:"CFB", nba:"NBA", nhl:"NHL", mlb:"MLB", ncaam:"NCAAM" };
 
 // Matt's teams, by ESPN team id
 const FAVORITES = [
   { league:"nfl",   id:"19",   name:"New York Giants" },
+  { league:"ncaaf", id:"213",  name:"Penn State Nittany Lions" },
   { league:"nba",   id:"18",   name:"New York Knicks" },
   { league:"nhl",   id:"23",   name:"Washington Capitals" },
   { league:"mlb",   id:"10",   name:"New York Yankees" },
@@ -227,7 +239,7 @@ const FAVORITES = [
 const FAV_KEYS = new Set(FAVORITES.map(f => f.league + ":" + f.id));
 
 const SCHEDULE_PATH = {
-  nfl:"football/nfl", nba:"basketball/nba", nhl:"hockey/nhl",
+  nfl:"football/nfl", ncaaf:"football/college-football", nba:"basketball/nba", nhl:"hockey/nhl",
   mlb:"baseball/mlb", ncaam:"basketball/mens-college-basketball"
 };
 
@@ -293,8 +305,12 @@ async function nextGame(fav){
       .sort((a,b) => new Date(a.date) - new Date(b.date))[0];
     if(!upcoming) return `<div class="game"><div class="game-head"><span class="league-tag">${LG_SHORT[fav.league]}</span><span class="chip next">UP NEXT</span></div><div class="next-name">No upcoming game found on the schedule for the ${fav.name}.</div></div>`;
     const when = new Date(upcoming.date).toLocaleString([], {weekday:"short", month:"short", day:"numeric", hour:"numeric", minute:"2-digit"});
+    const comps = (upcoming.competitions && upcoming.competitions[0] && upcoming.competitions[0].competitors) || [];
+    const rows = comps.length >= 2
+      ? [...comps].sort((a,b) => (a.homeAway === "home" ? 1 : 0) - (b.homeAway === "home" ? 1 : 0)).map(c => teamRow(c, "pre")).join("")
+      : `<div class="next-name">${upcoming.name}</div>`;
     return `<div class="game"><div class="game-head"><span class="league-tag">${LG_SHORT[fav.league]}</span><span class="chip next">UP NEXT</span></div>
-      <div class="next-when">${when}</div><div class="next-name">${upcoming.name}</div>
+      <div class="next-when">${when}</div>${rows}
       <div class="note">No game today — this is the next one up.</div></div>`;
   }catch(e){
     return `<div class="game"><div class="game-head"><span class="league-tag">${LG_SHORT[fav.league]}</span><span class="chip next">UP NEXT</span></div><div class="next-name">No game today for the ${fav.name}.</div></div>`;
