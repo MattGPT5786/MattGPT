@@ -8,8 +8,8 @@ A single-file HTML scoreboard powered by ESPN's public scoreboard API — no API
 - Live games get a pulsing LIVE indicator with clock/period; final games dim the loser.
 - Auto-refreshes every 60 seconds.
 
-## Known gap
-Hershey Bears (AHL) are **not** in ESPN's API — the AHL scoreboard endpoint returns 400/404 (verified Nov 8, 2026). Their card links out to theahl.com rather than showing invented data.
+## Note on the Hershey Bears
+Hershey Bears (AHL) are **not** in ESPN's API — the AHL scoreboard endpoint returns 400/404 (verified Nov 8, 2026). A placeholder card was removed from the favorites row on Nov 8, 2026 at the owner's request.
 
 ## Data source
 `https://site.api.espn.com/apis/site/v2/sports/.../scoreboard` — unofficial public endpoints, CORS-open (`Access-Control-Allow-Origin: *`), which is what makes a static GitHub Pages site possible.

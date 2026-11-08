@@ -63,7 +63,7 @@
   <div class="grid" id="favorites"><div class="empty">Loading your teams…</div></div>
   <div id="leagues"></div>
 </main>
-<footer>Data: ESPN public scoreboard API (site.api.espn.com). Hershey Bears (AHL) aren't covered by ESPN's API — card above links to the AHL site instead of showing fake data.</footer>
+<footer>Data: ESPN public scoreboard API (site.api.espn.com).</footer>
 
 <script>
 const API = "https://site.api.espn.com/apis/site/v2/sports";
@@ -171,10 +171,6 @@ async function renderFavorites(){
       (e.competitions[0].competitors || []).some(c => (c.team||{}).id === fav.id));
     cards.push(ev ? gameCard(ev, fav.league) : await nextGame(fav));
   }
-  // Hershey Bears: ESPN's API has no AHL board (verified — endpoint 400/404), so no fake scores.
-  cards.push(`<div class="game"><div class="status">Hershey Bears · AHL</div>
-    <div class="row"><span class="name">Hershey Bears</span></div>
-    <div class="note">ESPN doesn't publish AHL scores in its API. <a href="https://theahl.com/schedule" target="_blank" rel="noopener">See the AHL schedule &amp; scores →</a></div></div>`);
   el.innerHTML = cards.join("");
 }
 
