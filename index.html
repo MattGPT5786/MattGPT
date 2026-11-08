@@ -6,7 +6,7 @@
 <title>MattGPT — Live Dashboard</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=UnifrakturMaguntia&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;0,6..72,700;0,6..72,800;1,6..72,400;1,6..72,600&family=Libre+Franklin:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Grenze+Gotisch:wght@600;700;800&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;0,6..72,700;0,6..72,800;1,6..72,400;1,6..72,600&family=Libre+Franklin:wght@400;600;700;800&display=swap" rel="stylesheet">
 <style>
   :root{
     color-scheme:light;
@@ -28,9 +28,9 @@
   .topbar{background:var(--bg);position:relative;z-index:10;border-bottom:1px solid #121212;box-shadow:0 4px 0 -1px var(--bg),0 5px 0 0 #121212}
   .topbar-in{max-width:1120px;margin:0 auto;padding:16px 20px 13px;display:flex;flex-direction:column;align-items:center;gap:7px}
   .brand{display:flex;align-items:center;gap:12px;min-width:0}
-  .brand-name{font-family:"UnifrakturMaguntia",serif;font-size:46px;line-height:1;color:#121212;letter-spacing:.01em}
-  .top-right{display:flex;align-items:center;gap:16px;text-align:center}
-  .top-right > div{display:flex;align-items:baseline;gap:10px}
+  .brand-name{font-family:"Grenze Gotisch",serif;font-weight:700;font-size:48px;line-height:1.05;color:#121212;letter-spacing:.01em}
+  .top-right{width:100%;display:flex;align-items:center;justify-content:space-between;gap:16px}
+  .top-actions{display:flex;align-items:center;gap:14px}
   .date{font-family:var(--serif);font-size:13.5px;font-style:italic;color:#121212}
   .updated{font-family:var(--sans);font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--faint)}
   #refresh{appearance:none;border:1px solid #121212;background:transparent;color:#121212;font-family:var(--sans);
@@ -120,7 +120,7 @@
   .ticker-label{flex:0 0 auto;background:#121212;color:#fff;font-family:var(--sans);font-weight:800;font-size:11px;
     letter-spacing:.14em;display:flex;align-items:center;padding:0 16px;z-index:2;text-transform:uppercase}
   .ticker-label img{display:none}
-  .ticker-label::after{content:"Latest Scores"}
+  .ticker-label::after{content:"MattGPT";font-family:"Grenze Gotisch",serif;font-weight:700;font-size:22px;letter-spacing:.01em;text-transform:none;line-height:1}
   .ticker-view{flex:1;overflow:hidden;-webkit-mask-image:linear-gradient(90deg,transparent,#000 28px,#000 calc(100% - 28px),transparent);
     mask-image:linear-gradient(90deg,transparent,#000 28px,#000 calc(100% - 28px),transparent)}
   .ticker-track{display:inline-flex;white-space:nowrap;padding:11px 0;animation:scroll linear infinite;will-change:transform}
@@ -252,7 +252,7 @@
   }
   @media (max-width:640px){
     .brand-name{font-size:34px}
-    .top-right > div{flex-direction:column;gap:2px;align-items:center}
+    .top-right{flex-wrap:wrap;justify-content:center;gap:8px}
   }
 </style>
 </head>
@@ -265,11 +265,11 @@
       </div>
     </div>
     <div class="top-right">
-      <div>
-        <div class="date" id="today"></div>
+      <div class="date" id="today"></div>
+      <div class="top-actions">
         <div class="updated" id="updated">Connecting to ESPN…</div>
+        <button id="refresh" type="button">↻ Refresh</button>
       </div>
-      <button id="refresh" type="button">↻ Refresh</button>
     </div>
   </div>
 </div>
