@@ -4,7 +4,7 @@ A single-file HTML scoreboard powered by ESPN's public scoreboard API — no API
 
 ## What it shows
 - **My Teams first:** New York Giants (NFL), New York Knicks (NBA), Washington Capitals (NHL), New York Yankees (MLB), Saint Joseph's Hawks (NCAA, Atlantic 10). If a team has no game today, its next scheduled game is shown instead.
-- **Full boards:** NFL, NBA, NHL, MLB, and College Hoops (Atlantic 10 + Top 25), filterable by the tabs at the top.
+- **Score ticker:** every other game from the NFL, NBA, NHL, MLB, and College Hoops (Atlantic 10 + Top 25) boards scrolls in an ESPN-style marquee under the favorites. Hover pauses it.
 - Live games get a pulsing LIVE indicator with clock/period; final games dim the loser.
 - Auto-refreshes every 60 seconds.
 
