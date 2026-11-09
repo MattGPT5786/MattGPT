@@ -132,7 +132,8 @@
   .ticker-label{flex:0 0 auto;background:#d6002a;color:#fff;font-family:var(--sans);font-weight:800;font-size:11px;
     letter-spacing:.14em;display:flex;align-items:center;padding:0 16px;z-index:2;text-transform:uppercase}
   .ticker-label img{display:none}
-  .ticker-label::after{content:"MattGPT";font-family:"ITC Avant Garde Gothic","TeXGyreAdventor","Helvetica Neue",Helvetica,Arial,sans-serif;font-weight:700;font-style:italic;font-size:21px;letter-spacing:.01em;text-transform:none;line-height:1;color:#fff}
+  .ticker-label{padding:0 14px}
+  .ticker-logo{height:25px;width:auto;display:block}
   .ticker-view{flex:1;overflow:hidden;-webkit-mask-image:linear-gradient(90deg,transparent,#000 28px,#000 calc(100% - 28px),transparent);
     mask-image:linear-gradient(90deg,transparent,#000 28px,#000 calc(100% - 28px),transparent)}
   .ticker-track{display:inline-flex;white-space:nowrap;padding:11px 0;animation:scroll linear infinite;will-change:transform}
@@ -354,7 +355,7 @@
     </section>
 
   <div class="ticker" aria-label="Score ticker">
-    <div class="ticker-label"><img src="https://a.espncdn.com/redesign/assets/img/logos/logo-espn-82x20@2x.png" alt="ESPN"></div>
+    <div class="ticker-label"><svg class="ticker-logo" viewBox="0 0 196 48" role="img" aria-label="MattGPT" xmlns="http://www.w3.org/2000/svg"><text x="98" y="37" text-anchor="middle" textLength="192" lengthAdjust="spacingAndGlyphs" font-family="'ITC Avant Garde Gothic','TeXGyreAdventor','Helvetica Neue',Helvetica,Arial,sans-serif" font-size="41" font-weight="700" font-style="italic" fill="#ffffff">MattGPT</text><rect x="0" y="15.5" width="196" height="3.8" fill="#d6002a"/></svg></div>
     <div class="ticker-view"><div class="ticker-track" id="tickerTrack"><span class="tick">Loading scores…</span></div></div>
   </div>
 </main>
