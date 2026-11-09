@@ -56,9 +56,7 @@
   /* ---------- layout ---------- */
   main{max-width:1120px;margin:0 auto;padding:26px 20px 34px}
   .section-head{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;border-bottom:1px solid var(--line);padding-bottom:9px;margin-bottom:12px}
-  .section-head h2{margin:0;font-family:var(--sans);font-weight:600;font-size:15px;letter-spacing:.18em;text-transform:uppercase;color:var(--cream);
-    background:var(--seam),linear-gradient(180deg,#222329,#16171a);border:1px solid #33343a;border-radius:3px;padding:5px 10px 4px;
-    box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 1px 2px rgba(0,0,0,.5)}
+  .section-head h2{margin:0;font-family:var(--sans);font-weight:600;font-size:15px;letter-spacing:.18em;text-transform:uppercase;color:var(--cream)}
   .section-note{font-family:var(--monofont);font-size:11.5px;letter-spacing:.05em;color:var(--faint)}
   .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:14px;grid-auto-rows:1fr}
   .grid .game{height:100%}
@@ -106,9 +104,7 @@
   .teams-wrap{position:relative;background:linear-gradient(180deg,var(--board-2),var(--board));border:1px solid #2c2d33;border-top:3px solid #3a3b42;padding:15px 18px 16px;margin-bottom:30px;border-radius:4px;
     box-shadow:inset 0 1px 0 rgba(255,255,255,.05),0 4px 14px rgba(0,0,0,.45)}
   .panel-head{display:flex;align-items:baseline;justify-content:space-between;gap:10px;border-bottom:1px solid var(--line);padding-bottom:9px;margin-bottom:12px}
-  .panel-title{font-family:var(--sans);font-weight:600;font-size:13px;letter-spacing:.16em;text-transform:uppercase;color:var(--cream);
-    background:var(--seam),linear-gradient(180deg,#222329,#16171a);border:1px solid #33343a;border-radius:3px;padding:4px 9px 3px;
-    box-shadow:inset 0 1px 0 rgba(255,255,255,.08)}
+  .panel-title{font-family:var(--sans);font-weight:600;font-size:13.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--cream)}
   .panel-note{font-family:var(--monofont);font-size:11px;color:var(--faint);white-space:nowrap}
   .wx-now{display:flex;align-items:center;gap:16px}
   .wx-icon{font-size:42px;line-height:1}
@@ -168,7 +164,7 @@
   .game-link{display:block;text-decoration:none;color:inherit;cursor:pointer}
   .game-link:hover{background:#1c1d21}
   .block-link{display:block;text-decoration:none;color:inherit;cursor:pointer}
-  .block-link:hover .panel-title{border-color:var(--amber)}
+  .block-link:hover .panel-title{color:var(--amber)}
   a.mkt-cell{text-decoration:none;color:inherit;cursor:pointer}
   a.mkt-cell:hover{background:#1c1d21}
   a.tick{cursor:pointer}
@@ -193,6 +189,37 @@
   .ff-std tr.me td{color:var(--cream);font-weight:700;background:rgba(255,176,0,.10)}
   .ff-std .r{text-align:right}
   .ff-asof{font-family:var(--monofont);margin-top:8px;font-size:11px;color:var(--faint)}
+  /* ---------- split-flap strips, after Matt's station photo ---------- */
+  .topbar{box-shadow:0 1px 0 0 rgba(201,162,39,.55)}
+  .panel-head{border-bottom:1px solid rgba(201,162,39,.45)}
+  .section-head{border-bottom:1px solid rgba(201,162,39,.45)}
+  .game{border-top:1px solid rgba(201,162,39,.40)}
+  .mkt-cell{border-top:1px solid rgba(201,162,39,.35)}
+  .wx-pair-row{border-top:1px solid rgba(201,162,39,.28)}
+  .ff-std td{border-bottom:1px solid rgba(201,162,39,.22)}
+  .ticker{border-top:2px solid rgba(201,162,39,.55)}
+  /* per-character flap strips: mono type riding a 1ch cell grid, center seam */
+  .tname,.ff-team .nm,.mk-name,.wx-pair .v{
+    font-family:var(--monofont);text-transform:uppercase;
+    background-color:#17181b;
+    background-image:linear-gradient(180deg,rgba(255,255,255,.06) 0,rgba(255,255,255,.06) 47%,rgba(0,0,0,.6) 50%,rgba(255,255,255,.03) 53%,rgba(255,255,255,0) 100%),repeating-linear-gradient(90deg,rgba(255,255,255,.10) 0 1px,transparent 1px 1ch);
+    border:1px solid #2b2c31;border-radius:2px;padding:2px 6px}
+  .tname{font-weight:600;letter-spacing:.02em}
+  .ff-team .nm{font-weight:600;min-width:0}
+  .mk-name{color:var(--cream);min-width:0}
+  .ff-std td.nm{font-family:var(--monofont);text-transform:uppercase;
+    background-color:#141518;
+    background-image:linear-gradient(180deg,rgba(255,255,255,.05) 0,rgba(255,255,255,.05) 47%,rgba(0,0,0,.55) 50%,rgba(255,255,255,.02) 53%,rgba(255,255,255,0) 100%),repeating-linear-gradient(90deg,rgba(255,255,255,.08) 0 1px,transparent 1px 1ch)}
+  /* number tiles get the same per-character cell divisions */
+  .tscore,.ff-team .sc,.wx-temp,.mk-price{
+    background-image:linear-gradient(180deg,rgba(255,255,255,.08) 0,rgba(255,255,255,.08) 47%,rgba(0,0,0,.65) 50%,rgba(255,255,255,.04) 53%,rgba(255,255,255,0) 100%),repeating-linear-gradient(90deg,rgba(255,255,255,.10) 0 1px,transparent 1px 1ch),linear-gradient(180deg,#24252b,#17181b)}
+  .tick{text-transform:uppercase}
+  /* board statuses: yellow for UP NEXT like BOARDING, cream for scheduled */
+  .chip.next{color:#ffd34d;border-color:#8f7122}
+  .chip.pre{color:var(--cream)}
+  /* brass indicator dot at the bottom-right of each board panel */
+  .panel::after,.teams-wrap::after{content:"";position:absolute;right:12px;bottom:10px;width:7px;height:7px;border-radius:50%;
+    background:radial-gradient(circle at 35% 35%,#ffe9a8,#c9a227 60%,#7a5f14);box-shadow:0 0 5px rgba(255,176,0,.45)}
   /* ---------- one-screen dashboard mode (wide + tall enough viewports) ---------- */
   @media (min-width:1000px) and (min-height:600px){
     body{display:flex;flex-direction:column;height:100dvh;overflow:hidden}
