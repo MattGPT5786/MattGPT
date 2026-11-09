@@ -220,6 +220,12 @@
   /* brass indicator dot at the bottom-right of each board panel */
   .panel::after,.teams-wrap::after{content:"";position:absolute;right:12px;bottom:10px;width:7px;height:7px;border-radius:50%;
     background:radial-gradient(circle at 35% 35%,#ffe9a8,#c9a227 60%,#7a5f14);box-shadow:0 0 5px rgba(255,176,0,.45)}
+  /* ---------- split-flap photo fixes: uniform white names, stronger standings strips ---------- */
+  .trow.loser .tname{color:#ddd7c4}
+  .trow.loser .tscore{color:var(--cream);opacity:.78}
+  .trow.loser .trec{color:#8a8574}
+  .ff-std td.nm{font-size:11.5px;border:1px solid #2b2c31;background-color:#17181b}
+  .ff-team .nm{font-size:12.5px}
   /* ---------- one-screen dashboard mode (wide + tall enough viewports) ---------- */
   @media (min-width:1000px) and (min-height:600px){
     body{display:flex;flex-direction:column;height:100dvh;overflow:hidden}
