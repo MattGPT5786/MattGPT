@@ -664,19 +664,18 @@ setInterval(loadAll, 60000);
 <script>
 (function(){
   var ORDER=["sports","weather","fantasy","markets"];
-  var CYCLE_MS=30000, PAUSE_MS=120000;
+  var CYCLE_MS=30000;
   var views={}, tabs=[].slice.call(document.querySelectorAll(".secnav button"));
   ORDER.forEach(function(k){ views[k]=document.querySelector('.view[data-view="'+k+'"]'); });
   var status=document.getElementById("cycleStatus");
-  var cur=0, timer=null, pauseUntil=0;
+  var cur=0, timer=null;
   function render(){
     ORDER.forEach(function(k,i){ if(views[k]) views[k].classList.toggle("active", i===cur); });
     tabs.forEach(function(b){ b.classList.toggle("active", b.getAttribute("data-target")===ORDER[cur]); });
   }
   function schedule(){
     clearTimeout(timer);
-    var wait=(pauseUntil>Date.now()) ? (pauseUntil-Date.now())+CYCLE_MS : CYCLE_MS;
-    timer=setTimeout(tick, wait);
+    timer=setTimeout(tick, CYCLE_MS);
   }
   function tick(){
     if(document.hidden){ timer=setTimeout(tick,5000); return; }
@@ -684,8 +683,7 @@ setInterval(loadAll, 60000);
     if(status) status.textContent="Auto-cycling every 30 seconds";
   }
   function manual(i){
-    cur=i; pauseUntil=Date.now()+PAUSE_MS; render(); schedule();
-    if(status) status.textContent="Paused \u2014 auto-cycle resumes in 2 minutes";
+    cur=i; render(); schedule();
   }
   tabs.forEach(function(b){ b.addEventListener("click", function(){
     var i=ORDER.indexOf(b.getAttribute("data-target")); if(i>=0) manual(i);
