@@ -276,7 +276,7 @@
   <button type="button" data-target="airtraffic">✈️ Air Traffic</button>
   <button type="button" data-target="fantasy">🏈 Fantasy Football</button>
   <button type="button" data-target="markets">📈 Markets</button>
-  <span class="secnav-status" id="cycleStatus">Auto-cycling every 30 seconds</span>
+  <span class="secnav-status" id="cycleStatus">Auto-cycling every 10 seconds</span>
 </nav>
 
 <main>
@@ -677,7 +677,7 @@ setInterval(loadAll, 60000);
 <script>
 (function(){
   var ORDER=["sports","weather","weathermap","airtraffic","fantasy","markets"];
-  var CYCLE_MS=30000;
+  var CYCLE_MS=10000;
   var views={}, tabs=[].slice.call(document.querySelectorAll(".secnav button"));
   ORDER.forEach(function(k){ views[k]=document.querySelector('.view[data-view="'+k+'"]'); });
   var status=document.getElementById("cycleStatus");
@@ -693,7 +693,7 @@ setInterval(loadAll, 60000);
   function tick(){
     if(document.hidden){ timer=setTimeout(tick,5000); return; }
     cur=(cur+1)%ORDER.length; render(); schedule();
-    if(status) status.textContent="Auto-cycling every 30 seconds";
+    if(status) status.textContent="Auto-cycling every 10 seconds";
   }
   function manual(i){
     cur=i; render(); schedule();
