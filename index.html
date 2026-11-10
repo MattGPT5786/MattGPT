@@ -113,6 +113,9 @@
   .wx-day .t{font-family:var(--serif);font-size:13px;font-variant-numeric:tabular-nums;color:#121212}
   .wx-day .t .lo{color:var(--faint)}
   .wx-day .p{font-family:var(--sans);font-size:10.5px;color:var(--muted);margin-top:2px;font-variant-numeric:tabular-nums}
+  /* ---------- weather map ---------- */
+  .wxmap-panel{margin-bottom:30px}
+  .wxmap-frame{display:block;width:100%;height:480px;border:1px solid #d5d0bf;background:#eceae2}
   /* ---------- markets ---------- */
   .mkt-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
   @media (max-width:900px){.mkt-grid{grid-template-columns:1fr 1fr}}
@@ -220,6 +223,8 @@
     .mkt-panel{display:flex;flex-direction:column}
     .mkt-grid{flex:1;grid-template-columns:repeat(3,minmax(0,1fr));grid-template-rows:minmax(0,1fr);gap:16px;min-height:0}
     .mkt-cell{height:auto;min-height:0}
+    .wxmap-panel{display:flex;flex-direction:column}
+    .wxmap-frame{flex:1;min-height:0;height:auto;border:none}
     .mk-price{font-size:32px}
     .panel-title{font-size:13px}
   }
@@ -267,6 +272,7 @@
 <nav class="secnav" aria-label="Sections">
   <button type="button" data-target="sports" class="active">⚽ Sports</button>
   <button type="button" data-target="weather">🌤 Weather</button>
+  <button type="button" data-target="weathermap">🌎 Weather Map</button>
   <button type="button" data-target="fantasy">🏈 Fantasy Football</button>
   <button type="button" data-target="markets">📈 Markets</button>
   <span class="secnav-status" id="cycleStatus">Auto-cycling every 30 seconds</span>
@@ -279,6 +285,10 @@
       <div class="panel-head"><span class="panel-title">🌤 Weather - Cherry Hill, NJ</span></div>
       <div id="wxBody"><div class="empty">Loading weather…</div></div>
       </a>
+    </section>
+    <section class="panel wxmap-panel view" data-view="weathermap" aria-label="Live weather map">
+      <div class="panel-head"><span class="panel-title">🌎 Live Weather Map</span><span class="panel-note">Radar · drag to pan, scroll to zoom</span></div>
+      <iframe class="wxmap-frame" title="Live interactive weather map" src="https://embed.windy.com/embed2.html?lat=39.9351&amp;lon=-75.0307&amp;detailLat=39.9351&amp;detailLon=-75.0307&amp;zoom=7&amp;level=surface&amp;overlay=radar&amp;product=ecmwf&amp;marker=true&amp;calendar=now&amp;type=map&amp;location=coordinates&amp;metricWind=mph&amp;metricTemp=%C2%B0F&amp;radarRange=-1" loading="lazy" allowfullscreen></iframe>
     </section>
     <section class="panel mkt-panel view" data-view="markets" aria-label="Markets">
       <div class="panel-head"><span class="panel-title">📈 Markets</span><span class="panel-note">1-month</span></div>
@@ -663,7 +673,7 @@ setInterval(loadAll, 60000);
 
 <script>
 (function(){
-  var ORDER=["sports","weather","fantasy","markets"];
+  var ORDER=["sports","weather","weathermap","fantasy","markets"];
   var CYCLE_MS=30000;
   var views={}, tabs=[].slice.call(document.querySelectorAll(".secnav button"));
   ORDER.forEach(function(k){ views[k]=document.querySelector('.view[data-view="'+k+'"]'); });
