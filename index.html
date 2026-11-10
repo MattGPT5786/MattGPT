@@ -114,8 +114,8 @@
   .wx-day .t .lo{color:var(--faint)}
   .wx-day .p{font-family:var(--sans);font-size:10.5px;color:var(--muted);margin-top:2px;font-variant-numeric:tabular-nums}
   /* ---------- weather map ---------- */
-  .wxmap-panel{margin-bottom:30px}
-  .wxmap-frame{display:block;width:100%;height:480px;border:1px solid #d5d0bf;background:#eceae2}
+  .wxmap-panel,.air-panel{margin-bottom:30px}
+  .wxmap-frame,.air-frame{display:block;width:100%;height:480px;border:1px solid #d5d0bf;background:#eceae2}
   /* ---------- markets ---------- */
   .mkt-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
   @media (max-width:900px){.mkt-grid{grid-template-columns:1fr 1fr}}
@@ -223,8 +223,8 @@
     .mkt-panel{display:flex;flex-direction:column}
     .mkt-grid{flex:1;grid-template-columns:repeat(3,minmax(0,1fr));grid-template-rows:minmax(0,1fr);gap:16px;min-height:0}
     .mkt-cell{height:auto;min-height:0}
-    .wxmap-panel{display:flex;flex-direction:column}
-    .wxmap-frame{flex:1;min-height:0;height:auto;border:none}
+    .wxmap-panel,.air-panel{display:flex;flex-direction:column}
+    .wxmap-frame,.air-frame{flex:1;min-height:0;height:auto;border:none}
     .mk-price{font-size:32px}
     .panel-title{font-size:13px}
   }
@@ -273,6 +273,7 @@
   <button type="button" data-target="sports" class="active">⚽ Sports</button>
   <button type="button" data-target="weather">🌤 Weather</button>
   <button type="button" data-target="weathermap">🌎 Weather Map</button>
+  <button type="button" data-target="airtraffic">✈️ Air Traffic</button>
   <button type="button" data-target="fantasy">🏈 Fantasy Football</button>
   <button type="button" data-target="markets">📈 Markets</button>
   <span class="secnav-status" id="cycleStatus">Auto-cycling every 30 seconds</span>
@@ -309,7 +310,11 @@
   </div>
   </div>
 
-  <section class="panel ff-panel view" data-view="fantasy" aria-label="Fantasy football">
+  <section class="panel air-panel view" data-view="airtraffic" aria-label="Live air traffic">
+      <div class="panel-head"><span class="panel-title">✈️ Live Air Traffic</span><span class="panel-note">ADS-B · drag to pan, scroll to zoom, tap a plane for details</span></div>
+      <iframe class="air-frame" title="Live air traffic map" src="https://globe.adsbexchange.com/?lat=39.9351&amp;lon=-75.0307&amp;zoom=9" loading="lazy" allowfullscreen></iframe>
+    </section>
+    <section class="panel ff-panel view" data-view="fantasy" aria-label="Fantasy football">
       <a class="block-link" href="https://football.fantasysports.yahoo.com/f1/490839" target="_blank" rel="noopener">
       <div class="panel-head"><span class="panel-title">🏈 Fantasy Football</span></div>
       <div id="ffBody"><!--FF_START-->
@@ -673,7 +678,7 @@ setInterval(loadAll, 60000);
 
 <script>
 (function(){
-  var ORDER=["sports","weather","weathermap","fantasy","markets"];
+  var ORDER=["sports","weather","weathermap","airtraffic","fantasy","markets"];
   var CYCLE_MS=30000;
   var views={}, tabs=[].slice.call(document.querySelectorAll(".secnav button"));
   ORDER.forEach(function(k){ views[k]=document.querySelector('.view[data-view="'+k+'"]'); });
