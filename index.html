@@ -111,12 +111,15 @@
   .mkt-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
   @media (max-width:900px){.mkt-grid{grid-template-columns:1fr 1fr}}
   @media (max-width:560px){.mkt-grid{grid-template-columns:1fr}}
-  .mkt-cell{height:192px;background:transparent;border-top:1px solid #d4dbe8;overflow:hidden;display:flex;flex-direction:column;padding:9px 4px 8px;box-sizing:border-box}
+  .mkt-cell{height:308px;background:transparent;border-top:1px solid #d4dbe8;overflow:hidden;display:flex;flex-direction:column;padding:9px 4px 8px;box-sizing:border-box}
   .mk-top{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
   .mk-name{font-weight:700;font-size:11.5px;letter-spacing:.08em;color:#1a1a1a;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .mk-chg{font-size:11px;font-weight:600;font-variant-numeric:tabular-nums;white-space:nowrap;color:var(--led-green)}
   .mk-chg.dn{color:var(--led-red)}
-  .mk-price{font-weight:700;font-size:27px;color:#1a1a1a;margin-top:2px;font-variant-numeric:tabular-nums}
+  .mk-price{font-weight:700;font-size:22px;color:#1a1a1a;font-variant-numeric:tabular-nums}
+  .mk-block{display:flex;flex-direction:column;flex:1;min-height:0;margin-top:7px}
+  .mk-row{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+  .mk-lab{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--faint)}
   .mk-chart{flex:1;min-height:50px;margin-top:2px}
   .mk-chart svg{width:100%;height:100%;display:block}
   .mk-range{font-size:10px;color:var(--faint);font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -223,7 +226,7 @@
     .mkt-panel .panel-head{margin:0 0 12px;border-radius:0}
     .mkt-grid{flex:1;grid-template-columns:repeat(3,minmax(0,1fr));grid-template-rows:minmax(0,1fr);gap:16px;min-height:0;padding:0 16px}
     .mkt-cell{height:auto;min-height:0}
-    .mk-price{font-size:31px}
+    .mk-price{font-size:23px}
     .panel-title{font-size:13px}
     .wxmap-panel,.air-panel{display:flex;flex-direction:column;padding:0}
     .wxmap-frame,.air-frame{flex:1;min-height:0;height:auto}
@@ -234,6 +237,8 @@
     .wx-fc{border-left:none;padding-left:0;border-top:1px solid var(--line-soft);padding-top:12px}
     .wx-temp{font-size:50px}
     .mkt-grid{grid-template-columns:1fr;grid-template-rows:repeat(3,minmax(0,1fr))}
+    .mkt-cell{display:grid;grid-template-columns:1fr 1fr;grid-template-rows:auto minmax(0,1fr);column-gap:16px}
+    .mkt-cell .mk-top{grid-column:1/-1}
     .brand-name{font-size:29px}
   }
   @media (min-width:1000px) and (min-height:560px) and (max-height:760px){
@@ -291,7 +296,7 @@
       <iframe class="wxmap-frame" title="Live interactive weather map" src="https://embed.windy.com/embed2.html?lat=39.9351&amp;lon=-75.0307&amp;detailLat=39.9351&amp;detailLon=-75.0307&amp;zoom=7&amp;level=surface&amp;overlay=radar&amp;product=ecmwf&amp;marker=true&amp;calendar=now&amp;type=map&amp;location=coordinates&amp;metricWind=mph&amp;metricTemp=%C2%B0F&amp;radarRange=-1" loading="lazy" allowfullscreen></iframe>
     </section>
     <section class="panel mkt-panel view" data-view="markets" aria-label="Markets">
-      <div class="panel-head"><span class="panel-title">📈 Markets</span><span class="panel-note">1-month</span></div>
+      <div class="panel-head"><span class="panel-title">📈 Markets</span><span class="panel-note">Today + 1 Month</span></div>
       <div class="mkt-grid">
         <a class="mkt-cell" id="mkt-spx" href="https://www.cnbc.com/quotes/.SPX" target="_blank" rel="noopener"><div class="mk-empty">Loading markets…</div></a>
         <a class="mkt-cell" id="mkt-dji" href="https://www.cnbc.com/quotes/.DJI" target="_blank" rel="noopener"><div class="mk-empty">Loading markets…</div></a>
@@ -620,8 +625,8 @@ const MKTS = [
   {cell:"mkt-dji", sym:".DJI", name:"DOW JONES", color:"#70ad47"},
   {cell:"mkt-ixic", sym:".IXIC", name:"NASDAQ COMPOSITE", color:"#ed7d31"}
 ];
-function mktChartSVG(bars, color){
-  const closes = bars.slice(-22).map(b => parseFloat(b.close)).filter(n => isFinite(n));
+function mktChartSVG(bars, color, maxPts){
+  const closes = (maxPts ? bars.slice(-maxPts) : bars).map(b => parseFloat(b.close)).filter(n => isFinite(n));
   if (closes.length < 2) return "";
   const W = 300, H = 86, PAD = 6;
   const min = Math.min(...closes), max = Math.max(...closes), span = (max - min) || 1;
@@ -638,21 +643,36 @@ async function loadMarkets(){
     const qjson = await qres.json();
     const quotes = {};
     ((qjson.FormattedQuoteResult || {}).FormattedQuote || []).forEach(q => { quotes[q.symbol] = q; });
+    const fetchBars = async (range, sym) => {
+      try{
+        const r = await fetch("https://ts-api.cnbc.com/harmony/app/charts/" + range + ".json?symbol=" + encodeURIComponent(sym), {cache:"no-store"});
+        const j = await r.json();
+        return (j.barData && j.barData.priceBars) || [];
+      }catch(e){ return []; }
+    };
+    const fmtMo = bars => {
+      const cs = bars.slice(-22).map(b => parseFloat(b.close)).filter(n => isFinite(n));
+      if (cs.length < 2) return null;
+      const d = cs[cs.length - 1] - cs[0], pct = (cs[cs.length - 1] / cs[0] - 1) * 100;
+      const sign = d < 0 ? "-" : "+";
+      return { text: sign + Math.abs(d).toLocaleString("en-US", {minimumFractionDigits:2, maximumFractionDigits:2}) + " (" + sign + Math.abs(pct).toFixed(2) + "%)", down: d < 0 };
+    };
     await Promise.all(MKTS.map(async m => {
       const cell = document.getElementById(m.cell);
       if (!cell) return;
       try{
-        const bres = await fetch("https://ts-api.cnbc.com/harmony/app/charts/1M.json?symbol=" + encodeURIComponent(m.sym), {cache:"no-store"});
-        const bjson = await bres.json();
-        const bars = (bjson.barData && bjson.barData.priceBars) || [];
         const q = quotes[m.sym];
-        if (!q || !bars.length){ cell.innerHTML = `<div class="mk-empty">${m.name} unavailable</div>`; return; }
-        const down = String(q.change || "").trim().startsWith("-");
+        if (!q){ cell.innerHTML = `<div class="mk-empty">${m.name} unavailable</div>`; return; }
+        const [dayBars, moBars] = await Promise.all([fetchBars("1D", m.sym), fetchBars("1M", m.sym)]);
+        const dayDown = String(q.change || "").trim().startsWith("-");
+        const mo = fmtMo(moBars);
         cell.style.setProperty("--mc", m.color);
         cell.innerHTML =
-          `<div class="mk-top"><span class="mk-name">${m.name}</span><span class="mk-chg${down ? " dn" : ""}">${q.change} (${q.change_pct})</span></div>` +
-          `<div class="mk-price">${q.last}</div>` +
-          `<div class="mk-chart">${mktChartSVG(bars, m.color)}</div>`;
+          `<div class="mk-top"><span class="mk-name">${m.name}</span><span class="mk-price">${q.last}</span></div>` +
+          `<div class="mk-block"><div class="mk-row"><span class="mk-lab">Today</span><span class="mk-chg${dayDown ? " dn" : ""}">${q.change} (${q.change_pct})</span></div>` +
+          `<div class="mk-chart">${mktChartSVG(dayBars, m.color, 0)}</div></div>` +
+          `<div class="mk-block"><div class="mk-row"><span class="mk-lab">1 Month</span>${mo ? `<span class="mk-chg${mo.down ? " dn" : ""}">${mo.text}</span>` : ""}</div>` +
+          `<div class="mk-chart">${mktChartSVG(moBars, m.color, 22)}</div></div>`;
       }catch(e){ /* keep previous render for this cell */ }
     }));
   }catch(e){ /* keep previous render */ }
