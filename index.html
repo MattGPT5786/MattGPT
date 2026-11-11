@@ -803,11 +803,12 @@ async function loadNewsCat(cat){
   const lists=await Promise.all(cat.feeds.map(fetchFeed));
   let items=lists.flat();
   items.sort((x,y)=>newsDate(y)-newsDate(x));
-  const seen=new Set(), top=[];
+  const seen=new Set(), perSrc={}, top=[];
   for(const it of items){
     const key=String(it.title).toLowerCase().replace(/[^a-z0-9 ]/g,"").split(/\s+/).slice(0,5).join(" ");
     if(!key || seen.has(key)) continue;
-    seen.add(key); top.push(it);
+    if((perSrc[it._src]||0)>=2) continue;
+    seen.add(key); perSrc[it._src]=(perSrc[it._src]||0)+1; top.push(it);
     if(top.length>=3) break;
   }
   if(!top.length){ el.innerHTML='<div class="news-dim">Headlines unavailable right now</div>'; return; }
