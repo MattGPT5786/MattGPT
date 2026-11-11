@@ -17,9 +17,9 @@
     --accent:#ff3b1a; --live:#ff3b1a; --gold:#ff3b1a;
     --blue:#ff3b1a; --dim:var(--muted); --panel2:#1a0503;
     --radius:5px;
-    --sans:"Barlow","Segoe UI",Tahoma,Geneva,Verdana,sans-serif;
-    --cond:"Barlow Condensed","Barlow","Segoe UI",Tahoma,sans-serif;
-    --mono:"Share Tech Mono",ui-monospace,"Courier New",monospace;
+    --sans:"DotGothic16","Barlow","Segoe UI",Tahoma,Geneva,Verdana,sans-serif;
+    --cond:"DotGothic16","Barlow Condensed","Barlow","Segoe UI",Tahoma,sans-serif;
+    --mono:"DotGothic16","Share Tech Mono",ui-monospace,"Courier New",monospace;
     --dotfont:"DotGothic16","Share Tech Mono",ui-monospace,monospace;
     --tahoma:var(--sans); --monofont:var(--mono); --serif:var(--sans);
     --titlebar:linear-gradient(180deg,#242424 0%,#111111 55%,#0a0a0a 100%);
@@ -53,7 +53,7 @@
   .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:14px;grid-auto-rows:1fr}
   .grid .game{height:100%}
   /* ---------- game cards (inset displays) ---------- */
-  .game{position:relative;background:linear-gradient(180deg,#2b0705,#180202);border:1px solid #000;border-radius:5px;
+  .game{position:relative;background:radial-gradient(rgba(0,0,0,.42) 1.2px, transparent 1.8px),linear-gradient(180deg,#2b0705,#180202);background-size:7px 7px,100% 100%;border:1px solid #000;border-radius:5px;
     padding:12px 14px 11px;box-shadow:inset 3px 0 0 rgba(255,59,26,.55),inset 0 0 0 1px #3d3d3d,inset 0 0 24px rgba(0,0,0,.6),0 4px 14px rgba(0,0,0,.5)}
   .game-head{display:flex;align-items:center;justify-content:space-between;gap:10px;border-bottom:1px solid var(--line-soft);padding-bottom:8px;margin-bottom:5px;min-height:24px}
   .league-tag{font-family:var(--cond);font-size:11.5px;font-weight:600;letter-spacing:.12em;color:#cfc8ba;text-transform:uppercase;white-space:nowrap;display:inline-flex;align-items:center;gap:5px}
@@ -88,9 +88,9 @@
   .wx-mid{display:flex;flex-direction:column;gap:10px}
   .wx-layout{display:grid;grid-template-columns:auto auto 1fr;gap:22px;align-items:center}
   @media (max-width:980px){.wx-layout{grid-template-columns:1fr;gap:14px}}
-  .panel{position:relative;background:var(--lcd);border:1px solid #565656;border-radius:6px;
+  .panel{position:relative;background:radial-gradient(rgba(0,0,0,.42) 1.2px, transparent 1.8px),linear-gradient(180deg,#2a0505,#1a0202);background-size:7px 7px,100% 100%;border:1px solid #565656;border-radius:6px;
     box-shadow:inset 0 1px 0 rgba(255,255,255,.10),inset 0 0 40px rgba(0,0,0,.75),0 10px 30px rgba(0,0,0,.55);padding:0 16px 16px}
-  .teams-wrap{position:relative;background:var(--lcd);border:1px solid #565656;border-radius:6px;
+  .teams-wrap{position:relative;background:radial-gradient(rgba(0,0,0,.42) 1.2px, transparent 1.8px),linear-gradient(180deg,#2a0505,#1a0202);background-size:7px 7px,100% 100%;border:1px solid #565656;border-radius:6px;
     box-shadow:inset 0 1px 0 rgba(255,255,255,.10),inset 0 0 40px rgba(0,0,0,.75),0 10px 30px rgba(0,0,0,.55);padding:0 16px 16px;margin-bottom:30px}
   .panel-head{display:flex;align-items:baseline;justify-content:space-between;gap:10px;background:var(--titlebar);
     margin:0 -16px 12px;padding:7px 12px;border-radius:5px 5px 0 0;border-bottom:1px solid #454545;box-shadow:inset 0 -1px 0 rgba(255,59,26,.30)}
@@ -139,7 +139,7 @@
   /* ---------- ticker (dash strip) ---------- */
   .ticker{display:flex;align-items:stretch;background:var(--taskbar);overflow:hidden;margin-top:30px;border-top:1px solid #3d3d3d;
     box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 -4px 18px rgba(0,0,0,.55)}
-  .ticker-label{flex:0 0 auto;background:var(--lcd);box-shadow:inset 0 1px 0 rgba(255,255,255,.10),inset 0 0 18px rgba(0,0,0,.85);color:var(--amber);font-weight:700;font-size:11px;
+  .ticker-label{flex:0 0 auto;background:radial-gradient(rgba(0,0,0,.42) 1.2px, transparent 1.8px),linear-gradient(180deg,#2a0505,#1a0202);background-size:7px 7px,100% 100%;box-shadow:inset 0 1px 0 rgba(255,255,255,.10),inset 0 0 18px rgba(0,0,0,.85);color:var(--amber);font-weight:700;font-size:11px;
     letter-spacing:.14em;display:flex;align-items:center;padding:0 14px;z-index:2;text-transform:uppercase;border-right:1px solid #565656}
   .ticker-label img{display:none}
   .ticker-logo{height:25px;width:auto;display:block;text-transform:none}
@@ -164,7 +164,7 @@
   a.tick{cursor:pointer}
   a.tick:hover{background:rgba(255,59,26,.14)}
   /* ---------- fantasy ---------- */
-  .ff-match{border:1px solid #000;border-radius:5px;padding:10px 12px 6px;background:linear-gradient(180deg,#200403,#120101);
+  .ff-match{border:1px solid #000;border-radius:5px;padding:10px 12px 6px;background:radial-gradient(rgba(0,0,0,.42) 1.2px, transparent 1.8px),linear-gradient(180deg,#200403,#120101);background-size:7px 7px,100% 100%;
     box-shadow:inset 0 0 0 1px #3d3d3d,inset 0 0 22px rgba(0,0,0,.65)}
   .ff-team{display:flex;align-items:baseline;gap:8px;padding:3px 0}
   .ff-team .nm{font-size:14.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--text)}
@@ -197,8 +197,8 @@
     main{flex:1;min-height:0;width:100%;max-width:1500px;display:flex;flex-direction:column;padding:12px 20px 10px}
     .stage{position:relative;flex:1;min-height:0}
     .view{position:absolute;inset:0;margin:0;visibility:hidden;opacity:0;transition:opacity .45s ease;pointer-events:none;overflow:hidden;
-      background-image:radial-gradient(rgba(0,0,0,.38) 1px, transparent 1.5px),linear-gradient(180deg,#2a0505,#150202);
-      background-size:6px 6px,100% 100%;border:1px solid #565656;border-radius:6px;
+      background-image:radial-gradient(rgba(0,0,0,.42) 1.2px, transparent 1.8px),linear-gradient(180deg,#2a0505,#150202);
+      background-size:7px 7px,100% 100%;border:1px solid #565656;border-radius:6px;
       box-shadow:inset 0 1px 0 rgba(255,255,255,.13),inset 0 0 0 1px #000,inset 0 0 70px rgba(0,0,0,.82),0 12px 34px rgba(0,0,0,.6)}
     .view.active{visibility:visible;opacity:1;pointer-events:auto}
     .panel,.teams-wrap{background:transparent;border:none;border-radius:0;box-shadow:none;margin:0}
