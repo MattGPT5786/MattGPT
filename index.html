@@ -21,8 +21,8 @@
     --mono:"Segoe UI",-apple-system,"Helvetica Neue",Arial,sans-serif;
     --dotfont:"Segoe UI","Segoe UI Variable Text",-apple-system,"Helvetica Neue",Arial,sans-serif;
     --tahoma:var(--sans); --monofont:var(--mono); --serif:var(--sans);
-    --glass:linear-gradient(180deg,rgba(255,255,255,.66),rgba(255,255,255,.34) 48%,rgba(196,228,252,.30));
-    --titlebar:linear-gradient(180deg,rgba(255,255,255,.78),rgba(255,255,255,.38) 50%,rgba(168,213,248,.38));
+    --glass:linear-gradient(180deg,rgba(255,255,255,.90),rgba(255,255,255,.74) 48%,rgba(216,238,253,.70));
+    --titlebar:linear-gradient(180deg,rgba(255,255,255,.92),rgba(255,255,255,.55) 50%,rgba(178,220,250,.50));
     --taskbar:linear-gradient(180deg,rgba(84,128,180,.55),rgba(18,48,92,.80) 50%,rgba(8,28,58,.90));
     --glow:0 0 12px rgba(255,255,255,.95),0 0 3px rgba(255,255,255,.85);
   }
@@ -30,11 +30,10 @@
   html{-webkit-text-size-adjust:100%}
   body{margin:0;color:var(--text);font-family:var(--sans);font-size:14px;
     background:
-      radial-gradient(ellipse 55% 38% at 18% -6%,rgba(120,231,203,.50),transparent 62%),
-      radial-gradient(ellipse 60% 42% at 88% -10%,rgba(94,178,255,.55),transparent 62%),
-      radial-gradient(ellipse 48% 34% at 72% 112%,rgba(140,120,255,.32),transparent 65%),
-      radial-gradient(ellipse 42% 30% at 8% 108%,rgba(64,199,230,.34),transparent 62%),
-      linear-gradient(160deg,#1b5fae 0%,#0f4a8f 34%,#0a3570 68%,#072a5c 100%) fixed}
+      radial-gradient(ellipse 55% 38% at 18% -6%,rgba(140,225,205,.22),transparent 62%),
+      radial-gradient(ellipse 60% 42% at 88% -10%,rgba(130,195,255,.26),transparent 62%),
+      radial-gradient(ellipse 42% 30% at 8% 108%,rgba(110,205,235,.16),transparent 62%),
+      linear-gradient(160deg,#2b6cb8 0%,#1d5a9e 34%,#174e8c 68%,#123f74 100%) fixed}
   /* ---------- masthead (aero glass) ---------- */
   .topbar{background:var(--glass);-webkit-backdrop-filter:blur(10px) saturate(1.5);backdrop-filter:blur(10px) saturate(1.5);position:relative;z-index:10;border-bottom:1px solid rgba(255,255,255,.7);
     box-shadow:inset 0 1px 0 rgba(255,255,255,.9),0 4px 20px rgba(4,30,66,.35)}
@@ -53,7 +52,7 @@
   .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:14px;grid-auto-rows:1fr}
   .grid .game{height:100%}
   /* ---------- game cards (glass) ---------- */
-  .game{position:relative;background:linear-gradient(180deg,rgba(255,255,255,.80),rgba(255,255,255,.55));border:1px solid rgba(255,255,255,.85);border-radius:8px;
+  .game{position:relative;background:linear-gradient(180deg,rgba(255,255,255,.94),rgba(255,255,255,.84));border:1px solid rgba(255,255,255,.85);border-radius:8px;
     padding:12px 14px 11px;box-shadow:inset 3px 0 0 var(--tc,#8ec9f5),inset 0 1px 0 rgba(255,255,255,.95),0 4px 16px rgba(4,30,66,.28)}
   .game-head{display:flex;align-items:center;justify-content:space-between;gap:10px;border-bottom:1px solid var(--line-soft);padding-bottom:8px;margin-bottom:5px;min-height:24px}
   .league-tag{font-family:var(--cond);font-size:11.5px;font-weight:600;letter-spacing:.1em;color:#33597f;text-transform:uppercase;white-space:nowrap;display:inline-flex;align-items:center;gap:5px}
@@ -165,7 +164,7 @@
   a.tick{cursor:pointer}
   a.tick:hover{background:rgba(110,195,255,.25)}
   /* ---------- fantasy ---------- */
-  .ff-match{border:1px solid rgba(255,255,255,.85);border-radius:8px;padding:10px 12px 6px;background:linear-gradient(180deg,rgba(255,255,255,.68),rgba(255,255,255,.45));
+  .ff-match{border:1px solid rgba(255,255,255,.85);border-radius:8px;padding:10px 12px 6px;background:linear-gradient(180deg,rgba(255,255,255,.88),rgba(255,255,255,.72));
     box-shadow:inset 0 1px 0 rgba(255,255,255,.95),0 3px 10px rgba(4,30,66,.18)}
   .ff-team{display:flex;align-items:baseline;gap:8px;padding:3px 0}
   .ff-team .nm{font-size:14.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--text)}
@@ -207,7 +206,7 @@
     .topbar-in{padding-top:10px;padding-bottom:9px}
     .brand-name{font-size:34px}
     .secnav{display:flex;align-items:center;gap:5px;width:100%;max-width:1500px;margin:0 auto;padding:10px 20px 0}
-    .secnav button{appearance:none;background:linear-gradient(180deg,rgba(255,255,255,.60),rgba(255,255,255,.26) 50%,rgba(190,224,250,.24));border:1px solid rgba(255,255,255,.7);color:#0d2c4e;
+    .secnav button{appearance:none;background:linear-gradient(180deg,rgba(255,255,255,.78),rgba(255,255,255,.45) 50%,rgba(196,228,252,.42));border:1px solid rgba(255,255,255,.7);color:#0d2c4e;
       font-family:var(--cond);font-size:12.5px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;
       padding:7px 13px;border-radius:11px;cursor:pointer;box-shadow:inset 0 1px 0 rgba(255,255,255,.9),0 2px 8px rgba(4,30,66,.3);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
     .secnav button:hover{background:linear-gradient(180deg,rgba(255,255,255,.8),rgba(255,255,255,.4) 50%,rgba(160,215,255,.4));color:#08305c}
@@ -285,16 +284,16 @@
   }
 @media (min-width:700px) and (min-height:560px){
   .ff-panel{overflow:hidden}
-  #ffBody{display:flex;flex-direction:column;flex:1;min-height:0}
-  .ff-std{flex:1 1 auto;height:100%;font-size:clamp(11px,1.55vh,13.5px)}
-  .ff-std td{padding:.5vh 4px}
-  .ff-std th{padding:.4vh 4px}
-  .ff-match{padding:7px 12px 4px}
-  .ff-team{padding:2px 0}
-  .ff-team .sc{font-size:19px}
-  .ff-meta{margin-top:5px}
-  .ff-asof{margin-top:6px}
-  .ff-panel .panel-head{margin-bottom:8px}
+  #ffBody{display:flex;flex-direction:column;flex:1;min-height:0;overflow:hidden}
+  .ff-std{font-size:clamp(10.5px,1.45vh,13px)}
+  .ff-std td{padding:.34vh 4px;line-height:1.22}
+  .ff-std th{padding:.3vh 4px}
+  .ff-match{padding:5px 12px 3px}
+  .ff-team{padding:1px 0}
+  .ff-team .sc{font-size:clamp(16px,2.2vh,19px)}
+  .ff-meta{margin-top:3px;font-size:11px}
+  .ff-asof{margin-top:4px;font-size:10.5px}
+  .ff-panel .panel-head{margin-bottom:6px}
 }
 </style>
 </head>
@@ -772,6 +771,7 @@ const NEWS_FEEDS=[
  {el:"newsWorld", src:"BBC News", url:"https://feeds.bbci.co.uk/news/world/rss.xml"},
  {el:"newsUS", src:"NPR", url:"https://feeds.npr.org/1001/rss.xml"},
  {el:"newsLocal", src:"Philadelphia Inquirer", url:"https://www.inquirer.com/arc/outboundfeeds/rss/?outputType=xml"}];
+function newsEsc(x){ return String(x==null?"":x).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
 function newsAgo(d){ const m=Math.max(1,Math.round((Date.now()-d.getTime())/60000)); if(m<60) return m+"m ago"; const h=Math.round(m/60); return h<24? h+"h ago" : Math.round(h/24)+"d ago"; }
 async function loadNewsFeed(f){
   const el=document.getElementById(f.el); if(!el) return;
@@ -782,7 +782,7 @@ async function loadNewsFeed(f){
     el.innerHTML=j.items.slice(0,3).map(it=>{
       const d=new Date(String(it.pubDate).replace(" ","T")+"Z");
       const ago=isNaN(d)? "" : " · "+newsAgo(d);
-      return `<div class="news-item"><a href="${esc(it.link)}" target="_blank" rel="noopener">${esc(it.title)} <span class="ext">↗</span></a><div class="news-src">${f.src}${ago}</div></div>`;
+      return `<div class="news-item"><a href="${newsEsc(it.link)}" target="_blank" rel="noopener">${newsEsc(it.title)} <span class="ext">↗</span></a><div class="news-src">${f.src}${ago}</div></div>`;
     }).join("");
   }catch(e){ el.innerHTML='<div class="news-dim">Headlines unavailable right now</div>'; }
 }
@@ -799,7 +799,7 @@ async function loadTrends(){
       const doc=new DOMParser().parseFromString(html,"text/html");
       const names=[...doc.querySelectorAll(".trend-card__list li a")].map(a=>a.textContent.trim()).filter(Boolean).slice(0,10);
       if(names.length<3) continue;
-      list.innerHTML=names.map(n=>`<a href="https://x.com/search?q=${encodeURIComponent(n)}" target="_blank" rel="noopener">${esc(n)}</a>`).join('<span class="sep">·</span>');
+      list.innerHTML=names.map(n=>`<a href="https://x.com/search?q=${encodeURIComponent(n)}" target="_blank" rel="noopener">${newsEsc(n)}</a>`).join('<span class="sep">·</span>');
       wrap.hidden=false; return;
     }catch(e){ /* try next route */ }
   }
