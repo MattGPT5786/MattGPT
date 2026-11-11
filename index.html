@@ -21,7 +21,7 @@
     --mono:"Segoe UI",-apple-system,"Helvetica Neue",Arial,sans-serif;
     --dotfont:"Segoe UI","Segoe UI Variable Text",-apple-system,"Helvetica Neue",Arial,sans-serif;
     --tahoma:var(--sans); --monofont:var(--mono); --serif:var(--sans);
-    --glass:linear-gradient(180deg,rgba(255,255,255,.90),rgba(255,255,255,.74) 48%,rgba(216,238,253,.70));
+    --glass:linear-gradient(180deg,rgba(240,249,255,.92),rgba(206,233,253,.78));
     --titlebar:linear-gradient(180deg,rgba(255,255,255,.92),rgba(255,255,255,.55) 50%,rgba(178,220,250,.50));
     --taskbar:linear-gradient(180deg,rgba(84,128,180,.55),rgba(18,48,92,.80) 50%,rgba(8,28,58,.90));
     --glow:0 0 12px rgba(255,255,255,.95),0 0 3px rgba(255,255,255,.85);
@@ -30,10 +30,10 @@
   html{-webkit-text-size-adjust:100%}
   body{margin:0;color:var(--text);font-family:var(--sans);font-size:14px;
     background:
-      radial-gradient(ellipse 55% 38% at 18% -6%,rgba(140,225,205,.22),transparent 62%),
-      radial-gradient(ellipse 60% 42% at 88% -10%,rgba(130,195,255,.26),transparent 62%),
-      radial-gradient(ellipse 42% 30% at 8% 108%,rgba(110,205,235,.16),transparent 62%),
-      linear-gradient(160deg,#2b6cb8 0%,#1d5a9e 34%,#174e8c 68%,#123f74 100%) fixed}
+      radial-gradient(ellipse 70% 50% at 50% 118%,rgba(170,225,255,.20),transparent 65%),
+      radial-gradient(ellipse 55% 40% at 12% -8%,rgba(255,255,255,.13),transparent 60%),
+      linear-gradient(115deg,transparent 52%,rgba(255,255,255,.055) 66%,transparent 80%),
+      linear-gradient(165deg,#5b97d6 0%,#3a77bd 32%,#2c62a4 64%,#1f4c86 100%) fixed}
   /* ---------- masthead (aero glass) ---------- */
   .topbar{background:var(--glass);-webkit-backdrop-filter:blur(10px) saturate(1.5);backdrop-filter:blur(10px) saturate(1.5);position:relative;z-index:10;border-bottom:1px solid rgba(255,255,255,.7);
     box-shadow:inset 0 1px 0 rgba(255,255,255,.9),0 4px 20px rgba(4,30,66,.35)}
@@ -52,7 +52,7 @@
   .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:14px;grid-auto-rows:1fr}
   .grid .game{height:100%}
   /* ---------- game cards (glass) ---------- */
-  .game{position:relative;background:linear-gradient(180deg,rgba(255,255,255,.94),rgba(255,255,255,.84));border:1px solid rgba(255,255,255,.85);border-radius:8px;
+  .game{position:relative;background:linear-gradient(180deg,#ffffff,#fbfdff);border:1px solid rgba(255,255,255,.85);border-radius:8px;
     padding:12px 14px 11px;box-shadow:inset 3px 0 0 var(--tc,#8ec9f5),inset 0 1px 0 rgba(255,255,255,.95),0 4px 16px rgba(4,30,66,.28)}
   .game-head{display:flex;align-items:center;justify-content:space-between;gap:10px;border-bottom:1px solid var(--line-soft);padding-bottom:8px;margin-bottom:5px;min-height:24px}
   .league-tag{font-family:var(--cond);font-size:11.5px;font-weight:600;letter-spacing:.1em;color:#33597f;text-transform:uppercase;white-space:nowrap;display:inline-flex;align-items:center;gap:5px}
@@ -87,12 +87,12 @@
   .wx-mid{display:flex;flex-direction:column;gap:10px}
   .wx-layout{display:grid;grid-template-columns:auto auto 1fr;gap:22px;align-items:center}
   @media (max-width:980px){.wx-layout{grid-template-columns:1fr;gap:14px}}
-  .panel{position:relative;background:var(--glass);-webkit-backdrop-filter:blur(9px) saturate(1.5);backdrop-filter:blur(9px) saturate(1.5);border:1px solid rgba(255,255,255,.75);border-radius:8px;
-    box-shadow:inset 0 1px 0 rgba(255,255,255,.9),0 10px 30px rgba(4,30,66,.35);padding:0 16px 16px}
-  .teams-wrap{position:relative;background:var(--glass);-webkit-backdrop-filter:blur(9px) saturate(1.5);backdrop-filter:blur(9px) saturate(1.5);border:1px solid rgba(255,255,255,.75);border-radius:8px;
-    box-shadow:inset 0 1px 0 rgba(255,255,255,.9),0 10px 30px rgba(4,30,66,.35);padding:0 16px 16px;margin-bottom:30px}
-  .panel-head{display:flex;align-items:baseline;justify-content:space-between;gap:10px;background:var(--titlebar);
-    margin:0 -16px 12px;padding:7px 12px;border-radius:7px 7px 0 0;border-bottom:1px solid rgba(90,140,190,.4);box-shadow:inset 0 1px 0 rgba(255,255,255,.85)}
+  .panel{position:relative;background:linear-gradient(180deg,#fbfdff,#f4f9fe);border:1px solid rgba(255,255,255,.95);border-radius:8px;
+    box-shadow:0 0 0 7px rgba(173,218,248,.35),0 0 26px rgba(140,200,250,.30),0 12px 34px rgba(3,26,58,.45),inset 0 0 0 1px rgba(96,148,198,.40);padding:0 16px 16px}
+  .teams-wrap{position:relative;background:linear-gradient(180deg,#fbfdff,#f4f9fe);border:1px solid rgba(255,255,255,.95);border-radius:8px;
+    box-shadow:0 0 0 7px rgba(173,218,248,.35),0 0 26px rgba(140,200,250,.30),0 12px 34px rgba(3,26,58,.45),inset 0 0 0 1px rgba(96,148,198,.40);padding:0 16px 16px;margin-bottom:30px}
+  .panel-head{display:flex;align-items:baseline;justify-content:space-between;gap:10px;background:linear-gradient(180deg,rgba(233,246,255,.95),rgba(191,226,252,.75));
+    margin:0 -16px 12px;padding:7px 12px;border-radius:7px 7px 0 0;border-bottom:1px solid rgba(96,148,198,.45);box-shadow:inset 0 1px 0 rgba(255,255,255,.9)}
   .panel-title{font-family:var(--cond);font-weight:600;font-size:14px;letter-spacing:.06em;text-transform:uppercase;color:#0d2c4e;text-shadow:0 1px 0 rgba(255,255,255,.7)}
   .panel-note{font-size:11.5px;color:var(--muted);white-space:nowrap}
   .wx-now{display:flex;align-items:center;gap:16px}
@@ -164,7 +164,7 @@
   a.tick{cursor:pointer}
   a.tick:hover{background:rgba(110,195,255,.25)}
   /* ---------- fantasy ---------- */
-  .ff-match{border:1px solid rgba(255,255,255,.85);border-radius:8px;padding:10px 12px 6px;background:linear-gradient(180deg,rgba(255,255,255,.88),rgba(255,255,255,.72));
+  .ff-match{border:1px solid rgba(255,255,255,.85);border-radius:8px;padding:10px 12px 6px;background:linear-gradient(180deg,#f2f9ff,#e8f3fd);
     box-shadow:inset 0 1px 0 rgba(255,255,255,.95),0 3px 10px rgba(4,30,66,.18)}
   .ff-team{display:flex;align-items:baseline;gap:8px;padding:3px 0}
   .ff-team .nm{font-size:14.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--text)}
@@ -184,7 +184,9 @@
   .news-panel{display:flex;flex-direction:column}
   .news-cols{flex:1;min-height:0;display:grid;grid-template-columns:1fr;gap:6px;padding:12px 16px;align-content:start}
   .news-h{font-family:var(--cond);font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:#33597f;border-bottom:1px solid rgba(70,120,180,.3);padding-bottom:5px;margin-bottom:9px}
-  .news-item{margin:0 0 11px}
+  .news-item{margin:0 0 11px;display:flex;gap:10px}
+  .news-thumb{width:78px;height:58px;object-fit:cover;border-radius:6px;border:1px solid rgba(96,148,198,.4);flex:0 0 auto;background:#dceefc}
+  .news-txt{flex:1;min-width:0}
   .news-item a{display:block;color:var(--text);text-decoration:none;font-size:15.5px;line-height:1.28}
   .news-item a:hover{color:var(--amber);text-decoration:underline}
   .news-item a .ext{color:var(--amber);font-size:11px;vertical-align:super}
@@ -216,9 +218,9 @@
     main{flex:1;min-height:0;width:100%;max-width:1500px;display:flex;flex-direction:column;padding:12px 20px 10px}
     .stage{position:relative;flex:1;min-height:0}
     .view{position:absolute;inset:0;margin:0;visibility:hidden;opacity:0;transition:opacity .45s ease;pointer-events:none;overflow:hidden;
-      background:var(--glass);-webkit-backdrop-filter:blur(10px) saturate(1.5);backdrop-filter:blur(10px) saturate(1.5);
-      border:1px solid rgba(255,255,255,.75);border-radius:8px;
-      box-shadow:inset 0 1px 0 rgba(255,255,255,.9),0 12px 34px rgba(4,30,66,.4)}
+      background:linear-gradient(180deg,#fbfdff,#f4f9fe);
+      border:1px solid rgba(255,255,255,.95);border-radius:8px;
+      box-shadow:0 0 0 7px rgba(173,218,248,.35),0 0 26px rgba(140,200,250,.30),0 12px 34px rgba(3,26,58,.45),inset 0 0 0 1px rgba(96,148,198,.40)}
     .view.active{visibility:visible;opacity:1;pointer-events:auto}
     .panel,.teams-wrap{background:transparent;border:none;border-radius:0;box-shadow:none;margin:0;-webkit-backdrop-filter:none;backdrop-filter:none}
     .wx-panel,.ff-panel{overflow:auto;scrollbar-width:thin;scrollbar-color:#7fa8cf transparent}
@@ -769,38 +771,53 @@ setInterval(loadAll, 60000);
 
 const NEWS_FEEDS=[
  {el:"newsWorld", src:"BBC News", url:"https://feeds.bbci.co.uk/news/world/rss.xml"},
- {el:"newsUS", src:"NPR", url:"https://feeds.npr.org/1001/rss.xml"},
- {el:"newsLocal", src:"Philadelphia Inquirer", url:"https://www.inquirer.com/arc/outboundfeeds/rss/?outputType=xml"}];
+ {el:"newsUS", src:"NPR", url:"https://feeds.npr.org/1003/rss.xml"},
+ {el:"newsLocal", src:"WHYY", url:"https://whyy.org/feed/", count:8, skip:/newscast/i}];
 function newsEsc(x){ return String(x==null?"":x).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
 function newsAgo(d){ const m=Math.max(1,Math.round((Date.now()-d.getTime())/60000)); if(m<60) return m+"m ago"; const h=Math.round(m/60); return h<24? h+"h ago" : Math.round(h/24)+"d ago"; }
 async function loadNewsFeed(f){
   const el=document.getElementById(f.el); if(!el) return;
   try{
-    const r=await fetch("https://api.rss2json.com/v1/api.json?count=3&rss_url="+encodeURIComponent(f.url), {cache:"no-store"});
+    const r=await fetch("https://api.rss2json.com/v1/api.json?count="+(f.count||3)+"&rss_url="+encodeURIComponent(f.url), {cache:"no-store"});
     const j=await r.json();
     if(j.status!=="ok" || !j.items || !j.items.length) throw new Error("feed");
-    el.innerHTML=j.items.slice(0,3).map(it=>{
+    const items=j.items.filter(it=>!(f.skip && f.skip.test(it.title||""))).slice(0,3);
+    el.innerHTML=items.map(it=>{
       const d=new Date(String(it.pubDate).replace(" ","T")+"Z");
       const ago=isNaN(d)? "" : " · "+newsAgo(d);
-      return `<div class="news-item"><a href="${newsEsc(it.link)}" target="_blank" rel="noopener">${newsEsc(it.title)} <span class="ext">↗</span></a><div class="news-src">${f.src}${ago}</div></div>`;
+      let img=it.thumbnail || (it.enclosure && it.enclosure.link) || "";
+      if(!img && it.content){ const m=String(it.content).match(/<img[^>]+src="([^"]+)"/); if(m) img=m[1]; }
+      const thumb=img? `<img class="news-thumb" src="${newsEsc(img)}" alt="" loading="lazy" onerror="this.remove()">` : "";
+      return `<div class="news-item">${thumb}<div class="news-txt"><a href="${newsEsc(it.link)}" target="_blank" rel="noopener">${newsEsc(it.title)} <span class="ext">↗</span></a><div class="news-src">${f.src}${ago}</div></div></div>`;
     }).join("");
   }catch(e){ el.innerHTML='<div class="news-dim">Headlines unavailable right now</div>'; }
 }
 async function loadTrends(){
   const wrap=document.getElementById("newsTrends"), list=document.getElementById("newsTrendList");
   if(!wrap||!list) return;
-  const target="https://trends24.in/";
-  const routes=["https://api.allorigins.win/raw?url="+encodeURIComponent(target),
-                "https://api.codetabs.com/v1/proxy/?quest="+target];
+  const TT="https://www.twitter-trending.com/worldwide", T24="https://trends24.in/";
+  const routes=["https://cors.eu.org/"+TT,
+                "https://api.allorigins.win/raw?url="+encodeURIComponent(TT),
+                "https://api.allorigins.win/raw?url="+encodeURIComponent(T24),
+                "https://api.codetabs.com/v1/proxy/?quest="+T24];
+  const render=names=>{
+    list.innerHTML=names.map(n=>`<a href="https://x.com/search?q=${encodeURIComponent(n)}" target="_blank" rel="noopener">${newsEsc(n)}</a>`).join('<span class="sep">·</span>');
+    wrap.hidden=false;
+  };
   for(const u of routes){
     try{
       const r=await fetch(u,{cache:"no-store"}); if(!r.ok) continue;
       const html=await r.text();
-      const doc=new DOMParser().parseFromString(html,"text/html");
-      const names=[...doc.querySelectorAll(".trend-card__list li a")].map(a=>a.textContent.trim()).filter(Boolean).slice(0,10);
+      let names=[];
+      const ld=html.match(/"itemListElement":\[(.*?)\]\}/s);
+      if(ld){ try{ names=JSON.parse("["+ld[1]+"]").map(x=>x.name).filter(Boolean); }catch(e){ names=[]; } }
+      if(names.length<3){
+        const doc=new DOMParser().parseFromString(html,"text/html");
+        names=[...doc.querySelectorAll(".trend-card__list li a")].map(a=>a.textContent.trim()).filter(Boolean);
+      }
+      names=names.slice(0,10);
       if(names.length<3) continue;
-      list.innerHTML=names.map(n=>`<a href="https://x.com/search?q=${encodeURIComponent(n)}" target="_blank" rel="noopener">${newsEsc(n)}</a>`).join('<span class="sep">·</span>');
-      wrap.hidden=false; return;
+      render(names); return;
     }catch(e){ /* try next route */ }
   }
   wrap.hidden=true;
