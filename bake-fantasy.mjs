@@ -38,10 +38,10 @@ const mean = winVals.reduce((a, b) => a + b, 0) / winVals.length;
 const sd = Math.max(0.9, Math.sqrt(winVals.reduce((a, b) => a + (b - mean) ** 2, 0) / winVals.length));
 const minW = Math.min(...winVals), maxW = Math.max(...winVals);
 
-const W = 920, H = 318, BASE = 288, PADX = 70;
+const W = 880, H = 378, BASE = 344, PADX = 64;
 const X = (w) => PADX + (w - minW) * ((W - 2 * PADX) / Math.max(1, maxW - minW));
 const gauss = (x) => Math.exp(-((x - mean) ** 2) / (2 * sd * sd));
-const curveY = (w) => BASE - gauss(w) * 62;
+const curveY = (w) => BASE - gauss(w) * 66;
 
 let path = "";
 for (let i = 0; i <= 72; i++) {
@@ -50,25 +50,25 @@ for (let i = 0; i <= 72; i++) {
 }
 const area = `${path}L${X(maxW + 0.55).toFixed(1)},${BASE} L${X(minW - 0.55).toFixed(1)},${BASE} Z`;
 
-const short = (s) => (s.length > 16 ? s.slice(0, 16).trimEnd() + "…" : s);
-const SLOT = 40;
+const short = (s) => (s.length > 15 ? s.slice(0, 15).trimEnd() + "…" : s);
+const SLOT = 54;
 let cols = "";
 for (let w = minW; w <= maxW; w++) {
   const x = X(w), teams = byWins.get(w) || [];
-  cols += `<line x1="${x}" y1="${BASE - 4}" x2="${x}" y2="${BASE + 4}" stroke="#a7adb5" stroke-width="1"/>`;
-  cols += `<text x="${x}" y="${BASE + 18}" text-anchor="middle" font-size="10.5" font-weight="${teams.length ? 700 : 400}" fill="${teams.length ? "#4c566c" : "#9aa4ae"}">${w}-${games - w}</text>`;
+  cols += `<line x1="${x}" y1="${BASE - 5}" x2="${x}" y2="${BASE + 5}" stroke="#a7adb5" stroke-width="1.2"/>`;
+  cols += `<text x="${x}" y="${BASE + 21}" text-anchor="middle" font-size="12" font-weight="${teams.length ? 700 : 400}" fill="${teams.length ? "#4c566c" : "#9aa4ae"}">${w}-${games - w}</text>`;
   teams.forEach((t, i) => {
     const top = curveY(w) - (teams.length - i) * SLOT;
     const me = t.team === m.me.name;
     cols += `<g><title>${esc(t.team)} · ${esc(t.record)} · PF ${esc(t.pf)}</title>` +
-      `<text x="${x}" y="${(top + 12).toFixed(1)}" text-anchor="middle" font-size="10.5" font-weight="800" fill="${me ? "#123c6e" : "#2a2e35"}">${esc(t.pf)}</text>` +
-      `<circle cx="${x}" cy="${(top + 23).toFixed(1)}" r="4.6" fill="${me ? "#1f66c1" : "#6d84a2"}"/>` +
-      `<text x="${x}" y="${(top + 37).toFixed(1)}" text-anchor="middle" font-size="8.6" fill="${me ? "#123c6e" : "#5a6672"}">${esc(short(t.team))}</text></g>`;
+      `<text x="${x}" y="${(top + 15).toFixed(1)}" text-anchor="middle" font-size="13" font-weight="800" fill="${me ? "#123c6e" : "#22262d"}">${esc(t.pf)}</text>` +
+      `<circle cx="${x}" cy="${(top + 30).toFixed(1)}" r="6" fill="${me ? "#1f66c1" : "#6d84a2"}"/>` +
+      `<text x="${x}" y="${(top + 50).toFixed(1)}" text-anchor="middle" font-size="10.8" font-weight="${me ? 700 : 400}" fill="${me ? "#123c6e" : "#3d4750"}">${esc(short(t.team))}</text></g>`;
   });
 }
 const chart = `<div class="ff-chart"><svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Standings bell curve by record, points-for on top of each team">` +
   `<path d="${area}" fill="rgba(31,102,193,.10)"/>` +
-  `<path d="${path}" fill="none" stroke="#1f66c1" stroke-width="2.4"/>` +
+  `<path d="${path}" fill="none" stroke="#1f66c1" stroke-width="3"/>` +
   `<line x1="${PADX - 26}" y1="${BASE}" x2="${W - PADX + 26}" y2="${BASE}" stroke="#c3cad2" stroke-width="1"/>` +
   cols + `</svg></div>`;
 
