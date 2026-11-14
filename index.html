@@ -6,7 +6,6 @@
 <title>MattGPT — Live Dashboard</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=UnifrakturMaguntia&family=Playfair+Display:wght@700;900&family=Libre+Franklin:wght@400;600;700;800&display=swap" rel="stylesheet">
 
 <style>
   :root{
@@ -17,13 +16,13 @@
     --accent:#121212; --live:#b3151b; --gold:#121212;
     --blue:#121212; --dim:var(--muted); --panel2:#f7f7f5;
     --radius:0px;
-    --sans:"Libre Franklin","Franklin Gothic Medium","Franklin Gothic",Helvetica,Arial,sans-serif;
-    --cond:"Libre Franklin","Franklin Gothic Medium","Franklin Gothic",Helvetica,Arial,sans-serif;
-    --mono:"Libre Franklin","Franklin Gothic Medium",Helvetica,Arial,sans-serif;
+    --sans:"Times New Roman",Times,serif;
+    --cond:"Times New Roman",Times,serif;
+    --mono:"Times New Roman",Times,serif;
     --dotfont:var(--sans);
     --tahoma:var(--sans); --monofont:var(--mono);
-    --serif:"Playfair Display",Georgia,"Times New Roman",serif;
-    --nameplate:"UnifrakturMaguntia",Georgia,serif;
+    --serif:"Times New Roman",Times,serif;
+    --nameplate:"Times New Roman",Times,serif;
     --navbar:#ffffff;
     --tabbar:#121212;
     --glow:none;
@@ -36,7 +35,7 @@
   .topbar::before{content:none}
   .topbar-in{max-width:1120px;margin:0 auto;padding:14px 20px 11px;display:flex;flex-direction:column;align-items:center;gap:6px;position:relative}
   .brand{display:flex;align-items:center;gap:12px;min-width:0}
-  .brand-name{font-family:var(--nameplate);font-weight:400;font-size:46px;line-height:1.05;color:#121212;letter-spacing:.01em}
+  .brand-name{font-family:var(--nameplate);font-weight:700;font-size:46px;line-height:1.05;color:#121212;letter-spacing:.01em}
   .top-right{width:100%;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:16px}
   .date{grid-column:2;justify-self:center;font-family:var(--mono);font-size:11.5px;font-weight:600;color:#121212;letter-spacing:.09em;text-transform:uppercase}
   /* ---------- layout ---------- */
@@ -382,7 +381,7 @@
 
   </div><!-- /stage -->
   <div class="ticker" aria-label="Score ticker">
-    <div class="ticker-label"><svg class="ticker-logo" viewBox="0 0 196 48" role="img" aria-label="MattGPT" xmlns="http://www.w3.org/2000/svg"><text x="98" y="36" text-anchor="middle" textLength="192" lengthAdjust="spacingAndGlyphs" font-family="'UnifrakturMaguntia',Georgia,serif" font-size="30" fill="#ffffff">MATTGPT</text><rect x="2" y="43" width="192" height="2" fill="#ffffff" opacity="0.85"/></svg></div>
+    <div class="ticker-label"><svg class="ticker-logo" viewBox="0 0 196 48" role="img" aria-label="MattGPT" xmlns="http://www.w3.org/2000/svg"><text x="98" y="36" text-anchor="middle" textLength="192" lengthAdjust="spacingAndGlyphs" font-family="'Times New Roman',Times,serif" font-size="30" font-weight="700" fill="#ffffff">MATTGPT</text><rect x="2" y="43" width="192" height="2" fill="#ffffff" opacity="0.85"/></svg></div>
     <div class="ticker-view"><div class="ticker-track" id="tickerTrack"><span class="tick">Loading scores…</span></div></div>
   </div>
 </main>
@@ -649,8 +648,8 @@ async function loadWeather(){
 /* ---------- markets (CNBC: CORS-open quotes + daily bars) ---------- */
 const MKTS = [
   {cell:"mkt-spx", sym:".SPX", name:"S&P 500", color:"#121212"},
-  {cell:"mkt-dji", sym:".DJI", name:"DOW JONES", color:"#8a8a86"},
-  {cell:"mkt-ixic", sym:".IXIC", name:"NASDAQ COMPOSITE", color:"#555555"}
+  {cell:"mkt-dji", sym:".DJI", name:"DOW JONES", color:"#1a56db"},
+  {cell:"mkt-ixic", sym:".IXIC", name:"NASDAQ COMPOSITE", color:"#b3151b"}
 ];
 function mktChartSVG(bars, color, maxPts){
   const closes = (maxPts ? bars.slice(-maxPts) : bars).map(b => parseFloat(b.close)).filter(n => isFinite(n));
@@ -660,8 +659,8 @@ function mktChartSVG(bars, color, maxPts){
   const pts = closes.map((c, i) => [PAD + i * (W - 2 * PAD) / (closes.length - 1), H - PAD - (c - min) / span * (H - 2 * PAD)]);
   const line = pts.map(p => p.map(n => n.toFixed(1)).join(",")).join(" ");
   const area = "M" + pts[0][0].toFixed(1) + "," + H + " L" + pts.map(p => p.map(n => n.toFixed(1)).join(",")).join(" L") + " L" + pts[pts.length - 1][0].toFixed(1) + "," + H + " Z";
-  const dots = closes.length <= 30 ? pts.map(p => `<circle cx="${p[0].toFixed(1)}" cy="${p[1].toFixed(1)}" r="2.1" fill="${color}"/>`).join("") : "";
-  return `<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" aria-hidden="true"><path d="${area}" fill="${color}" opacity="0.17"/><polyline points="${line}" fill="none" stroke="${color}" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round" style="filter:drop-shadow(0 0 3px ${color})"/>${dots}</svg>`;
+  const dots = closes.length <= 30 ? pts.map(p => `<circle cx="${p[0].toFixed(1)}" cy="${p[1].toFixed(1)}" r="2.4" fill="${color}"/>`).join("") : "";
+  return `<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" aria-hidden="true"><path d="${area}" fill="${color}" opacity="0.07"/><polyline points="${line}" fill="none" stroke="${color}" stroke-width="3.4" stroke-linejoin="round" stroke-linecap="round"/>${dots}</svg>`;
 }
 async function loadMarkets(){
   try{
@@ -723,7 +722,7 @@ setInterval(loadAll, 60000);
 <script>
 (function(){
   var ORDER=["news","sports","weather","weathermap","airtraffic","fantasy","markets"];
-  var CYCLE_MS=10000;
+  var CYCLE_MS=30000;
   var views={}, tabs=[].slice.call(document.querySelectorAll(".secnav button"));
   ORDER.forEach(function(k){ views[k]=document.querySelector('.view[data-view="'+k+'"]'); });
   var cur=0, timer=null;
@@ -801,7 +800,7 @@ async function loadNewsCat(cat){
 async function loadTrends(){
   const wrap=document.getElementById("newsTrends"), list=document.getElementById("newsTrendList");
   if(!wrap||!list) return;
-  const TT="https://www.twitter-trending.com/worldwide", T24="https://trends24.in/";
+  const TT="https://www.twitter-trending.com/united-states", T24="https://trends24.in/united-states/";
   const routes=["https://cors.eu.org/"+TT,
                 "https://api.allorigins.win/raw?url="+encodeURIComponent(TT),
                 "https://api.allorigins.win/raw?url="+encodeURIComponent(T24),
@@ -821,7 +820,7 @@ async function loadTrends(){
         const doc=new DOMParser().parseFromString(html,"text/html");
         names=[...doc.querySelectorAll(".trend-card__list li a")].map(a=>a.textContent.trim()).filter(Boolean);
       }
-      names=names.slice(0,10);
+      names=names.filter(n=>/^[\x00-\x7F]+$/.test(n) && /[A-Za-z]/.test(n)).slice(0,10);
       if(names.length<3) continue;
       render(names); return;
     }catch(e){ /* try next route */ }
