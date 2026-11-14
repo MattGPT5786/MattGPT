@@ -135,19 +135,19 @@
   .ticker::before{content:none}
   .ticker-label{flex:0 0 auto;background:#121212;color:#fff;font-weight:700;font-size:11px;
     letter-spacing:.1em;display:flex;align-items:center;margin:0;padding:0 14px;border-radius:0;z-index:2;text-transform:uppercase;border:none;border-right:1px solid #3a3a38}
-  .ticker-label img{display:none}
-  .ticker-logo{height:25px;width:auto;display:block;text-transform:none}
+  .ticker-label img{height:24px;width:auto;display:block;filter:brightness(0) invert(1)}
+  
   .logo-txt{font-family:var(--sans);color:#fff;letter-spacing:.1em}
   .ticker-view{flex:1;overflow:hidden;position:relative;z-index:1;-webkit-mask-image:linear-gradient(90deg,transparent,#000 28px,#000 calc(100% - 28px),transparent);
     mask-image:linear-gradient(90deg,transparent,#000 28px,#000 calc(100% - 28px),transparent)}
-  .ticker-track{display:inline-flex;white-space:nowrap;padding:11px 0;animation:scroll linear infinite;will-change:transform}
+  .ticker-track{display:inline-flex;white-space:nowrap;padding:15px 0;animation:scroll linear infinite;will-change:transform}
   .ticker-view:hover .ticker-track{animation-play-state:paused}
   @keyframes scroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
   @media (prefers-reduced-motion: reduce){.ticker-track{animation:none}.dot{animation:none}.skel{animation:none}}
-  .tick{display:inline-flex;align-items:center;gap:7px;padding:0 18px;border-right:1px solid rgba(255,255,255,.22);font-size:13px;font-variant-numeric:tabular-nums;color:#f5f5f2}
-  .tick .lg{color:#bdbdb8;font-size:9.5px;font-weight:700;letter-spacing:.1em}
-  .tick img{width:19px;height:19px;object-fit:contain}
-  .tick .st{color:#bdbdb8;font-size:10.5px;letter-spacing:.04em}
+  .tick{display:inline-flex;align-items:center;gap:9px;padding:0 22px;border-right:1px solid rgba(255,255,255,.22);font-size:16px;font-variant-numeric:tabular-nums;color:#f5f5f2}
+  .tick .lg{color:#bdbdb8;font-size:11.5px;font-weight:700;letter-spacing:.1em}
+  .tick img{width:24px;height:24px;object-fit:contain}
+  .tick .st{color:#bdbdb8;font-size:13px;letter-spacing:.04em}
   .tick .st.live{color:#ff8f88;font-weight:700}
   .tick.fav{background:rgba(255,255,255,.13)}
   .game-link{display:block;text-decoration:none;color:inherit;cursor:pointer;border-radius:0}
@@ -179,16 +179,16 @@
   /* ---------- news ---------- */
   .news-panel{display:flex;flex-direction:column}
   .news-cols{flex:1;min-height:0;display:grid;grid-template-columns:1fr;gap:12px;padding:12px 16px;align-content:start}
-  .news-col{background:#ffffff;border:1px solid #dfdfdd;border-radius:0;padding:10px 12px}
-  .news-h{font-family:var(--cond);font-size:12px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:#121212;border-top:2px solid #121212;padding-top:6px;margin-bottom:9px}
-  .news-item{margin:0 0 11px;display:flex;gap:10px}
-  .news-item:last-child{margin-bottom:2px}
+  .news-col{background:#ffffff;border:1px solid #dfdfdd;border-radius:0;padding:14px 16px}
+  .news-h{font-family:var(--cond);font-size:12px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:#121212;border-top:2px solid #121212;padding-top:6px;margin-bottom:14px}
+  .news-item{margin:0 0 19px;display:flex;gap:12px}
+  .news-item:last-child{margin-bottom:4px}
   .news-thumb{width:78px;height:58px;object-fit:cover;border-radius:0;border:1px solid #c9c9c6;flex:0 0 auto;background:#e8e8e6}
   .news-txt{flex:1;min-width:0}
-  .news-item a{display:block;color:var(--text);text-decoration:none;font-family:var(--serif);font-weight:700;font-size:15.5px;line-height:1.28}
+  .news-item a{display:block;color:var(--text);text-decoration:none;font-family:var(--serif);font-weight:700;font-size:15.5px;line-height:1.45}
   .news-item a:hover{color:#121212;text-decoration:underline}
   .news-item a .ext{color:#767676;font-size:11px;vertical-align:super}
-  .news-src{font-family:var(--mono);font-size:10.5px;color:var(--faint);margin-top:2px;letter-spacing:.03em;text-transform:uppercase}
+  .news-src{font-family:var(--mono);font-size:10.5px;color:var(--faint);margin-top:4px;letter-spacing:.03em;text-transform:uppercase}
   .news-dim{color:var(--faint);font-size:13.5px}
   .news-trends{background:#ffffff;border:1px solid #dfdfdd;border-radius:0;margin:0 16px 12px;padding:8px 12px 10px;font-size:12.5px}
   .news-trends-h{font-family:var(--cond);font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:#121212;font-size:11px;margin-right:10px}
@@ -381,7 +381,7 @@
 
   </div><!-- /stage -->
   <div class="ticker" aria-label="Score ticker">
-    <div class="ticker-label"><svg class="ticker-logo" viewBox="0 0 196 48" role="img" aria-label="MattGPT" xmlns="http://www.w3.org/2000/svg"><text x="98" y="36" text-anchor="middle" textLength="192" lengthAdjust="spacingAndGlyphs" font-family="'Times New Roman',Times,serif" font-size="30" font-weight="700" fill="#ffffff">MATTGPT</text><rect x="2" y="43" width="192" height="2" fill="#ffffff" opacity="0.85"/></svg></div>
+    <div class="ticker-label"><img src="https://a.espncdn.com/redesign/assets/img/logos/logo-espn-82x20@2x.png" alt="ESPN"></div>
     <div class="ticker-view"><div class="ticker-track" id="tickerTrack"><span class="tick">Loading scores…</span></div></div>
   </div>
 </main>
