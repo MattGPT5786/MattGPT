@@ -131,11 +131,11 @@
   .wxmap-panel,.air-panel{margin-bottom:30px;padding:0;overflow:hidden}
   .wxmap-frame,.air-frame{display:block;width:100%;height:480px;border:none;background:#e8e8e6;border-radius:0;box-shadow:0 0 0 1px #121212}
   /* ---------- ticker (black news bar) ---------- */
-  .ticker{display:flex;align-items:stretch;background:#121212;overflow:hidden;margin-top:30px;border-top:1px solid #121212;position:relative}
+  .ticker{display:flex;align-items:stretch;background:#ffffff;overflow:hidden;margin-top:30px;border-top:2px solid #121212;border-bottom:1px solid #121212;position:relative}
   .ticker::before{content:none}
-  .ticker-label{flex:0 0 auto;background:#121212;color:#fff;font-weight:700;font-size:11px;
-    letter-spacing:.1em;display:flex;align-items:center;margin:0;padding:0 14px;border-radius:0;z-index:2;text-transform:uppercase;border:none;border-right:1px solid #3a3a38}
-  .ticker-label img{height:24px;width:auto;display:block;filter:brightness(0) invert(1)}
+  .ticker-label{flex:0 0 auto;background:#ffffff;color:#fff;font-weight:700;font-size:11px;
+    letter-spacing:.1em;display:flex;align-items:center;margin:0;padding:0 14px;border-radius:0;z-index:2;text-transform:uppercase;border:none;border-right:1px solid #121212}
+  .ticker-label img{height:24px;width:auto;display:block}
   
   .logo-txt{font-family:var(--sans);color:#fff;letter-spacing:.1em}
   .ticker-view{flex:1;overflow:hidden;position:relative;z-index:1;-webkit-mask-image:linear-gradient(90deg,transparent,#000 28px,#000 calc(100% - 28px),transparent);
@@ -144,12 +144,12 @@
   .ticker-view:hover .ticker-track{animation-play-state:paused}
   @keyframes scroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
   @media (prefers-reduced-motion: reduce){.ticker-track{animation:none}.dot{animation:none}.skel{animation:none}}
-  .tick{display:inline-flex;align-items:center;gap:9px;padding:0 22px;border-right:1px solid rgba(255,255,255,.22);font-size:16px;font-variant-numeric:tabular-nums;color:#f5f5f2}
-  .tick .lg{color:#bdbdb8;font-size:11.5px;font-weight:700;letter-spacing:.1em}
+  .tick{display:inline-flex;align-items:center;gap:9px;padding:0 22px;border-right:1px solid #e2e2e0;font-size:16px;font-variant-numeric:tabular-nums;color:#121212}
+  .tick .lg{color:#767676;font-size:11.5px;font-weight:700;letter-spacing:.1em}
   .tick img{width:24px;height:24px;object-fit:contain}
-  .tick .st{color:#bdbdb8;font-size:13px;letter-spacing:.04em}
-  .tick .st.live{color:#ff8f88;font-weight:700}
-  .tick.fav{background:rgba(255,255,255,.13)}
+  .tick .st{color:#767676;font-size:13px;letter-spacing:.04em}
+  .tick .st.live{color:#b3151b;font-weight:700}
+  .tick.fav{background:rgba(0,0,0,.06)}
   .game-link{display:block;text-decoration:none;color:inherit;cursor:pointer;border-radius:0}
   .game-link:hover{background:rgba(0,0,0,.035)}
   .block-link{display:block;text-decoration:none;color:inherit;cursor:pointer}
@@ -157,7 +157,7 @@
   a.mkt-cell{text-decoration:none;color:inherit;cursor:pointer}
   a.mkt-cell:hover{background:#f7f7f5}
   a.tick{cursor:pointer}
-  a.tick:hover{background:rgba(255,255,255,.2)}
+  a.tick:hover{background:rgba(0,0,0,.06)}
   /* ---------- fantasy ---------- */
   .ff-match{border:1px solid #dfdfdd;border-radius:0;padding:10px 12px 6px;background:#ffffff}
   .ff-team{display:flex;align-items:baseline;gap:8px;padding:3px 0}
