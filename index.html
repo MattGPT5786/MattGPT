@@ -246,6 +246,10 @@
   .paper-item{display:block;color:var(--text);text-decoration:none;font-family:var(--serif);font-weight:700;font-size:15.5px;line-height:1.5;margin:0 0 13px}
   .paper-lead:hover,.paper-item:hover{text-decoration:underline}
   .news-trends{background:#ffffff;border:1px solid #dfdfdd;border-radius:0;margin:0 16px 12px;padding:8px 12px 10px;font-size:12.5px}
+  .trends-bar{margin:14px 0 0;display:flex;align-items:center;overflow:hidden}
+  .trends-bar[hidden]{display:none}
+  .trends-bar .news-trends-h{flex:0 0 auto}
+  .trends-bar .news-trend-list{overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
   .news-trends-h{font-family:var(--cond);font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:#121212;font-size:11px;margin-right:10px}
   .news-trend-list a{color:#121212;text-decoration:none;white-space:nowrap}
   .news-trend-list a:hover{text-decoration:underline}
@@ -578,6 +582,7 @@
     </section>
 
   </div><!-- /stage -->
+  <div class="news-trends trends-bar" id="newsTrends" hidden><span class="news-trends-h">𝕏 Trending worldwide</span><span class="news-trend-list" id="newsTrendList"></span></div>
   <div class="ticker" aria-label="Score ticker">
     <div class="ticker-label"><img src="https://a.espncdn.com/redesign/assets/img/logos/logo-espn-82x20@2x.png" alt="ESPN"></div>
     <div class="ticker-view"><div class="ticker-track" id="tickerTrack"><span class="tick">Loading scores…</span></div></div>
@@ -1090,7 +1095,7 @@ async function loadBriefings(){
   };
   const pages=[];
   const flagRows=flagship.length? flagship.map(function(it){ return row(it,"brief-item front-item"); }).join("") : '<div class="brief-none">Briefings unavailable right now</div>';
-  pages.push({name:"Front Page", html:'<div class="front-cols"><div class="news-col"><div class="news-h">Flagship · Top Stories</div>'+flagRows+'</div><div class="news-col"><div class="news-h">📍 Local · 6abc</div><div class="news-list" id="newsLocal"><div class="news-dim">Loading headlines…</div></div></div></div><div class="news-trends" id="newsTrends" hidden><span class="news-trends-h">𝕏 Trending worldwide</span><span class="news-trend-list" id="newsTrendList"></span></div>'});
+  pages.push({name:"Front Page", html:'<div class="front-cols"><div class="news-col"><div class="news-h">Flagship · Top Stories</div>'+flagRows+'</div><div class="news-col"><div class="news-h">📍 Local · 6abc</div><div class="news-list" id="newsLocal"><div class="news-dim">Loading headlines…</div></div></div></div>'});
   BRIEFINGS.slice(1).forEach(function(b){
     let pool=sorted.filter(function(it){ return (it.categories||[]).some(function(c){ return b.cats.indexOf(c)>=0; }); });
     const fresh=pool.filter(function(it){ return !flagLinks.has(it.link); });
