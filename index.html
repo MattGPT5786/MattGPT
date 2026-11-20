@@ -74,6 +74,7 @@
   .next-when{font-weight:700;font-size:14px;margin:2px 0 4px;color:var(--text)}
   .next-name{font-size:13px;color:var(--muted);line-height:1.45}
   .note{font-size:12.5px;color:var(--faint);line-height:1.5;margin-top:6px}
+  .game-tv{font-size:12px;color:var(--muted);margin-top:7px;border-top:1px solid #e8e8e6;padding-top:6px}
   .empty{color:var(--muted);font-size:13.5px;padding:10px 0}
   .skel{height:132px;border:1px solid #dfdfdd;border-radius:0;background:linear-gradient(100deg,#ececea 40%,#f6f6f3 50%,#ececea 60%);background-size:200% 100%;animation:shimmer 1.4s infinite}
   @keyframes shimmer{to{background-position:-200% 0}}
@@ -464,6 +465,8 @@
   .tick .lg{color:#00e5ff}
   .tick .st{color:#d8d8de}
   .tick b{color:#ffffff}
+  .game-tv{color:#9a9aa2;border-top-color:#26262b}
+  .game-tv b{color:#ffb000}
 </style>
 </head>
 <body>
@@ -639,6 +642,19 @@ function statusChip(ev, state){
   return `<span class="chip pre">${type.shortDetail || type.detail || ""}</span>`;
 }
 
+function tvLine(ev){
+  // TV/streaming from the ESPN payload: national market first (ESPN, CBS,
+  // Prime Video, ESPN+...), then regional; deduped, capped at 3.
+  const comp = (ev.competitions || [])[0] || {};
+  const nat = [], loc = [];
+  for(const b of (comp.broadcasts || [])){
+    const names = b.names || (b.name ? [b.name] : []);
+    (b.market === "national" ? nat : loc).push(...names);
+  }
+  const names = [...new Set([...nat, ...loc])].slice(0, 3);
+  return names.length ? `<div class="game-tv">📺 <b>${names.join(" · ")}</b></div>` : "";
+}
+
 function gameCard(ev, leagueKey){
   const comp = (ev.competitions || [])[0] || {};
   const competitors = comp.competitors || [];
@@ -650,7 +666,7 @@ function gameCard(ev, leagueKey){
     .map(c => teamRow(c, state)).join("");
   return `<a class="game game-link" href="${gameUrl(leagueKey, ev.id)}" target="_blank" rel="noopener" ${color ? `style="--tc:${color}"` : ""}>
     <div class="game-head">${leagueTagHtml(leagueKey)}${statusChip(ev, state)}</div>
-    ${rows}</a>`;
+    ${rows}${tvLine(ev)}</a>`;
 }
 
 const recCache = {};
@@ -698,7 +714,7 @@ async function nextGame(fav){
       ? [...comps].sort((a,b) => (a.homeAway === "home" ? 1 : 0) - (b.homeAway === "home" ? 1 : 0)).map(c => teamRow(c, "pre")).join("")
       : `<div class="next-name">${upcoming.name}</div>`;
     return `<a class="game game-link" href="${gameUrl(fav.league, upcoming.id)}" target="_blank" rel="noopener"><div class="game-head">${leagueTagHtml(fav.league)}<span class="chip next">UP NEXT</span></div>
-      <div class="next-when">${when}</div>${rows}
+      <div class="next-when">${when}</div>${rows}${tvLine(upcoming)}
       <div class="note">No game today — this is the next one up.</div></a>`;
   }catch(e){
     return `<a class="game game-link" href="${teamSchedUrl(fav.league, fav.id)}" target="_blank" rel="noopener"><div class="game-head">${leagueTagHtml(fav.league)}<span class="chip next">UP NEXT</span></div><div class="next-name">No game today for the ${fav.name}.</div></a>`;
