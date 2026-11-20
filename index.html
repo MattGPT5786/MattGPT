@@ -4,35 +4,22 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>MattGPT — Live Dashboard</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
 <style>
   :root{
     color-scheme:light;
-    --bg:#ffffff; --surface:#ffffff; --surface-2:#f7f7f5; --line:#dfdfdd; --line-soft:#e8e8e6;
     --text:#121212; --muted:#555555; --faint:#999999;
-    --amber:#121212; --led-red:#b3151b; --led-green:#2e7d32; --led-cyan:#40606e; --led-magenta:#6d5fc0;
-    --accent:#121212; --live:#b3151b; --gold:#121212;
-    --blue:#121212; --dim:var(--muted); --panel2:#f7f7f5;
-    --radius:12px;
+    --led-red:#b3151b; --led-green:#2e7d32;
     --sans:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
     --cond:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
     --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
-    --dotfont:var(--sans);
-    --tahoma:var(--sans); --monofont:var(--mono);
     --serif:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
     --nameplate:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
-    --navbar:#ffffff;
-    --tabbar:#121212;
-    --glow:none;
   }
   *{box-sizing:border-box}
   html{-webkit-text-size-adjust:100%}
   body{margin:0;color:var(--text);font-family:var(--sans);font-size:14px;-webkit-font-smoothing:antialiased;background-color:#fdfdfa}
   /* ---------- masthead (newspaper nameplate) ---------- */
   .topbar{background:#ffffff;position:relative;z-index:10;border-bottom:4px double #121212}
-  .topbar::before{content:none}
   .topbar-in{max-width:1120px;margin:0 auto;padding:14px 20px 11px;display:flex;flex-direction:column;align-items:center;gap:6px;position:relative}
   .brand{display:flex;align-items:center;gap:12px;min-width:0}
   .brand-name{font-family:var(--nameplate);font-weight:700;font-size:46px;line-height:1.05;color:#121212;letter-spacing:.01em}
@@ -70,10 +57,11 @@
   .trow.winner .tname{font-weight:900}
   .trow.loser .tname,.trow.loser .tscore{color:#9a9a97}
   .trow.loser .trec{color:#c4c4c0}
-  .next-when{font-weight:700;font-size:14px;margin:2px 0 4px;color:var(--text)}
   .next-name{font-size:13px;color:var(--muted);line-height:1.45}
-  .note{font-size:12.5px;color:var(--faint);line-height:1.5;margin-top:6px}
   .game-tv{font-size:12px;color:var(--muted);margin-top:7px;border-top:1px solid #e8e8e6;padding-top:6px}
+  .game-tv-none{visibility:hidden}
+  .game-odds{font-size:12px;color:var(--muted);margin-top:7px}
+  .game-odds-none{visibility:hidden}
   .empty{color:var(--muted);font-size:13.5px;padding:10px 0}
   .skel{height:132px;border:1px solid #dfdfdd;border-radius:0;background:linear-gradient(100deg,#ececea 40%,#f6f6f3 50%,#ececea 60%);background-size:200% 100%;animation:shimmer 1.4s infinite}
   @keyframes shimmer{to{background-position:-200% 0}}
@@ -81,8 +69,8 @@
   .wx-panel{margin-bottom:14px;padding:0 12px 14px}
   .mkt-panel{margin-bottom:30px}
   .wx-mid{display:flex;flex-direction:column;gap:10px}
-  .wx-layout{display:grid;grid-template-columns:auto auto 1fr;gap:22px;align-items:center}
-  @media (max-width:980px){.wx-layout{grid-template-columns:1fr;gap:14px}}
+  .wx-layout{display:grid;grid-template-columns:auto 1fr;grid-template-areas:"now mid" "fc fc";gap:18px 26px;align-items:center}
+  @media (max-width:980px){.wx-layout{grid-template-columns:1fr;grid-template-areas:"now" "mid" "fc";gap:14px}}
   .panel{position:relative;background:transparent;border:none;border-radius:0;box-shadow:none;padding:0 16px 16px}
   .teams-wrap{position:relative;background:transparent;border:none;border-radius:0;box-shadow:none;padding:0 16px 16px;margin-bottom:30px}
   .panel-head{display:flex;align-items:baseline;justify-content:space-between;gap:10px;background:transparent;
@@ -91,26 +79,22 @@
   .panel-note{font-size:11.5px;color:#767676;white-space:nowrap}
   /* weather = newspaper weather box */
   #wxBody{background:#ffffff;border:1px solid #121212;border-radius:0;padding:14px 16px}
-  .wx-now{display:flex;align-items:center;gap:16px}
-  .wx-icon{font-size:42px;line-height:1}
-  .wx-temp{font-family:var(--serif);font-weight:900;font-size:44px;line-height:1;color:#121212;font-variant-numeric:tabular-nums}
-  .wx-cond{font-size:13px;color:#555555;margin-top:4px}
-  .wx-stats{display:flex;gap:10px;flex-wrap:wrap}
-  .wx-stat{flex:1;min-width:86px;background:transparent;border-top:1px solid #e2e2e0;padding:7px 2px 0}
-  .wx-stat .k{font-size:9.5px;font-weight:700;letter-spacing:.1em;color:#767676;text-transform:uppercase}
-  .wx-stat .v{font-family:var(--mono);font-size:14.5px;margin-top:2px;font-variant-numeric:tabular-nums;color:#121212}
+  .wx-now{display:flex;align-items:center;gap:16px;grid-area:now}
+  .wx-mid{grid-area:mid}
+  .wx-icon{font-size:50px;line-height:1}
+  .wx-temp{font-family:var(--serif);font-weight:900;font-size:52px;line-height:1;color:#121212;font-variant-numeric:tabular-nums}
+  .wx-cond{font-size:15px;color:#555555;margin-top:4px}
   .wx-pairs{display:flex;flex-direction:column}
   .wx-pair-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;border-top:1px solid #e2e2e0;padding:6px 2px 5px}
-  .wx-pair .k{font-size:9.5px;font-weight:700;letter-spacing:.1em;color:#767676;text-transform:uppercase}
-  .wx-pair .v{font-family:var(--mono);font-size:14.5px;margin-top:1px;font-variant-numeric:tabular-nums;color:#121212;white-space:nowrap}
-  .wx-fc{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;border-left:1px solid #e2e2e0;padding-left:20px}
-  @media (max-width:980px){.wx-fc{border-left:none;padding-left:0;border-top:1px solid #e2e2e0;padding-top:12px}}
+  .wx-pair .k{font-size:11px;font-weight:700;letter-spacing:.1em;color:#767676;text-transform:uppercase}
+  .wx-pair .v{font-family:var(--mono);font-size:17px;margin-top:1px;font-variant-numeric:tabular-nums;color:#121212;white-space:nowrap}
+  .wx-fc{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;border-top:1px solid #e2e2e0;padding-top:14px;grid-area:fc}
   .wx-day{text-align:center}
-  .wx-day .d{font-size:10.5px;font-weight:700;letter-spacing:.06em;color:#767676;text-transform:uppercase}
-  .wx-day .i{font-size:18px;margin:5px 0 3px}
-  .wx-day .t{font-family:var(--mono);font-size:13px;font-variant-numeric:tabular-nums;color:#121212}
+  .wx-day .d{font-size:12px;font-weight:700;letter-spacing:.06em;color:#767676;text-transform:uppercase}
+  .wx-day .i{font-size:22px;margin:5px 0 3px}
+  .wx-day .t{font-family:var(--mono);font-size:15.5px;font-variant-numeric:tabular-nums;color:#121212}
   .wx-day .t .lo{color:#767676}
-  .wx-day .p{font-size:10.5px;color:#555555;margin-top:2px;font-variant-numeric:tabular-nums}
+  .wx-day .p{font-size:12px;color:#555555;margin-top:2px;font-variant-numeric:tabular-nums}
   /* ---------- finance ---------- */
   .mkt-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
   @media (max-width:900px){.mkt-grid{grid-template-columns:1fr 1fr}}
@@ -129,16 +113,18 @@
   .mk-range{font-size:10px;color:var(--faint);font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .mk-empty{color:var(--faint);font-size:12.5px;margin:auto}
   /* ---------- weather map / air traffic ---------- */
-  .wxmap-panel,.air-panel{margin-bottom:30px;padding:0;overflow:hidden}
+  .air-panel{margin-bottom:30px;padding:0;overflow:hidden}
   .wxmap-frame,.air-frame{display:block;width:100%;height:480px;border:none;background:#e8e8e6;border-radius:0;box-shadow:0 0 0 1px #121212}
+  .wx-cols{display:grid;grid-template-columns:1fr;gap:12px}
+  .wx-radar{position:relative;min-height:340px}
+  .wx-radar .wxmap-frame{position:absolute;inset:0;width:100%;height:100%}
+  @media (min-width:981px){.wx-cols{grid-template-columns:1.15fr .85fr}.wx-radar{min-height:0}}
   /* ---------- ticker (black news bar) ---------- */
   .ticker{display:flex;align-items:stretch;background:#ffffff;overflow:hidden;margin-top:30px;border-top:2px solid #121212;border-bottom:1px solid #121212;position:relative}
-  .ticker::before{content:none}
   .ticker-label{flex:0 0 auto;background:#ffffff;color:#fff;font-weight:700;font-size:11px;
     letter-spacing:.1em;display:flex;align-items:center;margin:0;padding:0 14px;border-radius:0;z-index:2;text-transform:uppercase;border:none;border-right:1px solid #121212}
   .ticker-label img{height:24px;width:auto;display:block;filter:brightness(0)}
   
-  .logo-txt{font-family:var(--sans);color:#fff;letter-spacing:.1em}
   .ticker-view{flex:1;overflow:hidden;position:relative;z-index:1;-webkit-mask-image:linear-gradient(90deg,transparent,#000 28px,#000 calc(100% - 28px),transparent);
     mask-image:linear-gradient(90deg,transparent,#000 28px,#000 calc(100% - 28px),transparent)}
   .ticker-track{display:inline-flex;white-space:nowrap;padding:15px 0;animation:scroll linear infinite;will-change:transform}
@@ -167,15 +153,6 @@
   .ff-team.me .nm{font-weight:900;color:#121212}
   .ff-vs{font-size:9.5px;font-weight:700;color:var(--faint);text-transform:uppercase;letter-spacing:.08em;padding:1px 0}
   .ff-meta{font-family:var(--mono);margin-top:7px;font-size:11.5px;color:var(--muted);font-variant-numeric:tabular-nums}
-  .ff-std{width:100%;border-collapse:collapse;margin-top:10px;font-size:12px;font-variant-numeric:tabular-nums;background:#ffffff;border-radius:0;box-shadow:0 0 0 1px #dfdfdd}
-  .ff-std th{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--faint);text-align:left;
-    padding:4px 8px;border-bottom:1px solid #c9c9c6}
-  .ff-std td{padding:4px 8px;border-bottom:1px solid #e2e2e0;white-space:nowrap;color:#222222}
-  .ff-std td.nm{max-width:150px;overflow:hidden;text-overflow:ellipsis}
-  .ff-std tr.me td{color:#121212;font-weight:700;background:#f0f0ec}
-  .ff-std .r{text-align:right}
-  .ff-chart{margin-top:10px;background:#ffffff;border-radius:0;box-shadow:0 0 0 1px #dfdfdd;padding:8px 6px 4px}
-  .ff-chart svg{display:block;width:100%;height:auto}
   .ff-ladder{display:grid;grid-template-columns:1fr;gap:0 30px;margin-top:4px}
   .ff-lad-h{font-size:11px;color:var(--faint);letter-spacing:.05em;text-transform:uppercase;margin-top:12px}
   @media (min-width:900px){ .ff-ladder{grid-template-columns:1fr 1fr} }
@@ -191,25 +168,7 @@
   .ff-asof{margin-top:8px;font-size:11.5px;color:#767676}
   /* ---------- news ---------- */
   .news-panel{display:flex;flex-direction:column}
-  .news-cols{flex:1;min-height:0;display:grid;grid-template-columns:1fr;gap:12px;padding:12px 16px;align-content:start}
-  .news-col{background:#ffffff;border:1px solid #dfdfdd;border-radius:0;padding:14px 16px}
-  .news-h{font-family:var(--cond);font-size:12px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:#121212;border-top:2px solid #121212;padding-top:6px;margin-bottom:14px}
-  .news-item{margin:0 0 19px;display:flex;gap:12px}
-  .news-item:last-child{margin-bottom:4px}
-  .news-thumb{width:78px;height:58px;object-fit:cover;border-radius:0;border:1px solid #c9c9c6;flex:0 0 auto;background:#e8e8e6}
-  .news-txt{flex:1;min-width:0}
-  .news-item a{display:block;color:var(--text);text-decoration:none;font-family:var(--serif);font-weight:700;font-size:15.5px;line-height:1.45}
-  .news-item a:hover{color:#121212;text-decoration:underline}
-  .news-item a .ext{color:#767676;font-size:11px;vertical-align:super}
-  .news-src{font-family:var(--mono);font-size:10.5px;color:var(--faint);margin-top:4px;letter-spacing:.03em;text-transform:uppercase}
   .news-dim{color:var(--faint);font-size:13.5px}
-  .brief-grid{display:grid;grid-template-columns:1fr;gap:16px}
-  .brief-card{border-top:2px solid #121212;padding-top:7px}
-  .brief-name{display:block;font-family:var(--cond);font-size:12.5px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:#121212;text-decoration:none;margin-bottom:6px}
-  .brief-name:hover{text-decoration:underline}
-  .brief-item{display:block;color:var(--text);text-decoration:none;font-family:var(--serif);font-weight:700;font-size:14.5px;line-height:1.5;margin:0 0 9px}
-  .brief-item:last-child{margin-bottom:2px}
-  .brief-item:hover{text-decoration:underline}
   .brief-ago{font-family:var(--mono);font-weight:400;font-size:10.5px;color:#6f6f6f;white-space:nowrap;margin-left:5px}
   .brief-none{font-size:13px;color:var(--faint);line-height:1.5}
   /* ---------- newspaper (page-flip news) ---------- */
@@ -220,11 +179,11 @@
   .paper-items{flex:1;display:flex;flex-direction:column;min-height:0}
   .paper-story{flex:1;display:flex;flex-direction:column;justify-content:center;border-bottom:1px solid #e2e2e0;padding:10px 0;min-height:0}
   .paper-story:last-child{border-bottom:none}
-  .paper-story .paper-lead,.paper-story .paper-item{margin:0}
-  .paper-dek{font-family:var(--serif);font-size:13.5px;font-weight:400;color:var(--muted);line-height:1.55;margin-top:5px}
-  .paper-nav{display:flex;gap:4px;overflow-x:auto;padding-bottom:2px;scrollbar-width:none}
-  .paper-nav::-webkit-scrollbar{display:none}
-  .paper-nav button{appearance:none;flex:0 0 auto;background:#ffffff;border:1px solid #c9c9c6;color:#555555;font-family:var(--cond);font-size:11.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;padding:6px 11px;cursor:pointer;border-radius:0;white-space:nowrap}
+  .paper-story .paper-item{margin:0}
+  .paper-story .paper-item{font-size:17px;line-height:1.45}
+  .paper-dek{font-family:var(--serif);font-size:14px;font-weight:400;color:var(--muted);line-height:1.6;margin-top:5px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+  .paper-nav{display:flex;gap:4px;padding-bottom:2px}
+  .paper-nav button{appearance:none;flex:1 1 0;min-width:0;text-align:center;overflow:hidden;text-overflow:ellipsis;background:#ffffff;border:1px solid #c9c9c6;color:#555555;font-family:var(--cond);font-size:11.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;padding:6px 6px;cursor:pointer;border-radius:0;white-space:nowrap}
   .paper-nav button:hover{color:#121212;border-color:#121212}
   .paper-nav button.active{background:#121212;color:#ffffff;border-color:#121212}
   .paper-nav button:focus-visible{outline:2px solid #121212;outline-offset:2px}
@@ -233,35 +192,12 @@
   .paper-btn:hover:not(:disabled){background:#121212;color:#ffffff}
   .paper-btn:focus-visible{outline:2px solid #121212;outline-offset:2px}
   .paper-btn:disabled{opacity:.35;cursor:default}
-  .paper-count{font-family:var(--mono);font-size:12px;color:#555555;letter-spacing:.04em;text-align:center}
-  .front-cols{display:grid;grid-template-columns:1fr;gap:14px;flex:1;min-height:0}
-  .paper-page .news-trends{margin:12px 0 0}
-  .front-item{font-size:16px}
-  .paper-kicker{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#767676}
+  .local-items .news-list{flex:1;min-height:0;display:flex;flex-direction:column}
   .paper-mast{border-bottom:2px solid #121212;padding-bottom:8px;margin-bottom:14px}
   .paper-mast a{color:#121212;text-decoration:none;font-family:var(--serif);font-weight:800;font-size:27px;line-height:1.15}
   .paper-mast a:hover{text-decoration:underline}
-  .paper-lead{display:block;color:var(--text);text-decoration:none;font-family:var(--serif);font-weight:700;font-size:20px;line-height:1.4;margin:0 0 16px}
   .paper-item{display:block;color:var(--text);text-decoration:none;font-family:var(--serif);font-weight:700;font-size:15.5px;line-height:1.5;margin:0 0 13px}
-  .paper-lead:hover,.paper-item:hover{text-decoration:underline}
-  .news-trends{background:#ffffff;border:1px solid #dfdfdd;border-radius:0;margin:0 16px 12px;padding:8px 12px 10px;font-size:12.5px}
-  .trends-bar{margin:14px 0 0;display:flex;align-items:center;overflow:hidden}
-  .trends-bar[hidden]{display:none}
-  .trends-bar .news-trends-h{flex:0 0 auto}
-  .trends-bar .news-trend-list{overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
-  .news-trends-h{font-family:var(--cond);font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:#121212;font-size:11px;margin-right:10px}
-  .news-trend-list a{color:#121212;text-decoration:none;white-space:nowrap}
-  .news-trend-list a:hover{text-decoration:underline}
-  .news-trend-list .sep{color:var(--faint);margin:0 6px}
-  @media (min-width:700px) and (min-height:560px){
-    .news-cols{grid-template-columns:repeat(3,1fr);gap:14px;align-content:stretch}
-    .news-item a{font-size:clamp(14.5px,1.35vw,17.5px)}
-    .news-cols.brief-layout{grid-template-columns:2.15fr 1fr}
-    .brief-layout .news-h{margin-bottom:10px}
-    .brief-grid{grid-template-columns:repeat(3,1fr);gap:14px 18px}
-    .brief-item{font-size:13.4px;line-height:1.45;margin-bottom:7px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-    .brief-name{margin-bottom:5px}
-  }
+  .paper-item:hover{text-decoration:underline}
   /* ---------- rotating full-screen sections ---------- */
   .secnav{display:none}
   @media (min-width:700px) and (min-height:560px){
@@ -270,7 +206,6 @@
     .brand-name{font-size:40px}
     .secnav{display:flex;align-items:stretch;gap:4px;width:100%;max-width:1500px;margin:10px auto 0;padding:6px 20px;position:relative;
       background:#ffffff;border-top:1px solid #121212;border-bottom:1px solid #121212}
-    .secnav::before{content:none}
     .secnav button{appearance:none;flex:1;background:transparent;border:1px solid transparent;color:#555555;position:relative;
       font-family:var(--cond);font-size:12px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;
       padding:7px 6px;border-radius:0;cursor:pointer}
@@ -295,40 +230,43 @@
     .wx-panel .block-link{flex:1;display:flex;flex-direction:column;min-height:0}
     .wx-panel .panel-head{margin:0 0 12px;border-radius:0}
     #wxBody{flex:1;display:flex;min-height:0;padding:14px 18px;margin:0 12px 12px}
-    .wx-layout{flex:1;grid-template-columns:auto auto 1fr;gap:30px;align-items:center;width:100%}
-    .wx-temp{font-size:60px}
-    .wx-icon{font-size:56px}
-    .wx-cond{font-size:15px}
-    .wx-pair .v,.wx-stat .v{font-size:16.5px}
+    .wx-layout{flex:1;grid-template-columns:auto 1fr;gap:22px 34px;align-items:center;width:100%}
+    .wx-temp{font-size:78px}
+    .wx-icon{font-size:74px}
+    .wx-cond{font-size:18px}
+    .wx-pair .k{font-size:11.5px}
+    .wx-pair .v{font-size:20px}
     .wx-fc{gap:12px}
-    .wx-day .i{font-size:24px}
-    .wx-day .t{font-size:15px}
+    .wx-day .d{font-size:12.5px}
+    .wx-day .i{font-size:32px}
+    .wx-day .t{font-size:19px}
+    .wx-day .p{font-size:13px}
     .ff-panel{display:flex;flex-direction:column}
     .ff-panel .block-link{flex:1;display:flex;flex-direction:column;min-height:0}
     .ff-panel .panel-head{margin:0 0 12px;border-radius:0}
     #ffBody{padding:0 16px}
     .ff-team .nm{font-size:16.5px}
     .ff-team .sc{font-size:23px}
-    .ff-std{font-size:12.5px}
-    .ff-std td{padding:5px 8px}
-    .ff-std td.nm{max-width:340px}
     .mkt-panel{display:flex;flex-direction:column}
     .mkt-panel .panel-head{margin:0 0 12px;border-radius:0}
     .mkt-grid{flex:1;grid-template-columns:repeat(3,minmax(0,1fr));grid-template-rows:minmax(0,1fr);gap:16px;min-height:0;padding:0 16px}
     .mkt-cell{height:auto;min-height:0}
     .mk-price{font-size:23px}
     .panel-title{font-size:13.5px}
-    .wxmap-panel,.air-panel{display:flex;flex-direction:column;padding:12px}
+    .air-panel{display:flex;flex-direction:column;padding:12px}
     .wxmap-frame,.air-frame{flex:1;min-height:0;height:auto}
+    .wx-cols{flex:1;grid-template-columns:1.15fr .85fr;min-height:0;padding:0 12px 12px}
+    .wx-panel .wx-main{display:flex;flex-direction:column;min-height:0}
+    .wx-main #wxBody{margin:0}
+    .wx-radar{min-height:0}
     .paper-stage{min-height:0}
     .paper-page{position:absolute;inset:0}
-    .front-cols{grid-template-columns:2.15fr 1fr}
   }
   @media (min-width:700px) and (max-width:999px) and (min-height:560px){
     #favorites{grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:repeat(3,minmax(0,1fr))}
-    .wx-layout{grid-template-columns:1fr;gap:14px;align-items:stretch}
+    .wx-layout{grid-template-columns:1fr;grid-template-areas:"now" "mid" "fc";gap:14px;align-items:stretch}
     .wx-fc{border-left:none;padding-left:0;border-top:1px solid #e2e2e0;padding-top:12px}
-    .wx-temp{font-size:50px}
+    .wx-temp{font-size:58px}
     .mkt-grid{grid-template-columns:1fr;grid-template-rows:repeat(3,minmax(0,1fr))}
     .mkt-cell{display:grid;grid-template-columns:1fr 1fr;grid-template-rows:auto minmax(0,1fr);column-gap:16px}
     .mkt-cell .mk-top{grid-column:1/-1}
@@ -337,9 +275,8 @@
   @media (min-width:1000px) and (min-height:560px) and (max-height:760px){
     .brand-name{font-size:32px}
     .topbar-in{padding-top:7px;padding-bottom:6px}
-    .wx-temp{font-size:46px}
-    .wx-icon{font-size:42px}
-    .ff-std td{padding:3.5px 8px}
+    .wx-temp{font-size:54px}
+    .wx-icon{font-size:48px}
     .mk-price{font-size:25px}
   }
   @media (max-width:640px){
@@ -350,26 +287,20 @@
 @media (min-width:700px) and (min-height:560px){
   .ff-panel{overflow:hidden}
   #ffBody{display:flex;flex-direction:column;flex:1;min-height:0;overflow:hidden}
-  .ff-std{font-size:clamp(10.5px,1.45vh,13px)}
-  .ff-std td{padding:.34vh 8px;line-height:1.22}
-  .ff-std th{padding:.3vh 8px}
   .ff-match{padding:5px 12px 3px}
   .ff-team{padding:1px 0}
   .ff-team .sc{font-size:clamp(16px,2.2vh,19px)}
   .ff-meta{margin-top:3px;font-size:11px}
   .ff-asof{margin-top:4px;font-size:10.5px}
   .ff-panel .panel-head{margin-bottom:6px}
-  .ff-chart svg{max-height:52vh}
 }
   @media (min-width:700px) and (min-height:560px){
-    .front-cols .news-col{display:flex;flex-direction:column;justify-content:space-between}
     #favorites .game{display:flex;flex-direction:column}
     #favorites .game> :last-child{margin-top:auto}
     #wxBody{flex-direction:column;justify-content:center}
     #ffBody .ff-ladder{flex:1;min-height:0}
     .ff-lcol{display:flex;flex-direction:column}
     .ff-lcol .ff-rung{flex:1;align-content:center}
-    .news-thumb{width:108px;height:76px}
   }
   /* ---------- Newsroom Dark theme (Matt, Nov 19 2026) ----------
      Picked from four concept mocks. Bloomberg-terminal modern: deep
@@ -384,7 +315,7 @@
   .panel-head,.section-head{border-top:1px solid #1e2635}
   .panel-title,.section-head h2{color:#eef2f7;text-transform:uppercase;letter-spacing:.07em}
   .panel-note,.section-note{color:#7d8aa0}
-  .game,.mkt-cell,.ff-match,.news-col,.news-trends,.paper-page,#wxBody{
+  .game,.mkt-cell,.ff-match,.paper-page,#wxBody{
     background:#11161f;border:1px solid #1e2635;border-radius:12px;
     box-shadow:0 8px 24px rgba(0,0,0,.35);-webkit-backdrop-filter:none;backdrop-filter:none}
   .game{box-shadow:inset 4px 0 0 var(--tc,#3a4356), 0 8px 24px rgba(0,0,0,.35)}
@@ -420,11 +351,11 @@
   a.tick{text-decoration:none}
   .wx-temp{color:#ffffff;text-shadow:none}
   .wx-cond{color:#8b98a9}
-  .wx-stat .v,.wx-pair .v,.wx-day .t{color:#eef2f7}
-  .wx-stat .k,.wx-pair .k,.wx-day .d{color:#7d8aa0}
+  .wx-pair .v,.wx-day .t{color:#eef2f7}
+  .wx-pair .k,.wx-day .d{color:#7d8aa0}
   .wx-day .t .lo,.wx-day .p{color:#7d8aa0}
-  .wx-stat,.wx-pair-row{border-top-color:#1e2635}
-  .wx-fc{border-left-color:#1e2635;border-top-color:#1e2635}
+  .wx-pair-row{border-top-color:#1e2635}
+  .wx-fc{border-top-color:#1e2635}
   .mk-price{color:#ffffff}
   .mk-name{color:#aeb9c6}
   .mk-chg{color:#3ddc84}
@@ -432,21 +363,14 @@
   .mk-lab,.mk-range{color:#7d8aa0}
   .mk-empty{color:#7d8aa0}
   .wxmap-frame,.air-frame{border-radius:12px;box-shadow:0 0 0 1px #1e2635}
-  .news-h{color:#eef2f7;border-top:none;padding-top:0;text-transform:uppercase;letter-spacing:.07em;font-size:12.5px;font-weight:700}
-  .news-item a{color:#eef2f7}
-  .news-item a:hover{color:#4da3ff}
-  .news-src{color:#7d8aa0}
-  .news-thumb{border-color:#1e2635;border-radius:6px;background:#161c26}
-  .brief-item,.paper-item{color:#dbe2ec}
-  .brief-item:hover,.paper-item:hover,.paper-lead:hover{color:#4da3ff}
-  .paper-lead{color:#ffffff}
-  .paper-dek{color:#8b98a9}
+  .paper-item{color:#dbe2ec}
+  .paper-item:hover{color:#4da3ff}
+  .paper-dek{color:#a7b6c8}
   .paper-story{border-bottom-color:#1e2635}
-  .brief-ago{color:#7d8aa0;font-size:11.5px;margin-left:6px}
+  .brief-ago{color:#93a5bb;font-size:12px;margin-left:6px}
   .brief-none{color:#7d8aa0}
   .paper-mast{border-bottom:2px solid #4da3ff}
   .paper-mast a{color:#eef2f7;text-shadow:none}
-  .paper-kicker{color:#4da3ff}
   .paper-nav button{background:#11161f;border-color:#1e2635;color:#7d8aa0;border-radius:999px;-webkit-backdrop-filter:none;backdrop-filter:none}
   .paper-nav button:hover{color:#eef2f7;border-color:#4da3ff}
   .paper-nav button.active{background:#4da3ff;color:#0a0e14;border-color:#4da3ff;box-shadow:none}
@@ -471,17 +395,15 @@
   .ff-rung.me .ff-bar i{background:#3ddc84;box-shadow:none}
   .ff-rung .ff-pf{color:#ffffff}
   .skel{background:linear-gradient(100deg,#11161f 40%,#161c26 50%,#11161f 60%);border-color:#1e2635;border-radius:12px}
-  .news-dim,.empty,.note{color:#7d8aa0}
-  .next-when{color:#eef2f7}
+  .news-dim,.empty{color:#7d8aa0}
   .next-name{color:#8b98a9}
   a.mkt-cell:hover{background:#151b25}
   .game-link:hover{background:rgba(255,255,255,.03)}
   .game-link{border-radius:14px}
   .game-tv{color:#8b98a9;border-top-color:#1e2635}
   .game-tv b{color:#4da3ff}
-  .news-trends-h{color:#4da3ff}
-  .news-trend-list a{color:#dbe2ec}
-  .news-trend-list a:hover{color:#4da3ff}
+  .game-odds{color:#8b98a9}
+  .game-odds b{color:#4da3ff}
 </style>
 </head>
 <body>
@@ -502,7 +424,6 @@
   <button type="button" data-target="news" class="active">📰 News</button>
   <button type="button" data-target="sports">⚽ Sports</button>
   <button type="button" data-target="weather">🌤 Weather</button>
-  <button type="button" data-target="weathermap">🌎 Weather Map</button>
   <button type="button" data-target="airtraffic">✈️ Air Traffic</button>
   <button type="button" data-target="fantasy">🏈 Fantasy Football</button>
   <button type="button" data-target="markets">📈 Finance</button>
@@ -511,13 +432,13 @@
 <main>
   <div class="stage">
   <section class="panel wx-panel view" data-view="weather" aria-label="Weather">
-      <a class="block-link" href="https://forecast.weather.gov/MapClick.php?lat=39.9351&lon=-75.0307" target="_blank" rel="noopener">
+      <div class="wx-cols">
+      <a class="block-link wx-main" href="https://forecast.weather.gov/MapClick.php?lat=39.9351&lon=-75.0307" target="_blank" rel="noopener">
       <div class="panel-head"><span class="panel-title">🌤 Weather - Cherry Hill, NJ</span></div>
       <div id="wxBody"><div class="empty">Loading weather…</div></div>
       </a>
-    </section>
-    <section class="panel wxmap-panel view" data-view="weathermap" aria-label="Live weather map">
-      <iframe class="wxmap-frame" title="Live interactive weather map" src="https://embed.windy.com/embed2.html?lat=39.9351&amp;lon=-75.0307&amp;detailLat=39.9351&amp;detailLon=-75.0307&amp;zoom=7&amp;level=surface&amp;overlay=radar&amp;product=ecmwf&amp;marker=true&amp;calendar=now&amp;type=map&amp;location=coordinates&amp;metricWind=mph&amp;metricTemp=%C2%B0F&amp;radarRange=-1" loading="lazy" allowfullscreen></iframe>
+      <div class="wx-radar"><iframe class="wxmap-frame" title="Live interactive weather radar" src="https://embed.windy.com/embed2.html?lat=39.9351&amp;lon=-75.0307&amp;detailLat=39.9351&amp;detailLon=-75.0307&amp;zoom=7&amp;level=surface&amp;overlay=radar&amp;product=ecmwf&amp;marker=true&amp;calendar=now&amp;type=map&amp;location=coordinates&amp;metricWind=mph&amp;metricTemp=%C2%B0F&amp;radarRange=-1" loading="lazy" allowfullscreen></iframe></div>
+      </div>
     </section>
     <section class="panel mkt-panel view" data-view="markets" aria-label="Finance">
       <div class="panel-head"><span class="panel-title">📈 Finance</span></div>
@@ -542,7 +463,7 @@
     <div class="teams-wrap view" data-view="sports">
   <div class="section-head">
     <h2>⚽ Sports</h2>
-    <span class="section-note">Giants · Penn State · Knicks · Capitals · Yankees · Saint Joseph's</span>
+    <span class="section-note" id="sportsNote">Giants · Penn State · Knicks · Capitals · Yankees · Saint Joseph's</span>
   </div>
   <div class="grid" id="favorites">
     <div class="skel"></div><div class="skel"></div><div class="skel"></div>
@@ -569,7 +490,6 @@
     </section>
 
   </div><!-- /stage -->
-  <div class="news-trends trends-bar" id="newsTrends" hidden><span class="news-trends-h">𝕏 Trending worldwide</span><span class="news-trend-list" id="newsTrendList"></span></div>
   <div class="ticker" aria-label="Score ticker">
     <div class="ticker-label"><img src="https://a.espncdn.com/redesign/assets/img/logos/logo-espn-82x20@2x.png" alt="ESPN"></div>
     <div class="ticker-view"><div class="ticker-track" id="tickerTrack"><span class="tick">Loading scores…</span></div></div>
@@ -601,12 +521,12 @@ const TICKER_LABEL = { nfl:"NFL", ncaaf:"CFB", nba:"NBA", nhl:"NHL", mlb:"MLB", 
 
 // Matt's teams, by ESPN team id
 const FAVORITES = [
-  { league:"nfl",   id:"19",   name:"New York Giants" },
-  { league:"ncaaf", id:"213",  name:"Penn State Nittany Lions" },
-  { league:"nba",   id:"18",   name:"New York Knicks" },
-  { league:"nhl",   id:"23",   name:"Washington Capitals" },
-  { league:"mlb",   id:"10",   name:"New York Yankees" },
-  { league:"ncaam", id:"2603", name:"Saint Joseph's Hawks" },
+  { league:"nfl",   id:"19",   name:"New York Giants", short:"Giants" },
+  { league:"ncaaf", id:"213",  name:"Penn State Nittany Lions", short:"Penn State" },
+  { league:"nba",   id:"18",   name:"New York Knicks", short:"Knicks" },
+  { league:"nhl",   id:"23",   name:"Washington Capitals", short:"Capitals" },
+  { league:"mlb",   id:"10",   name:"New York Yankees", short:"Yankees" },
+  { league:"ncaam", id:"2603", name:"Saint Joseph's Hawks", short:"Saint Joseph's" },
 ];
 const FAV_KEYS = new Set(FAVORITES.map(f => f.league + ":" + f.id));
 
@@ -657,6 +577,48 @@ function statusChip(ev, state){
   return `<span class="chip pre">${type.shortDetail || type.detail || ""}</span>`;
 }
 
+const oddsBoardCache = {};
+async function oddsEventFor(fav, ev){
+  // Team schedule payloads carry no betting odds; the dated league
+  // scoreboard for the game's day does. Match the same event by id.
+  try{
+    const ymd = new Intl.DateTimeFormat("en-CA", {timeZone:"America/New_York", year:"numeric", month:"2-digit", day:"2-digit"}).format(new Date(ev.date)).replace(/-/g, "");
+    const key = fav.league + "|" + ymd;
+    if(!oddsBoardCache[key]){
+      oddsBoardCache[key] = (async () => {
+        for(const u of (LEAGUES[fav.league] || {}).urls || []){
+          try{
+            const d = await fetchJSON(u + (u.includes("?") ? "&" : "?") + "dates=" + ymd);
+            const hit = (d.events || []).find(e => String(e.id) === String(ev.id));
+            if(hit) return hit;
+          }catch(e){}
+        }
+        return null;
+      })();
+    }
+    return await oddsBoardCache[key];
+  }catch(e){ return null; }
+}
+
+function oddsLine(ev){
+  // Moneyline for both teams, in the same away-first order as the card's
+  // rows, from the ESPN/DraftKings odds block. ESPN publishes it for
+  // upcoming games (some matchups are listed OFF) — when it's absent, an
+  // invisible line of the same height keeps every card identical.
+  const ph = `<div class="game-odds game-odds-none" aria-hidden="true">&nbsp;</div>`;
+  const comp = (ev.competitions || [])[0] || {};
+  const ml = (((comp.odds || [])[0] || {}).moneyline) || {};
+  const parts = [...(comp.competitors || [])]
+    .sort((a,b) => (a.homeAway === "home" ? 1 : 0) - (b.homeAway === "home" ? 1 : 0))
+    .map(c => {
+      const side = c.homeAway === "home" ? ml.home : ml.away;
+      const v = side && side.close && side.close.odds;
+      return /^[+-]\d+$/.test(v || "") ? `${(c.team || {}).abbreviation || ""} <b>${v}</b>` : null;
+    });
+  if(parts.length < 2 || parts.some(p => !p)) return ph;
+  return `<div class="game-odds">Moneyline · ${parts.join(" · ")}</div>`;
+}
+
 function tvLine(ev){
   // TV/streaming from the ESPN payload: national market first (ESPN, CBS,
   // Prime Video, ESPN+...), then regional; deduped, capped at 3.
@@ -667,7 +629,17 @@ function tvLine(ev){
     (b.market === "national" ? nat : loc).push(...names);
   }
   const names = [...new Set([...nat, ...loc])].slice(0, 3);
-  return names.length ? `<div class="game-tv">📺 <b>${names.join(" · ")}</b></div>` : "";
+  // No broadcast info: an invisible line of the same height takes its
+  // place, so every card has the identical structure and bottom edge —
+  // without it, the card's last team row gets pinned to the bottom and
+  // the two rows split apart.
+  return names.length ? `<div class="game-tv">📺 <b>${names.join(" · ")}</b></div>` : `<div class="game-tv game-tv-none" aria-hidden="true">&nbsp;</div>`;
+}
+
+function fmtWhen(d){
+  // One date/time format for every upcoming game, wherever the card came
+  // from — ESPN's own pre-game labels vary by league.
+  return new Date(d).toLocaleString([], {weekday:"short", month:"short", day:"numeric", hour:"numeric", minute:"2-digit"});
 }
 
 function gameCard(ev, leagueKey){
@@ -679,9 +651,16 @@ function gameCard(ev, leagueKey){
   const rows = [...competitors]
     .sort((a,b) => (a.homeAway === "home" ? 1 : 0) - (b.homeAway === "home" ? 1 : 0))
     .map(c => teamRow(c, state)).join("");
+  if(state === "pre"){
+    // Not started yet: no "UP NEXT" label (Matt) — the chip slot carries
+    // the game's date and time, same as the schedule-fallback cards.
+    return `<a class="game game-link" href="${gameUrl(leagueKey, ev.id)}" target="_blank" rel="noopener" ${color ? `style="--tc:${color}"` : ""}>
+    <div class="game-head">${leagueTagHtml(leagueKey)}<span class="chip next">${fmtWhen(ev.date)}</span></div>
+    ${rows}${oddsLine(ev)}${tvLine(ev)}</a>`;
+  }
   return `<a class="game game-link" href="${gameUrl(leagueKey, ev.id)}" target="_blank" rel="noopener" ${color ? `style="--tc:${color}"` : ""}>
     <div class="game-head">${leagueTagHtml(leagueKey)}${statusChip(ev, state)}</div>
-    ${rows}${tvLine(ev)}</a>`;
+    ${rows}${oddsLine(ev)}${tvLine(ev)}</a>`;
 }
 
 const recCache = {};
@@ -715,37 +694,55 @@ async function ensureRecords(ev, leagueKey){
 
 async function nextGame(fav){
   // Fallback when a favorite has no game on today's board: pull its schedule.
+  // Returns {html, ref} — ref is the start time of whichever game, last
+  // played or next up, sits closest to now; renderFavorites orders the
+  // Sports grid by it (most recent game first).
   try{
     const data = await fetchJSON(`${API}/${SCHEDULE_PATH[fav.league]}/teams/${fav.id}/schedule`);
     const now = Date.now();
-    const upcoming = (data.events || [])
-      .filter(e => new Date(e.date).getTime() >= now - 4*3600*1000)
-      .sort((a,b) => new Date(a.date) - new Date(b.date))[0];
-    if(!upcoming) return `<a class="game game-link" href="${teamSchedUrl(fav.league, fav.id)}" target="_blank" rel="noopener"><div class="game-head">${leagueTagHtml(fav.league)}<span class="chip next">UP NEXT</span></div><div class="next-name">No upcoming game found on the schedule for the ${fav.name}.</div></a>`;
-    const when = new Date(upcoming.date).toLocaleString([], {weekday:"short", month:"short", day:"numeric", hour:"numeric", minute:"2-digit"});
+    const evs = (data.events || []).slice().sort((a,b) => new Date(a.date) - new Date(b.date));
+    const upcoming = evs.find(e => new Date(e.date).getTime() >= now - 4*3600*1000);
+    const past = evs.filter(e => new Date(e.date).getTime() < now - 4*3600*1000);
+    const last = past[past.length-1];
+    let ref = upcoming ? new Date(upcoming.date).getTime() : null;
+    if(last){ const lt = new Date(last.date).getTime(); if(ref===null || Math.abs(lt-now) < Math.abs(ref-now)) ref = lt; }
+    if(!upcoming) return {ref, html:`<a class="game game-link" href="${teamSchedUrl(fav.league, fav.id)}" target="_blank" rel="noopener"><div class="game-head">${leagueTagHtml(fav.league)}</div><div class="next-name">No upcoming game found on the schedule for the ${fav.name}.</div><div class="game-odds game-odds-none" aria-hidden="true">&nbsp;</div><div class="game-tv game-tv-none" aria-hidden="true">&nbsp;</div></a>`};
+    const when = fmtWhen(upcoming.date);
     const comps = (upcoming.competitions && upcoming.competitions[0] && upcoming.competitions[0].competitors) || [];
     await ensureRecords(upcoming, fav.league);
+    const bev = await oddsEventFor(fav, upcoming);
     const rows = comps.length >= 2
       ? [...comps].sort((a,b) => (a.homeAway === "home" ? 1 : 0) - (b.homeAway === "home" ? 1 : 0)).map(c => teamRow(c, "pre")).join("")
       : `<div class="next-name">${upcoming.name}</div>`;
-    return `<a class="game game-link" href="${gameUrl(fav.league, upcoming.id)}" target="_blank" rel="noopener"><div class="game-head">${leagueTagHtml(fav.league)}<span class="chip next">UP NEXT</span></div>
-      <div class="next-when">${when}</div>${rows}${tvLine(upcoming)}
-      <div class="note">No game today — this is the next one up.</div></a>`;
+    return {ref, html:`<a class="game game-link" href="${gameUrl(fav.league, upcoming.id)}" target="_blank" rel="noopener"><div class="game-head">${leagueTagHtml(fav.league)}<span class="chip next">${when}</span></div>
+      ${rows}${oddsLine(bev || upcoming)}${tvLine(upcoming)}</a>`};
   }catch(e){
-    return `<a class="game game-link" href="${teamSchedUrl(fav.league, fav.id)}" target="_blank" rel="noopener"><div class="game-head">${leagueTagHtml(fav.league)}<span class="chip next">UP NEXT</span></div><div class="next-name">No game today for the ${fav.name}.</div></a>`;
+    return {ref:null, html:`<a class="game game-link" href="${teamSchedUrl(fav.league, fav.id)}" target="_blank" rel="noopener"><div class="game-head">${leagueTagHtml(fav.league)}</div><div class="next-name">No game today for the ${fav.name}.</div><div class="game-odds game-odds-none" aria-hidden="true">&nbsp;</div><div class="game-tv game-tv-none" aria-hidden="true">&nbsp;</div></a>`};
   }
 }
 
 async function renderFavorites(){
   const el = document.getElementById("favorites");
-  const cards = [];
-  for(const fav of FAVORITES){
+  const now = Date.now();
+  const entries = [];
+  for(let i=0;i<FAVORITES.length;i++){
+    const fav = FAVORITES[i];
     const ev = (board[fav.league] || []).find(e =>
       (e.competitions[0].competitors || []).some(c => (c.team||{}).id === fav.id));
-    if(ev){ await ensureRecords(ev, fav.league); cards.push(gameCard(ev, fav.league)); }
-    else cards.push(await nextGame(fav));
+    if(ev){ await ensureRecords(ev, fav.league); entries.push({html: gameCard(ev, fav.league), ref: new Date(ev.date).getTime(), idx: i, short: fav.short}); }
+    else { const ng = await nextGame(fav); entries.push({html: ng.html, ref: ng.ref, idx: i, short: fav.short}); }
   }
-  el.innerHTML = cards.join("");
+  // Most recent game first (Matt, Nov 19 2026): order by how close each
+  // team's nearest game — last played or next up — is to right now, so an
+  // off-season team (Yankees, next game in March) sinks to the last slot.
+  entries.sort((a,b)=>{
+    const da = (a.ref===null || a.ref===undefined) ? Infinity : Math.abs(a.ref-now);
+    const db = (b.ref===null || b.ref===undefined) ? Infinity : Math.abs(b.ref-now);
+    return (da-db) || (a.idx-b.idx);
+  });
+  el.innerHTML = entries.map(e => e.html).join("");
+  const note = document.getElementById("sportsNote");
+  if(note) note.textContent = entries.map(e => e.short).join(" · ");
 }
 
 function tickerItem(ev, leagueKey){
@@ -933,35 +930,19 @@ setInterval(loadAll, 60000);
 
 <script>
 (function(){
-  var ORDER=["news","sports","weather","weathermap","airtraffic","fantasy","markets"];
-  var CYCLE_MS=30000;
+  // No timed auto-advance (Matt, Nov 19 2026): sections and newspaper
+  // pages change only when he changes them — tabs, buttons, arrow keys,
+  // swipe. The data behind them still refreshes on its own timers.
+  var ORDER=["news","sports","weather","airtraffic","fantasy","markets"];
   var views={}, tabs=[].slice.call(document.querySelectorAll(".secnav button"));
   ORDER.forEach(function(k){ views[k]=document.querySelector('.view[data-view="'+k+'"]'); });
-  var cur=0, timer=null;
+  var cur=0;
   function render(){
     ORDER.forEach(function(k,i){ if(views[k]) views[k].classList.toggle("active", i===cur); });
     tabs.forEach(function(b){ b.classList.toggle("active", b.getAttribute("data-target")===ORDER[cur]); });
   }
-  function schedule(){
-    clearTimeout(timer);
-    timer=setTimeout(tick, CYCLE_MS);
-  }
-  function tick(){
-    if(document.hidden){ timer=setTimeout(tick,5000); return; }
-    if(ORDER[cur]==="news" && typeof window.paperAuto==="function" && window.paperAuto()){
-      clearTimeout(timer); timer=setTimeout(tick,10000); return;
-    }
-    cur=(cur+1)%ORDER.length; render(); schedule();
-  }
-  function manual(i){
-    cur=i; render();
-    clearTimeout(timer);
-    timer=setTimeout(tick, ORDER[cur]==="news"?10000:CYCLE_MS);
-  }
-  function newsReset(){
-    if(ORDER[cur]!=="news") return;
-    clearTimeout(timer); timer=setTimeout(tick,10000);
-  }
+  function manual(i){ cur=i; render(); }
+  function newsReset(){ /* no-op kept: the news script calls it after manual page turns */ }
   window.__newsReset=newsReset;
   tabs.forEach(function(b){ b.addEventListener("click", function(){
     var i=ORDER.indexOf(b.getAttribute("data-target")); if(i>=0) manual(i);
@@ -973,7 +954,7 @@ setInterval(loadAll, 60000);
     }
     manual((cur+(e.key==="ArrowRight"?1:ORDER.length-1))%ORDER.length);
   });
-  render(); schedule();
+  render();
 })();
 
 const SEMAFOR_FEED={src:"Semafor", url:"https://www.semafor.com/rss.xml", count:100};
@@ -989,10 +970,20 @@ const BRIEFINGS=[
  {name:"Africa", slug:"africa", cats:["Africa"]},
  {name:"Gulf", slug:"gulf", cats:["Gulf"]},
  {name:"China", slug:"china", cats:["China"]}];
-const LOCAL_CAT={el:"newsLocal", feeds:[
+const LOCAL_CAT={el:"newsLocal", max:4, feeds:[
  {src:"6abc", url:"https://6abc.com/feed/", count:12, skipCats:["U.S. & World","Entertainment"]},
  {src:"6abc", url:"https://6abc.com/feed/news/", count:15, skipCats:["U.S. & World","Entertainment"]}]};
 function newsEsc(x){ return String(x==null?"":x).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
+function newsDecode(s){ const ta=document.createElement("textarea"); ta.innerHTML=String(s||""); return ta.value; }
+function newsTxt(s){ return newsEsc(newsDecode(s)); }
+function newsDek(it, max){
+  // The one summary builder for every story in the paper: strip markup,
+  // decode entities, cut at a word boundary.
+  let s=String(it.description || it.content || "").replace(/<[^>]*>/g," ").replace(/\s+/g," ").trim();
+  if(s){ s=newsDecode(s).replace(/\s+/g," ").trim(); }
+  if(s.length>max){ s=s.slice(0,max); const sp=s.lastIndexOf(" "); if(sp>max*0.6) s=s.slice(0,sp); s=s.trimEnd()+"…"; }
+  return s;
+}
 function newsAgo(d){ const m=Math.max(1,Math.round((Date.now()-d.getTime())/60000)); if(m<60) return m+"m ago"; const h=Math.round(m/60); return h<24? h+"h ago" : Math.round(h/24)+"d ago"; }
 function newsDate(it){ const d=new Date(String(it.pubDate||"").replace(" ","T")+"Z"); return isNaN(d)? new Date(0) : d; }
 function catNorm(c){ return String(c).replace(/&amp;/g,"&").trim().toLowerCase(); }
@@ -1010,21 +1001,20 @@ async function loadNewsCat(cat){
   let items=lists.flat();
   items.sort((x,y)=>newsDate(y)-newsDate(x));
   const seen=new Set(), perSrc={}, top=[];
-  const cap=new Set(cat.feeds.map(f=>f.src)).size>1?2:3;
+  const max=cat.max||3;
+  const cap=new Set(cat.feeds.map(f=>f.src)).size>1?2:max;
   for(const it of items){
     const key=String(it.title).toLowerCase().replace(/[^a-z0-9 ]/g,"").split(/\s+/).slice(0,5).join(" ");
     if(!key || seen.has(key)) continue;
     if((perSrc[it._src]||0)>=cap) continue;
     seen.add(key); perSrc[it._src]=(perSrc[it._src]||0)+1; top.push(it);
-    if(top.length>=3) break;
+    if(top.length>=max) break;
   }
   if(!top.length){ el.innerHTML='<div class="news-dim">Headlines unavailable right now</div>'; return; }
   el.innerHTML=top.map(it=>{
-    const d=newsDate(it), ago=d.getTime()? " · "+newsAgo(d) : "";
-    let img=it.thumbnail || (it.enclosure && it.enclosure.link) || "";
-    if(!img && it.content){ const m=String(it.content).match(/<img[^>]+src="([^"]+)"/); if(m) img=m[1]; }
-    const thumb=img? `<img class="news-thumb" src="${newsEsc(img)}" alt="" loading="lazy" onerror="this.remove()">` : "";
-    return `<div class="news-item">${thumb}<div class="news-txt"><a href="${newsEsc(it.link)}" target="_blank" rel="noopener">${newsEsc(it.title)} <span class="ext">↗</span></a><div class="news-src">${newsEsc(it._src)}${ago}</div></div></div>`;
+    const d=newsDate(it), ago=d.getTime()? ' <span class="brief-ago">'+newsAgo(d)+'</span>' : "";
+    const dk=newsDek(it, 170);
+    return `<div class="paper-story"><a class="paper-item" href="${newsEsc(it.link)}" target="_blank" rel="noopener">${newsTxt(it.title)}${ago}</a>${dk? `<div class="paper-dek">${newsEsc(dk)}</div>` : ""}</div>`;
   }).join("");
 }
 const briefCache={};
@@ -1048,10 +1038,6 @@ function paperGo(n){
   paperIdx=Math.max(0, Math.min(paperTotal-1, n));
   paperShow();
 }
-window.paperAuto=function(){
-  if(paperTotal>1 && paperIdx<paperTotal-1){ paperGo(paperIdx+1, true); return true; }
-  return false;
-};
 function renderPaper(pages){
   const stage=document.getElementById("paperStage"); if(!stage) return;
   stage.innerHTML=pages.map(function(p){ return '<div class="paper-page">'+p.html+'</div>'; }).join("");
@@ -1068,21 +1054,18 @@ async function loadBriefings(){
   const sorted=items.slice().sort((x,y)=>newsDate(y)-newsDate(x));
   const flagship=sorted.slice(0,4);
   const flagLinks=new Set(flagship.map(it=>it.link));
-  const row=function(it, cls){ const d=newsDate(it), ago=d.getTime()? ' <span class="brief-ago">'+newsAgo(d)+'</span>' : ""; return '<a class="'+cls+'" href="'+newsEsc(it.link)+'" target="_blank" rel="noopener">'+newsEsc(it.title)+ago+'</a>'; };
-  const dek=function(it, max){
-    let s=String(it.description || it.content || "").replace(/<[^>]*>/g," ").replace(/\s+/g," ").trim();
-    if(s){ const ta=document.createElement("textarea"); ta.innerHTML=s; s=ta.value.replace(/\s+/g," ").trim(); }
-    if(s.length>max) s=s.slice(0,max).trimEnd()+"…";
-    return s;
-  };
-  const story=function(it, i){
+  const story=function(it){
+    // Uniform story treatment on the briefing pages — same headline size
+    // and same summary length for every story (Matt: the pages read
+    // inconsistently when the lead story was styled differently).
     const d=newsDate(it), ago=d.getTime()? ' <span class="brief-ago">'+newsAgo(d)+'</span>' : "";
-    const dk=dek(it, i===0? 230:160);
-    return '<div class="paper-story"><a class="'+(i===0? "paper-lead":"paper-item")+'" href="'+newsEsc(it.link)+'" target="_blank" rel="noopener">'+newsEsc(it.title)+ago+'</a>'+(dk? '<div class="paper-dek">'+newsEsc(dk)+'</div>' : "")+'</div>';
+    const dk=newsDek(it, 200);
+    return '<div class="paper-story"><a class="paper-item" href="'+newsEsc(it.link)+'" target="_blank" rel="noopener">'+newsTxt(it.title)+ago+'</a>'+(dk? '<div class="paper-dek">'+newsEsc(dk)+'</div>' : "")+'</div>';
   };
   const pages=[];
-  const flagRows=flagship.length? flagship.map(function(it){ return row(it,"brief-item front-item"); }).join("") : '<div class="brief-none">Briefings unavailable right now</div>';
-  pages.push({name:"Front Page", html:'<div class="front-cols"><div class="news-col"><div class="news-h">Flagship · Top Stories</div>'+flagRows+'</div><div class="news-col"><div class="news-h">📍 Local · 6abc</div><div class="news-list" id="newsLocal"><div class="news-dim">Loading headlines…</div></div></div></div>'});
+  const flagRows=flagship.length? flagship.map(story).join("") : '<div class="brief-none">Briefings unavailable right now</div>';
+  pages.push({name:"Front Page", html:'<div class="paper-mast"><a href="https://www.semafor.com/newsletters/flagship/latest" target="_blank" rel="noopener">Front Page</a></div><div class="paper-items">'+flagRows+'</div>'});
+  pages.push({name:"Local", html:'<div class="paper-mast"><a href="https://6abc.com/" target="_blank" rel="noopener">Local</a></div><div class="paper-items local-items"><div class="news-list" id="newsLocal"><div class="news-dim">Loading headlines…</div></div></div>'});
   BRIEFINGS.slice(1).forEach(function(b){
     let pool=sorted.filter(function(it){ return (it.categories||[]).some(function(c){ return b.cats.indexOf(c)>=0; }); });
     const fresh=pool.filter(function(it){ return !flagLinks.has(it.link); });
@@ -1091,15 +1074,12 @@ async function loadBriefings(){
     pool.concat(briefCache[b.name]||[]).forEach(function(it){ if(!byLink.has(it.link)) byLink.set(it.link,it); });
     pool=Array.from(byLink.values()).sort(function(x,y){ return newsDate(y)-newsDate(x); });
     briefCache[b.name]=pool.slice(0,6);
-    pool=pool.slice(0,5);
-    let body;
-    if(!pool.length){
-      const note=(b.name==="Americana")? "Americana publishes as a newsletter edition — tap the title above for the latest." : "No new stories in the latest pull.";
-      body='<div class="paper-items"><div class="brief-none" style="margin:auto 0">'+note+'</div></div>';
-    }else{
-      body='<div class="paper-items">'+pool.map(story).join("")+'</div>';
-    }
-    pages.push({name:b.name, html:'<div class="paper-kicker">Semafor Briefing</div><div class="paper-mast"><a href="https://www.semafor.com/newsletters/'+b.slug+'/latest" target="_blank" rel="noopener">'+newsEsc(b.name)+'</a></div>'+body});
+    pool=pool.slice(0,4);
+    // A desk with no stories in the latest pull gets no page (and no tab)
+    // until it has something to show — a near-blank page reads as broken.
+    if(!pool.length) return;
+    const body='<div class="paper-items">'+pool.map(story).join("")+'</div>';
+    pages.push({name:b.name, html:'<div class="paper-mast"><a href="https://www.semafor.com/newsletters/'+b.slug+'/latest" target="_blank" rel="noopener">'+newsEsc(b.name)+'</a></div>'+body});
   });
   renderPaper(pages);
 }
@@ -1122,42 +1102,11 @@ async function loadBriefings(){
     }, {passive:true});
   }
 })();
-async function loadTrends(){
-  const wrap=document.getElementById("newsTrends"), list=document.getElementById("newsTrendList");
-  if(!wrap||!list) return;
-  const TT="https://www.twitter-trending.com/united-states", T24="https://trends24.in/united-states/";
-  const routes=["https://cors.eu.org/"+TT,
-                "https://api.allorigins.win/raw?url="+encodeURIComponent(TT),
-                "https://api.allorigins.win/raw?url="+encodeURIComponent(T24),
-                "https://api.codetabs.com/v1/proxy/?quest="+T24];
-  const render=names=>{
-    list.innerHTML=names.map(n=>`<a href="https://x.com/search?q=${encodeURIComponent(n)}" target="_blank" rel="noopener">${newsEsc(n)}</a>`).join('<span class="sep">·</span>');
-    wrap.hidden=false;
-  };
-  for(const u of routes){
-    try{
-      const r=await fetch(u,{cache:"no-store"}); if(!r.ok) continue;
-      const html=await r.text();
-      let names=[];
-      const ld=html.match(/"itemListElement":\[(.*?)\]\}/s);
-      if(ld){ try{ names=JSON.parse("["+ld[1]+"]").map(x=>x.name).filter(Boolean); }catch(e){ names=[]; } }
-      if(names.length<3){
-        const doc=new DOMParser().parseFromString(html,"text/html");
-        names=[...doc.querySelectorAll(".trend-card__list li a")].map(a=>a.textContent.trim()).filter(Boolean);
-      }
-      names=names.filter(n=>/^[\x00-\x7F]+$/.test(n) && /[A-Za-z]/.test(n)).slice(0,10);
-      if(names.length<3) continue;
-      render(names); return;
-    }catch(e){ /* try next route */ }
-  }
-  wrap.hidden=true;
-}
 async function loadNews(){
   await loadBriefings();
   await loadNewsCat(LOCAL_CAT);
   const a=document.getElementById("newsAsOf");
   if(a) a.textContent="Live · updated "+new Date().toLocaleTimeString("en-US",{hour:"numeric",minute:"2-digit"});
-  loadTrends();
 }
 loadNews(); setInterval(loadNews, 600000);
 </script>
