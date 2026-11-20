@@ -190,6 +190,14 @@
   .news-item a .ext{color:#767676;font-size:11px;vertical-align:super}
   .news-src{font-family:var(--mono);font-size:10.5px;color:var(--faint);margin-top:4px;letter-spacing:.03em;text-transform:uppercase}
   .news-dim{color:var(--faint);font-size:13.5px}
+  .brief-grid{display:grid;grid-template-columns:1fr;gap:12px}
+  .brief-card{border-top:2px solid #121212;padding-top:5px}
+  .brief-name{display:block;font-family:var(--cond);font-size:11.5px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:#121212;text-decoration:none;margin-bottom:5px}
+  .brief-name:hover{text-decoration:underline}
+  .brief-item{display:block;color:var(--text);text-decoration:none;font-family:var(--serif);font-weight:700;font-size:13.5px;line-height:1.35;margin:0 0 6px}
+  .brief-item:hover{text-decoration:underline}
+  .brief-ago{font-family:var(--mono);font-weight:400;font-size:10px;color:var(--faint);white-space:nowrap}
+  .brief-none{font-size:12.5px;color:var(--faint);line-height:1.4}
   .news-trends{background:#ffffff;border:1px solid #dfdfdd;border-radius:0;margin:0 16px 12px;padding:8px 12px 10px;font-size:12.5px}
   .news-trends-h{font-family:var(--cond);font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:#121212;font-size:11px;margin-right:10px}
   .news-trend-list a{color:#121212;text-decoration:none;white-space:nowrap}
@@ -198,6 +206,10 @@
   @media (min-width:700px) and (min-height:560px){
     .news-cols{grid-template-columns:repeat(3,1fr);gap:14px;align-content:stretch}
     .news-item a{font-size:clamp(14.5px,1.35vw,17.5px)}
+    .news-cols.brief-layout{grid-template-columns:2.15fr 1fr}
+    .brief-grid{grid-template-columns:repeat(3,1fr);gap:10px 14px}
+    .brief-item{font-size:12.8px;line-height:1.32;margin-bottom:5px}
+    .brief-name{margin-bottom:3px}
   }
   /* ---------- rotating full-screen sections ---------- */
   .secnav{display:none}
@@ -343,10 +355,9 @@
 
   <section class="panel news-panel view active" data-view="news" aria-label="News">
       <div class="panel-head"><span class="panel-title">📰 News</span><span class="panel-note" id="newsAsOf"></span></div>
-      <div class="news-cols">
-        <div class="news-col"><div class="news-h">🌍 World</div><div class="news-list" id="newsWorld"><div class="news-dim">Loading headlines…</div></div></div>
-        <div class="news-col"><div class="news-h">🇺🇸 US</div><div class="news-list" id="newsUS"><div class="news-dim">Loading headlines…</div></div></div>
-        <div class="news-col"><div class="news-h">📍 Local</div><div class="news-list" id="newsLocal"><div class="news-dim">Loading headlines…</div></div></div>
+      <div class="news-cols brief-layout">
+        <div class="news-col"><div class="news-h">Semafor Briefings</div><div class="brief-grid" id="briefGrid"><div class="news-dim">Loading briefings…</div></div></div>
+        <div class="news-col"><div class="news-h">📍 Local · 6abc</div><div class="news-list" id="newsLocal"><div class="news-dim">Loading headlines…</div></div></div>
       </div>
       <div class="news-trends" id="newsTrends" hidden><span class="news-trends-h">𝕏 Trending worldwide</span><span class="news-trend-list" id="newsTrendList"></span></div>
     </section>
@@ -751,28 +762,32 @@ setInterval(loadAll, 60000);
   render(); schedule();
 })();
 
-const NEWS_CATS=[
- {el:"newsWorld", feeds:[
-   {src:"BBC News", url:"https://feeds.bbci.co.uk/news/world/rss.xml"},
-   {src:"Al Jazeera", url:"https://www.aljazeera.com/xml/rss/all.xml"},
-   {src:"The Guardian", url:"https://www.theguardian.com/world/rss"}]},
- {el:"newsUS", feeds:[
-   {src:"NPR", url:"https://feeds.npr.org/1003/rss.xml"},
-   {src:"CBS News", url:"https://www.cbsnews.com/latest/rss/us"},
-   {src:"The Guardian", url:"https://www.theguardian.com/us-news/rss"}]},
- {el:"newsLocal", feeds:[
-   {src:"WHYY", url:"https://whyy.org/feed/", count:8, skip:/newscast/i},
-   {src:"PhillyVoice", url:"https://www.phillyvoice.com/feed/"},
-   {src:"Philadelphia Inquirer", url:"https://www.inquirer.com/arc/outboundfeeds/rss/?outputType=xml", skip:/^AP Top .* News at/i}]}];
+const SEMAFOR_FEED={src:"Semafor", url:"https://www.semafor.com/rss.xml", count:100};
+const BRIEFINGS=[
+ {name:"Flagship", slug:"flagship", cats:null},
+ {name:"Washington DC", slug:"washingtondc", cats:["Politics"]},
+ {name:"Business", slug:"business", cats:["Business"]},
+ {name:"Technology", slug:"technology", cats:["Technology"]},
+ {name:"Media", slug:"media", cats:["Media"]},
+ {name:"Healthcare", slug:"healthcare", cats:["Healthcare"]},
+ {name:"Energy", slug:"energy", cats:["Energy"]},
+ {name:"Americana", slug:"americana", cats:["Americana"]},
+ {name:"Africa", slug:"africa", cats:["Africa"]},
+ {name:"Gulf", slug:"gulf", cats:["Gulf"]},
+ {name:"China", slug:"china", cats:["China"]}];
+const LOCAL_CAT={el:"newsLocal", feeds:[
+ {src:"6abc", url:"https://6abc.com/feed/", count:12, skipCats:["U.S. & World","Entertainment"]},
+ {src:"6abc", url:"https://6abc.com/feed/news/", count:15, skipCats:["U.S. & World","Entertainment"]}]};
 function newsEsc(x){ return String(x==null?"":x).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
 function newsAgo(d){ const m=Math.max(1,Math.round((Date.now()-d.getTime())/60000)); if(m<60) return m+"m ago"; const h=Math.round(m/60); return h<24? h+"h ago" : Math.round(h/24)+"d ago"; }
 function newsDate(it){ const d=new Date(String(it.pubDate||"").replace(" ","T")+"Z"); return isNaN(d)? new Date(0) : d; }
+function catNorm(c){ return String(c).replace(/&amp;/g,"&").trim().toLowerCase(); }
 async function fetchFeed(f){
   try{
     const r=await fetch("https://api.rss2json.com/v1/api.json?count="+(f.count||4)+"&rss_url="+encodeURIComponent(f.url), {cache:"no-store"});
     const j=await r.json();
     if(j.status!=="ok" || !j.items) return [];
-    return j.items.filter(it=>it.title && it.link && !(f.skip && f.skip.test(it.title))).map(it=>({...it, _src:f.src}));
+    return j.items.filter(it=>it.title && it.link && !(f.skip && f.skip.test(it.title)) && !(f.cats && !(it.categories||[]).some(c=>f.cats.indexOf(c)>=0)) && !(f.skipCats && (it.categories||[]).some(c=>f.skipCats.some(sc=>catNorm(c).indexOf(catNorm(sc))>=0)))).map(it=>({...it, _src:f.src}));
   }catch(e){ return []; }
 }
 async function loadNewsCat(cat){
@@ -781,10 +796,11 @@ async function loadNewsCat(cat){
   let items=lists.flat();
   items.sort((x,y)=>newsDate(y)-newsDate(x));
   const seen=new Set(), perSrc={}, top=[];
+  const cap=new Set(cat.feeds.map(f=>f.src)).size>1?2:3;
   for(const it of items){
     const key=String(it.title).toLowerCase().replace(/[^a-z0-9 ]/g,"").split(/\s+/).slice(0,5).join(" ");
     if(!key || seen.has(key)) continue;
-    if((perSrc[it._src]||0)>=2) continue;
+    if((perSrc[it._src]||0)>=cap) continue;
     seen.add(key); perSrc[it._src]=(perSrc[it._src]||0)+1; top.push(it);
     if(top.length>=3) break;
   }
@@ -795,6 +811,36 @@ async function loadNewsCat(cat){
     if(!img && it.content){ const m=String(it.content).match(/<img[^>]+src="([^"]+)"/); if(m) img=m[1]; }
     const thumb=img? `<img class="news-thumb" src="${newsEsc(img)}" alt="" loading="lazy" onerror="this.remove()">` : "";
     return `<div class="news-item">${thumb}<div class="news-txt"><a href="${newsEsc(it.link)}" target="_blank" rel="noopener">${newsEsc(it.title)} <span class="ext">↗</span></a><div class="news-src">${newsEsc(it._src)}${ago}</div></div></div>`;
+  }).join("");
+}
+const briefCache={};
+async function loadBriefings(){
+  const grid=document.getElementById("briefGrid"); if(!grid) return;
+  const items=await fetchFeed(SEMAFOR_FEED);
+  if(!items.length && !Object.keys(briefCache).length){ grid.innerHTML='<div class="news-dim">Briefings unavailable right now</div>'; return; }
+  const sorted=items.slice().sort((x,y)=>newsDate(y)-newsDate(x));
+  const flagship=sorted.slice(0,2);
+  const flagLinks=new Set(flagship.map(it=>it.link));
+  grid.innerHTML=BRIEFINGS.map(b=>{
+    const head=`<a class="brief-name" href="https://www.semafor.com/newsletters/${b.slug}/latest" target="_blank" rel="noopener">${newsEsc(b.name)}</a>`;
+    let pool;
+    if(!b.cats){ pool=flagship; }
+    else{
+      pool=sorted.filter(it=>(it.categories||[]).some(c=>b.cats.indexOf(c)>=0));
+      const fresh=pool.filter(it=>!flagLinks.has(it.link));
+      if(fresh.length) pool=fresh;
+      const byLink=new Map();
+      pool.concat(briefCache[b.name]||[]).forEach(it=>{ if(!byLink.has(it.link)) byLink.set(it.link,it); });
+      pool=Array.from(byLink.values()).sort((x,y)=>newsDate(y)-newsDate(x));
+      briefCache[b.name]=pool.slice(0,4);
+      pool=pool.slice(0,2);
+    }
+    if(!pool.length){
+      const note=(b.name==="Americana")? "Newsletter edition — tap the title for the latest" : "No new stories in the latest pull";
+      return `<div class="brief-card">${head}<div class="brief-none">${note}</div></div>`;
+    }
+    const rows=pool.map(it=>{ const d=newsDate(it), ago=d.getTime()? ` <span class="brief-ago">${newsAgo(d)}</span>` : ""; return `<a class="brief-item" href="${newsEsc(it.link)}" target="_blank" rel="noopener">${newsEsc(it.title)}${ago}</a>`; }).join("");
+    return `<div class="brief-card">${head}${rows}</div>`;
   }).join("");
 }
 async function loadTrends(){
@@ -828,7 +874,7 @@ async function loadTrends(){
   wrap.hidden=true;
 }
 async function loadNews(){
-  await Promise.all(NEWS_CATS.map(loadNewsCat));
+  await Promise.all([loadBriefings(), loadNewsCat(LOCAL_CAT)]);
   const a=document.getElementById("newsAsOf");
   if(a) a.textContent="Live · updated "+new Date().toLocaleTimeString("en-US",{hour:"numeric",minute:"2-digit"});
   loadTrends();
