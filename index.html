@@ -6,7 +6,6 @@
 <title>MattGPT — Live Dashboard</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=DotGothic16&family=Share+Tech+Mono&display=swap" rel="stylesheet">
 
 <style>
   :root{
@@ -16,14 +15,14 @@
     --amber:#121212; --led-red:#b3151b; --led-green:#2e7d32; --led-cyan:#40606e; --led-magenta:#6d5fc0;
     --accent:#121212; --live:#b3151b; --gold:#121212;
     --blue:#121212; --dim:var(--muted); --panel2:#f7f7f5;
-    --radius:8px;
-    --sans:"Share Tech Mono",ui-monospace,Menlo,monospace;
-    --cond:"Share Tech Mono",ui-monospace,Menlo,monospace;
-    --mono:"Share Tech Mono",ui-monospace,Menlo,monospace;
+    --radius:12px;
+    --sans:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+    --cond:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+    --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
     --dotfont:var(--sans);
     --tahoma:var(--sans); --monofont:var(--mono);
-    --serif:"Share Tech Mono",ui-monospace,Menlo,monospace;
-    --nameplate:"DotGothic16","Share Tech Mono",sans-serif;
+    --serif:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+    --nameplate:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
     --navbar:#ffffff;
     --tabbar:#121212;
     --glow:none;
@@ -372,129 +371,117 @@
     .ff-lcol .ff-rung{flex:1;align-content:center}
     .news-thumb{width:108px;height:76px}
   }
-  /* ---------- LED digital lights theme (Matt, Nov 19 2026) ----------
-     Full LED board: near-black panels, dot-grid backdrop, glowing amber /
-     cyan / magenta light, DotGothic16 display type + Share Tech Mono text.
-     Supersedes the iOS 27 Liquid Glass theme (same day) and the NYT theme. */
-  body{background-color:#050506;color:#e8e8e8;
-    background-image:radial-gradient(1200px 800px at 50% -10%, rgba(255,176,0,.07), rgba(0,0,0,0) 60%), radial-gradient(rgba(255,255,255,.05) 1px, transparent 1.4px);
-    background-size:auto,22px 22px}
-  .topbar{background:#000000;border-bottom:2px solid #26262b}
-  .brand-name{color:#ffb000;text-shadow:0 0 8px rgba(255,176,0,.65),0 0 26px rgba(255,176,0,.35);letter-spacing:.02em}
-  .brand-t{font-size:1.08em}
-  .date{color:#00e5ff;text-transform:uppercase;letter-spacing:.12em;font-weight:400}
-  .panel-head,.section-head{border-top:2px solid #26262b}
-  .panel-title,.section-head h2{color:#ffb000;text-transform:uppercase;letter-spacing:.08em}
-  .panel-note,.section-note{color:#8a8a93}
+  /* ---------- Newsroom Dark theme (Matt, Nov 19 2026) ----------
+     Picked from four concept mocks. Bloomberg-terminal modern: deep
+     blue-charcoal, white headlines, electric-blue accent, red only for
+     LIVE, system sans throughout. Supersedes the LED theme (same day). */
+  body{background-color:#0a0e14;color:#eef2f7;
+    background-image:radial-gradient(1000px 520px at 50% -10%, rgba(77,163,255,.06), rgba(0,0,0,0) 60%)}
+  .topbar{background:transparent;border-bottom:1px solid #1e2635}
+  .brand-name{color:#eef2f7;font-weight:800;letter-spacing:-.02em;text-shadow:none}
+  .brand-t{font-size:1em}
+  .date{color:#4da3ff;text-transform:uppercase;letter-spacing:.12em;font-weight:600}
+  .panel-head,.section-head{border-top:1px solid #1e2635}
+  .panel-title,.section-head h2{color:#eef2f7;text-transform:uppercase;letter-spacing:.07em}
+  .panel-note,.section-note{color:#7d8aa0}
   .game,.mkt-cell,.ff-match,.news-col,.news-trends,.paper-page,#wxBody{
-    background:#0c0c0e;border:1px solid #26262b;border-radius:8px;
-    box-shadow:0 10px 26px rgba(0,0,0,.5);-webkit-backdrop-filter:none;backdrop-filter:none}
-  .game{box-shadow:inset 4px 0 0 var(--tc,#444444), 0 10px 26px rgba(0,0,0,.5)}
-  .paper-page{border-radius:10px}
-  #wxBody{background:#0c0c0e}
-  .game-head{border-bottom-color:#26262b}
-  .league-tag{color:#00e5ff}
-  .trow + .trow{border-top-color:#1d1d21}
-  .tname{color:#f2f2f2}
-  .tscore{color:#ffffff;text-shadow:0 0 10px rgba(255,255,255,.35)}
-  .tscore,.wx-temp,.mk-price,.ff-team .sc{font-family:"DotGothic16","Share Tech Mono",monospace}
-  .trow.loser .tname,.trow.loser .tscore{color:#5c5c63;text-shadow:none}
-  .trec{color:#8a8a93}
-  .logo{background:#141417;border-color:#26262b;border-radius:6px}
-  .chip{background:#141417;border-color:#33333a;color:#cfcfd4;border-radius:4px}
-  .chip.live{background:#ff2a1a;border-color:#ff2a1a;color:#ffffff;box-shadow:0 0 14px rgba(255,42,26,.55)}
-  .chip.next{background:#ffb000;border-color:#ffb000;color:#000000}
-  .secnav{background:#0a0a0c;border-top:1px solid #26262b;border-bottom:1px solid #26262b;border-radius:0;box-shadow:none;padding:6px 20px;-webkit-backdrop-filter:none;backdrop-filter:none}
-  .secnav button{color:#8a8a93;border-radius:4px;text-transform:uppercase;letter-spacing:.06em;font-size:12px;font-weight:700}
-  .secnav button.active{background:#ffb000;color:#000000;border-color:#ffb000;box-shadow:0 0 16px rgba(255,176,0,.45)}
-  .ticker{background:#000000;border-top:2px solid #26262b;border-bottom:2px solid #26262b;border-radius:0;box-shadow:none;-webkit-backdrop-filter:none;backdrop-filter:none}
-  .ticker-label{background:#000000;border-right:1px solid #26262b}
+    background:#11161f;border:1px solid #1e2635;border-radius:12px;
+    box-shadow:0 8px 24px rgba(0,0,0,.35);-webkit-backdrop-filter:none;backdrop-filter:none}
+  .game{box-shadow:inset 4px 0 0 var(--tc,#3a4356), 0 8px 24px rgba(0,0,0,.35)}
+  .paper-page{border-radius:14px}
+  #wxBody{background:#11161f}
+  .game-head{border-bottom-color:#1e2635}
+  .league-tag{color:#4da3ff}
+  .trow + .trow{border-top-color:#1e2635}
+  .tname{color:#eef2f7}
+  .tscore{color:#ffffff;text-shadow:none}
+  .tscore,.wx-temp,.mk-price,.ff-team .sc{font-family:var(--sans)}
+  .trow.loser .tname,.trow.loser .tscore{color:#55606e}
+  .trec{color:#7d8aa0}
+  .logo{background:#f2f2ef;border-color:#263144;border-radius:8px}
+  .chip{background:#161c26;border-color:#263144;color:#aeb9c6;border-radius:6px}
+  .chip.live{background:#ff3b30;border-color:#ff3b30;color:#ffffff;box-shadow:none}
+  .chip.next{background:#4da3ff;border-color:#4da3ff;color:#0a0e14}
+  .secnav{background:#0d1219;border-top:1px solid #1e2635;border-bottom:1px solid #1e2635;border-radius:0;box-shadow:none;padding:6px 20px;-webkit-backdrop-filter:none;backdrop-filter:none}
+  .secnav button{color:#7d8aa0;border-radius:6px;text-transform:uppercase;letter-spacing:.06em;font-size:12px;font-weight:700;border-color:transparent}
+  .secnav button:hover{color:#eef2f7}
+  .secnav button.active{background:transparent;color:#ffffff;border-color:transparent;box-shadow:inset 0 -2px 0 #4da3ff}
+  .secnav button.active:hover{color:#ffffff}
+  .ticker{background:#0d1219;border-top:1px solid #1e2635;border-bottom:1px solid #1e2635;border-radius:0;box-shadow:none;-webkit-backdrop-filter:none;backdrop-filter:none}
+  .ticker-label{background:transparent;border-right:1px solid #1e2635}
   .ticker-label img{filter:none}
-  .tick{color:#ffb000;border-right-color:#26262b}
-  .tick .st{color:#8a8a93}
-  .tick .st.live{color:#ff4136}
-  .tick.fav{background:rgba(255,176,0,.10)}
-  .wx-temp{color:#ffffff;text-shadow:0 0 14px rgba(0,229,255,.35)}
-  .wx-cond{color:#9a9aa2}
-  .wx-stat .v,.wx-pair .v,.wx-day .t{color:#f2f2f2}
-  .wx-stat .k,.wx-pair .k,.wx-day .d{color:#8a8a93}
-  .wx-day .t .lo,.wx-day .p{color:#8a8a93}
-  .wx-stat,.wx-pair-row{border-top-color:#26262b}
-  .wx-fc{border-left-color:#26262b}
-  .mk-price{color:#ffffff}
-  .mk-name{color:#cfcfd4}
-  .mk-chg{color:#3dff6e}
-  .mk-chg.dn{color:#ff4136}
-  .mk-lab,.mk-range{color:#8a8a93}
-  .mk-empty{color:#8a8a93}
-  .wxmap-frame,.air-frame{border-radius:8px;box-shadow:0 0 0 1px #26262b}
-  .news-h{color:#ffb000;border-top:none;padding-top:0;text-transform:uppercase;letter-spacing:.08em;font-size:13px;font-weight:700}
-  .news-item a{color:#f2f2f2}
-  .news-item a:hover{color:#ffb000}
-  .news-src{color:#8a8a93}
-  .news-thumb{border-color:#26262b;border-radius:4px;background:#141417}
-  .brief-item,.paper-item{color:#e8e8e8}
-  .brief-item:hover,.paper-item:hover,.paper-lead:hover{color:#ffb000}
-  .paper-lead{color:#ffffff}
-  .paper-dek{color:#9a9aa2}
-  .paper-story{border-bottom-color:#26262b}
-  .brief-ago{color:#8a8a93}
-  .brief-none{color:#8a8a93}
-  .paper-mast{border-bottom:2px solid #ffb000}
-  .paper-mast a{color:#ffb000;text-shadow:0 0 12px rgba(255,176,0,.40)}
-  .paper-kicker{color:#00e5ff}
-  .paper-nav button{background:#0c0c0e;border-color:#26262b;color:#8a8a93;border-radius:999px;-webkit-backdrop-filter:none;backdrop-filter:none}
-  .paper-nav button:hover{color:#ffb000;border-color:#ffb000}
-  .paper-nav button.active{background:#ffb000;color:#000000;border-color:#ffb000;box-shadow:0 0 14px rgba(255,176,0,.40)}
-  .paper-btn{background:#0c0c0e;border-color:#33333a;color:#ffb000;border-radius:999px;box-shadow:none;-webkit-backdrop-filter:none;backdrop-filter:none;text-transform:uppercase}
-  .paper-btn:hover:not(:disabled){background:#ffb000;color:#000000}
-  .paper-count{color:#8a8a93}
-  .ff-vs{color:#00e5ff}
-  .ff-team .nm{color:#e8e8e8}
-  .ff-team .sc{color:#ffffff}
-  .ff-meta{color:#9a9aa2}
-  .ff-asof{color:#8a8a93}
-  .ff-rung{border-bottom-color:#26262b}
-  .ff-rung .ff-place{color:#00e5ff}
-  .ff-rung .ff-name{color:#e8e8e8}
-  .ff-rung .ff-rec{color:#8a8a93}
-  .ff-bar{background:#1d1d21}
-  .ff-bar i{background:#ffb000;box-shadow:0 0 10px rgba(255,176,0,.55)}
-  .ff-rung.me{background:rgba(255,176,0,.08)}
-  .ff-rung.me .ff-name{color:#ffb000}
-  .ff-rung.me .ff-bar i{background:#00e5ff;box-shadow:0 0 10px rgba(0,229,255,.60)}
-  .ff-rung .ff-pf{color:#ffffff}
-  .skel{background:linear-gradient(100deg,#101012 40%,#17171a 50%,#101012 60%);border-color:#26262b;border-radius:8px}
-  .news-dim,.empty,.note{color:#8a8a93}
-  .next-when{color:#f2f2f2}
-  .next-name{color:#9a9aa2}
-  a.mkt-cell:hover{background:#121215}
-  .game-link:hover{background:rgba(255,255,255,.04)}
-  .game-link{border-radius:10px}
-  .secnav button:hover{color:#ffb000}
-  .secnav button.active:hover{color:#000000}
-  .paper-nav button.active:hover{color:#000000}
-  .ff-team.me .nm{color:#ffb000}
-  .logo{background:#f2f2ef;border-color:#3a3a41}
+  .tick{color:#eef2f7;border-right-color:#1e2635;font-size:18px;font-weight:700;letter-spacing:.02em}
+  .tick .lg{color:#4da3ff}
+  .tick .st{color:#7d8aa0}
+  .tick .st.live{color:#ff3b30}
+  .tick b{color:#4da3ff}
   .tick img{background:#f2f2ef;border-radius:4px;padding:1px;box-sizing:content-box}
-  .tick{font-size:18px;font-weight:700;letter-spacing:.02em;color:#ffffff}
-  .tick .lg{color:#00e5ff}
-  .tick .st{color:#d8d8de}
-  .tick b{color:#ffffff}
-  .game-tv{color:#9a9aa2;border-top-color:#26262b}
-  .game-tv b{color:#ffb000}
-  .tick b{color:#ffb000}
-  .news-trends-h{color:#ffb000}
-  .news-trend-list a{color:#e8e8e8}
-  .news-trend-list a:hover{color:#ffb000}
-  .wx-fc{border-top-color:#26262b}
+  .tick.fav{background:rgba(77,163,255,.14);box-shadow:inset 0 0 0 1px rgba(77,163,255,.35)}
   a.tick{text-decoration:none}
-  .tick.fav{background:rgba(255,176,0,.18);box-shadow:inset 0 0 0 1px rgba(255,176,0,.35)}
-  .secnav button{color:#a9a9b3}
-  .brief-ago{color:#9a9aa2;font-size:11.5px;margin-left:6px}
-  .news-src{color:#9a9aa2}
-  .ff-asof{color:#9a9aa2}
-  .ff-lad-h{color:#8a8a93}
+  .wx-temp{color:#ffffff;text-shadow:none}
+  .wx-cond{color:#8b98a9}
+  .wx-stat .v,.wx-pair .v,.wx-day .t{color:#eef2f7}
+  .wx-stat .k,.wx-pair .k,.wx-day .d{color:#7d8aa0}
+  .wx-day .t .lo,.wx-day .p{color:#7d8aa0}
+  .wx-stat,.wx-pair-row{border-top-color:#1e2635}
+  .wx-fc{border-left-color:#1e2635;border-top-color:#1e2635}
+  .mk-price{color:#ffffff}
+  .mk-name{color:#aeb9c6}
+  .mk-chg{color:#3ddc84}
+  .mk-chg.dn{color:#ff5040}
+  .mk-lab,.mk-range{color:#7d8aa0}
+  .mk-empty{color:#7d8aa0}
+  .wxmap-frame,.air-frame{border-radius:12px;box-shadow:0 0 0 1px #1e2635}
+  .news-h{color:#eef2f7;border-top:none;padding-top:0;text-transform:uppercase;letter-spacing:.07em;font-size:12.5px;font-weight:700}
+  .news-item a{color:#eef2f7}
+  .news-item a:hover{color:#4da3ff}
+  .news-src{color:#7d8aa0}
+  .news-thumb{border-color:#1e2635;border-radius:6px;background:#161c26}
+  .brief-item,.paper-item{color:#dbe2ec}
+  .brief-item:hover,.paper-item:hover,.paper-lead:hover{color:#4da3ff}
+  .paper-lead{color:#ffffff}
+  .paper-dek{color:#8b98a9}
+  .paper-story{border-bottom-color:#1e2635}
+  .brief-ago{color:#7d8aa0;font-size:11.5px;margin-left:6px}
+  .brief-none{color:#7d8aa0}
+  .paper-mast{border-bottom:2px solid #4da3ff}
+  .paper-mast a{color:#eef2f7;text-shadow:none}
+  .paper-kicker{color:#4da3ff}
+  .paper-nav button{background:#11161f;border-color:#1e2635;color:#7d8aa0;border-radius:999px;-webkit-backdrop-filter:none;backdrop-filter:none}
+  .paper-nav button:hover{color:#eef2f7;border-color:#4da3ff}
+  .paper-nav button.active{background:#4da3ff;color:#0a0e14;border-color:#4da3ff;box-shadow:none}
+  .paper-nav button.active:hover{color:#0a0e14}
+  .paper-btn{background:#11161f;border-color:#263144;color:#4da3ff;border-radius:999px;box-shadow:none;-webkit-backdrop-filter:none;backdrop-filter:none;text-transform:uppercase}
+  .paper-btn:hover:not(:disabled){background:#4da3ff;color:#0a0e14}
+  .ff-vs{color:#4da3ff}
+  .ff-team .nm{color:#dbe2ec}
+  .ff-team.me .nm{color:#4da3ff}
+  .ff-team .sc{color:#ffffff}
+  .ff-meta{color:#8b98a9}
+  .ff-asof{color:#7d8aa0}
+  .ff-lad-h{color:#7d8aa0}
+  .ff-rung{border-bottom-color:#1e2635}
+  .ff-rung .ff-place{color:#4da3ff}
+  .ff-rung .ff-name{color:#dbe2ec}
+  .ff-rung .ff-rec{color:#7d8aa0}
+  .ff-bar{background:#1c2534}
+  .ff-bar i{background:#4da3ff;box-shadow:none}
+  .ff-rung.me{background:rgba(77,163,255,.10)}
+  .ff-rung.me .ff-name{color:#4da3ff}
+  .ff-rung.me .ff-bar i{background:#3ddc84;box-shadow:none}
+  .ff-rung .ff-pf{color:#ffffff}
+  .skel{background:linear-gradient(100deg,#11161f 40%,#161c26 50%,#11161f 60%);border-color:#1e2635;border-radius:12px}
+  .news-dim,.empty,.note{color:#7d8aa0}
+  .next-when{color:#eef2f7}
+  .next-name{color:#8b98a9}
+  a.mkt-cell:hover{background:#151b25}
+  .game-link:hover{background:rgba(255,255,255,.03)}
+  .game-link{border-radius:14px}
+  .game-tv{color:#8b98a9;border-top-color:#1e2635}
+  .game-tv b{color:#4da3ff}
+  .news-trends-h{color:#4da3ff}
+  .news-trend-list a{color:#dbe2ec}
+  .news-trend-list a:hover{color:#4da3ff}
 </style>
 </head>
 <body>
@@ -872,9 +859,9 @@ async function loadWeather(){
 
 /* ---------- markets (CNBC: CORS-open quotes + daily bars) ---------- */
 const MKTS = [
-  {cell:"mkt-spx", sym:".SPX", name:"S&P 500", color:"#ffb000"},
-  {cell:"mkt-dji", sym:".DJI", name:"DOW JONES", color:"#00e5ff"},
-  {cell:"mkt-ixic", sym:".IXIC", name:"NASDAQ COMPOSITE", color:"#ff2fd6"}
+  {cell:"mkt-spx", sym:".SPX", name:"S&P 500", color:"#4da3ff"},
+  {cell:"mkt-dji", sym:".DJI", name:"DOW JONES", color:"#3ddc84"},
+  {cell:"mkt-ixic", sym:".IXIC", name:"NASDAQ COMPOSITE", color:"#b98cff"}
 ];
 function mktChartSVG(bars, color, maxPts){
   const closes = (maxPts ? bars.slice(-maxPts) : bars).map(b => parseFloat(b.close)).filter(n => isFinite(n));
