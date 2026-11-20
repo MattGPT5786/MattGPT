@@ -6,6 +6,7 @@
 <title>MattGPT — Live Dashboard</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DotGothic16&family=Share+Tech+Mono&display=swap" rel="stylesheet">
 
 <style>
   :root{
@@ -15,14 +16,14 @@
     --amber:#121212; --led-red:#b3151b; --led-green:#2e7d32; --led-cyan:#40606e; --led-magenta:#6d5fc0;
     --accent:#121212; --live:#b3151b; --gold:#121212;
     --blue:#121212; --dim:var(--muted); --panel2:#f7f7f5;
-    --radius:20px;
-    --sans:-apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue",Arial,sans-serif;
-    --cond:-apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue",Arial,sans-serif;
-    --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+    --radius:8px;
+    --sans:"Share Tech Mono",ui-monospace,Menlo,monospace;
+    --cond:"Share Tech Mono",ui-monospace,Menlo,monospace;
+    --mono:"Share Tech Mono",ui-monospace,Menlo,monospace;
     --dotfont:var(--sans);
     --tahoma:var(--sans); --monofont:var(--mono);
-    --serif:-apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue",Arial,sans-serif;
-    --nameplate:-apple-system,BlinkMacSystemFont,"SF Pro Display","Helvetica Neue",Arial,sans-serif;
+    --serif:"Share Tech Mono",ui-monospace,Menlo,monospace;
+    --nameplate:"DotGothic16","Share Tech Mono",sans-serif;
     --navbar:#ffffff;
     --tabbar:#121212;
     --glow:none;
@@ -175,6 +176,17 @@
   .ff-std .r{text-align:right}
   .ff-chart{margin-top:10px;background:#ffffff;border-radius:0;box-shadow:0 0 0 1px #dfdfdd;padding:8px 6px 4px}
   .ff-chart svg{display:block;width:100%;height:auto}
+  .ff-ladder{display:grid;grid-template-columns:1fr;gap:0 30px;margin-top:10px}
+  @media (min-width:900px){ .ff-ladder{grid-template-columns:1fr 1fr} }
+  .ff-rung{display:grid;grid-template-columns:26px 1fr 42px 110px 64px;align-items:center;gap:10px;padding:6px 8px;border-bottom:1px solid #e2e2e0}
+  .ff-rung .ff-place{font-weight:800;color:var(--faint);text-align:right;font-variant-numeric:tabular-nums}
+  .ff-rung .ff-name{font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--text)}
+  .ff-rung .ff-rec{color:var(--muted);font-variant-numeric:tabular-nums}
+  .ff-bar{display:block;height:8px;background:#e8e8e6}
+  .ff-bar i{display:block;height:100%;background:#121212}
+  .ff-rung .ff-pf{text-align:right;font-weight:700;font-variant-numeric:tabular-nums;color:var(--text)}
+  .ff-rung.me{background:#f0f0ec}
+  .ff-rung.me .ff-name{font-weight:900}
   .ff-asof{margin-top:8px;font-size:11.5px;color:#767676}
   /* ---------- news ---------- */
   .news-panel{display:flex;flex-direction:column}
@@ -203,44 +215,12 @@
   .paper{flex:1;min-height:0;display:flex;flex-direction:column;padding:12px 16px;gap:10px}
   .paper-stage{position:relative;flex:1;min-height:560px;perspective:1400px}
   .paper-page{position:relative;background:#ffffff;border:1px solid #dfdfdd;padding:16px 20px;overflow:hidden;display:none}
-  .paper-page.on{display:block}
-  .paper-page.curl-next,.paper-page.curl-prev{position:absolute;inset:0;z-index:5;display:block}
-  .paper-page.curl-next{animation:curlNext 1.5s ease forwards}
-  .paper-page.curl-prev{animation:curlPrev 1.5s ease forwards}
-  @keyframes curlNext{
-    0%{clip-path:polygon(0 0,100% 0,100% 100%,100% 100%,0 100%)}
-    30%{clip-path:polygon(0 0,100% 0,100% 62%,66% 100%,0 100%)}
-    55%{clip-path:polygon(0 0,100% 0,100% 34%,40% 100%,0 100%)}
-    80%{clip-path:polygon(0 0,100% 0,100% 10%,14% 100%,0 100%)}
-    100%{clip-path:polygon(0 0,100% 0,100% 0,0 100%,0 100%)}
-  }
-  @keyframes curlPrev{
-    0%{clip-path:polygon(0 0,100% 0,100% 100%,0 100%,0 100%)}
-    30%{clip-path:polygon(0 0,100% 0,100% 100%,34% 100%,0 62%)}
-    55%{clip-path:polygon(0 0,100% 0,100% 100%,60% 100%,0 34%)}
-    80%{clip-path:polygon(0 0,100% 0,100% 100%,86% 100%,0 10%)}
-    100%{clip-path:polygon(0 0,100% 0,100% 100%,100% 100%,0 0)}
-  }
-  .paper-curl{position:absolute;z-index:6;pointer-events:none;width:68%;height:36%;opacity:0;border-radius:999px;
-    background:linear-gradient(180deg, rgba(70,70,80,.28) 0%, #e8e8e3 26%, #ffffff 50%, #f4f4f1 74%, rgba(70,70,80,.20) 100%);
-    filter:drop-shadow(-16px 14px 20px rgba(20,20,40,.28))}
-  .paper-curl.band-next{right:-6%;bottom:-6%}
-  .paper-curl.band-prev{left:-6%;bottom:-6%}
-  .paper-curl.band-next.go{animation:bandNext 1.5s ease forwards}
-  .paper-curl.band-prev.go{animation:bandPrev 1.5s ease forwards}
-  @keyframes bandNext{
-    0%{transform:translate(34%,34%) rotate(-45deg) scaleY(.55);opacity:0}
-    14%{opacity:1}
-    82%{opacity:1}
-    100%{transform:translate(-118%,-118%) rotate(-45deg) scaleY(1.25);opacity:0}
-  }
-  @keyframes bandPrev{
-    0%{transform:translate(-34%,34%) rotate(45deg) scaleY(.55);opacity:0}
-    14%{opacity:1}
-    82%{opacity:1}
-    100%{transform:translate(118%,-118%) rotate(45deg) scaleY(1.25);opacity:0}
-  }
-  @media (prefers-reduced-motion: reduce){ .paper-page.curl-next,.paper-page.curl-prev,.paper-curl{animation:none} }
+  .paper-page.on{display:flex;flex-direction:column}
+  .paper-items{flex:1;display:flex;flex-direction:column;min-height:0}
+  .paper-story{flex:1;display:flex;flex-direction:column;justify-content:center;border-bottom:1px solid #e2e2e0;padding:10px 0;min-height:0}
+  .paper-story:last-child{border-bottom:none}
+  .paper-story .paper-lead,.paper-story .paper-item{margin:0}
+  .paper-dek{font-family:var(--serif);font-size:13.5px;font-weight:400;color:var(--muted);line-height:1.55;margin-top:5px}
   .paper-nav{display:flex;gap:4px;overflow-x:auto;padding-bottom:2px;scrollbar-width:none}
   .paper-nav::-webkit-scrollbar{display:none}
   .paper-nav button{appearance:none;flex:0 0 auto;background:#ffffff;border:1px solid #c9c9c6;color:#555555;font-family:var(--cond);font-size:11.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;padding:6px 11px;cursor:pointer;border-radius:0;white-space:nowrap}
@@ -253,7 +233,7 @@
   .paper-btn:focus-visible{outline:2px solid #121212;outline-offset:2px}
   .paper-btn:disabled{opacity:.35;cursor:default}
   .paper-count{font-family:var(--mono);font-size:12px;color:#555555;letter-spacing:.04em;text-align:center}
-  .front-cols{display:grid;grid-template-columns:1fr;gap:14px}
+  .front-cols{display:grid;grid-template-columns:1fr;gap:14px;flex:1;min-height:0}
   .paper-page .news-trends{margin:12px 0 0}
   .front-item{font-size:16px}
   .paper-kicker{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#767676}
@@ -376,64 +356,104 @@
   .ff-panel .panel-head{margin-bottom:6px}
   .ff-chart svg{max-height:52vh}
 }
-  /* ---------- iOS 27 Liquid Glass theme (Matt, Nov 19 2026) ----------
-     Refined Liquid Glass per WWDC26: mid-tinted glass that diffuses what's
-     behind it, a bright specular top edge with a faint darkened edge for
-     separation, one consistent corner radius per surface size, SF type,
-     floating pill nav. Supersedes the NYT newspaper theme. */
-  body{background-color:#edf0f7;color:#0b0b10;
-    background-image:
-      radial-gradient(900px 620px at 12% -8%, rgba(140,180,255,.50), rgba(140,180,255,0) 60%),
-      radial-gradient(880px 640px at 88% -10%, rgba(196,164,255,.42), rgba(196,164,255,0) 60%),
-      radial-gradient(760px 560px at 78% 108%, rgba(255,196,150,.40), rgba(255,196,150,0) 62%),
-      radial-gradient(700px 520px at 8% 104%, rgba(150,230,200,.36), rgba(150,230,200,0) 60%);
-    background-attachment:fixed}
-  .topbar{background:transparent;border-bottom:none}
-  .brand-name{font-weight:800;letter-spacing:-.02em;color:#0b0b10}
-  .date{color:rgba(60,60,67,.78);text-transform:none;letter-spacing:.01em;font-weight:500;font-size:12.5px}
-  .panel-head,.section-head{border-top:none}
-  .panel-title,.section-head h2{text-transform:none;letter-spacing:-.01em;font-size:15px;font-weight:700;color:#0b0b10}
-  .panel-note{color:rgba(60,60,67,.72)}
-  .game,.mkt-cell,.ff-match,.ff-chart,.news-col,.news-trends,.paper-page,#wxBody{
-    background:rgba(255,255,255,.58);
-    -webkit-backdrop-filter:blur(22px) saturate(180%);backdrop-filter:blur(22px) saturate(180%);
-    border:1px solid rgba(255,255,255,.65);
-    box-shadow:0 14px 34px rgba(27,33,66,.10), inset 0 1px 0 rgba(255,255,255,.85), inset 0 0 0 1px rgba(11,11,16,.03)}
-  .game{border-radius:22px;box-shadow:inset 4px 0 0 var(--tc,#cccccc), 0 14px 34px rgba(27,33,66,.10), inset 0 1px 0 rgba(255,255,255,.85)}
-  .mkt-cell,.ff-chart{border-radius:22px}
-  .ff-match,.news-col{border-radius:20px}
-  .news-trends{border-radius:16px}
-  .paper-page{border-radius:26px}
-  #wxBody{border-radius:24px;background:linear-gradient(135deg, rgba(110,170,255,.22), rgba(255,255,255,.55) 55%, rgba(170,210,255,.20))}
-  .game-head{border-bottom-color:rgba(11,11,16,.06)}
-  .trow + .trow{border-top-color:rgba(11,11,16,.05)}
-  .logo{border-radius:10px;border-color:rgba(11,11,16,.05);background:rgba(255,255,255,.75)}
-  .chip{border-radius:999px;border-color:rgba(11,11,16,.10);background:rgba(255,255,255,.55)}
-  .chip.live{border-color:#b3151b;background:#b3151b;color:#ffffff}
-  .chip.next{border-color:#1c1c1e;background:#1c1c1e;color:#ffffff}
-  .game-link{border-radius:24px}
-  .game-link:hover{background:rgba(255,255,255,.25)}
-  .skel{border-radius:22px;border-color:rgba(255,255,255,.6)}
-  .secnav{background:rgba(255,255,255,.5);-webkit-backdrop-filter:blur(22px) saturate(180%);backdrop-filter:blur(22px) saturate(180%);
-    border:1px solid rgba(255,255,255,.6);border-radius:999px;padding:5px;
-    box-shadow:0 10px 26px rgba(27,33,66,.12), inset 0 1px 0 rgba(255,255,255,.8)}
-  .secnav button{border-radius:999px;color:#3a3a3c;border-color:transparent;text-transform:none;letter-spacing:0;font-size:13px;font-weight:600}
-  .secnav button.active{background:#ffffff;color:#0b0b10;border-color:rgba(255,255,255,.9);box-shadow:0 3px 10px rgba(27,33,66,.18)}
-  .ticker{background:rgba(255,255,255,.55);-webkit-backdrop-filter:blur(22px) saturate(180%);backdrop-filter:blur(22px) saturate(180%);
-    border:1px solid rgba(255,255,255,.65);border-radius:20px;
-    box-shadow:0 12px 30px rgba(27,33,66,.10), inset 0 1px 0 rgba(255,255,255,.85)}
-  .ticker-label{background:transparent;border-right:1px solid rgba(11,11,16,.07)}
-  .tick{border-right-color:rgba(11,11,16,.06)}
-  .wx-stat,.wx-pair-row{border-top-color:rgba(11,11,16,.07)}
-  .wx-fc{border-left-color:rgba(11,11,16,.07)}
-  .wxmap-frame,.air-frame{border-radius:24px;box-shadow:0 14px 34px rgba(27,33,66,.12), 0 0 0 1px rgba(11,11,16,.06)}
-  .news-h{border-top:none;padding-top:0;text-transform:none;letter-spacing:-.01em;font-size:14.5px;font-weight:700}
-  .news-thumb{border-radius:10px;border-color:rgba(11,11,16,.05)}
-  .paper-mast{border-bottom:1px solid rgba(11,11,16,.12)}
-  .paper-nav button{border-radius:999px;background:rgba(255,255,255,.5);border-color:rgba(255,255,255,.6);color:#3a3a3c;-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px)}
-  .paper-nav button.active{background:#0b0b10;color:#ffffff;border-color:transparent}
-  .paper-btn{border-radius:999px;background:rgba(255,255,255,.55);border-color:rgba(255,255,255,.65);color:#0b0b10;-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);box-shadow:0 6px 16px rgba(27,33,66,.10)}
-  .paper-btn:hover:not(:disabled){background:#0b0b10;color:#ffffff}
+  /* ---------- LED digital lights theme (Matt, Nov 19 2026) ----------
+     Full LED board: near-black panels, dot-grid backdrop, glowing amber /
+     cyan / magenta light, DotGothic16 display type + Share Tech Mono text.
+     Supersedes the iOS 27 Liquid Glass theme (same day) and the NYT theme. */
+  body{background-color:#050506;color:#e8e8e8;
+    background-image:radial-gradient(1200px 800px at 50% -10%, rgba(255,176,0,.07), rgba(0,0,0,0) 60%), radial-gradient(rgba(255,255,255,.05) 1px, transparent 1.4px);
+    background-size:auto,22px 22px}
+  .topbar{background:#000000;border-bottom:2px solid #26262b}
+  .brand-name{color:#ffb000;text-shadow:0 0 8px rgba(255,176,0,.65),0 0 26px rgba(255,176,0,.35);letter-spacing:.02em}
+  .date{color:#00e5ff;text-transform:uppercase;letter-spacing:.12em;font-weight:400}
+  .panel-head,.section-head{border-top:2px solid #26262b}
+  .panel-title,.section-head h2{color:#ffb000;text-transform:uppercase;letter-spacing:.08em}
+  .panel-note,.section-note{color:#8a8a93}
+  .game,.mkt-cell,.ff-match,.news-col,.news-trends,.paper-page,#wxBody{
+    background:#0c0c0e;border:1px solid #26262b;border-radius:8px;
+    box-shadow:0 10px 26px rgba(0,0,0,.5);-webkit-backdrop-filter:none;backdrop-filter:none}
+  .game{box-shadow:inset 4px 0 0 var(--tc,#444444), 0 10px 26px rgba(0,0,0,.5)}
+  .paper-page{border-radius:10px}
+  #wxBody{background:#0c0c0e}
+  .game-head{border-bottom-color:#26262b}
+  .league-tag{color:#00e5ff}
+  .trow + .trow{border-top-color:#1d1d21}
+  .tname{color:#f2f2f2}
+  .tscore{color:#ffffff;text-shadow:0 0 10px rgba(255,255,255,.35)}
+  .tscore,.wx-temp,.mk-price,.ff-team .sc{font-family:"DotGothic16","Share Tech Mono",monospace}
+  .trow.loser .tname,.trow.loser .tscore{color:#5c5c63;text-shadow:none}
+  .trec{color:#8a8a93}
+  .logo{background:#141417;border-color:#26262b;border-radius:6px}
+  .chip{background:#141417;border-color:#33333a;color:#cfcfd4;border-radius:4px}
+  .chip.live{background:#ff2a1a;border-color:#ff2a1a;color:#ffffff;box-shadow:0 0 14px rgba(255,42,26,.55)}
+  .chip.next{background:#ffb000;border-color:#ffb000;color:#000000}
+  .secnav{background:#0a0a0c;border-top:1px solid #26262b;border-bottom:1px solid #26262b;border-radius:0;box-shadow:none;padding:6px 20px;-webkit-backdrop-filter:none;backdrop-filter:none}
+  .secnav button{color:#8a8a93;border-radius:4px;text-transform:uppercase;letter-spacing:.06em;font-size:12px;font-weight:700}
+  .secnav button.active{background:#ffb000;color:#000000;border-color:#ffb000;box-shadow:0 0 16px rgba(255,176,0,.45)}
+  .ticker{background:#000000;border-top:2px solid #26262b;border-bottom:2px solid #26262b;border-radius:0;box-shadow:none;-webkit-backdrop-filter:none;backdrop-filter:none}
+  .ticker-label{background:#000000;border-right:1px solid #26262b}
+  .ticker-label img{filter:none}
+  .tick{color:#ffb000;border-right-color:#26262b}
+  .tick .st{color:#8a8a93}
+  .tick .st.live{color:#ff4136}
+  .tick.fav{background:rgba(255,176,0,.10)}
+  .wx-temp{color:#ffffff;text-shadow:0 0 14px rgba(0,229,255,.35)}
+  .wx-cond{color:#9a9aa2}
+  .wx-stat .v,.wx-pair .v,.wx-day .t{color:#f2f2f2}
+  .wx-stat .k,.wx-pair .k,.wx-day .d{color:#8a8a93}
+  .wx-day .t .lo,.wx-day .p{color:#8a8a93}
+  .wx-stat,.wx-pair-row{border-top-color:#26262b}
+  .wx-fc{border-left-color:#26262b}
+  .mk-price{color:#ffffff}
+  .mk-name{color:#cfcfd4}
+  .mk-chg{color:#3dff6e}
+  .mk-chg.dn{color:#ff4136}
+  .mk-lab,.mk-range{color:#8a8a93}
+  .mk-empty{color:#8a8a93}
+  .wxmap-frame,.air-frame{border-radius:8px;box-shadow:0 0 0 1px #26262b}
+  .news-h{color:#ffb000;border-top:none;padding-top:0;text-transform:uppercase;letter-spacing:.08em;font-size:13px;font-weight:700}
+  .news-item a{color:#f2f2f2}
+  .news-item a:hover{color:#ffb000}
+  .news-src{color:#8a8a93}
+  .news-thumb{border-color:#26262b;border-radius:4px;background:#141417}
+  .brief-item,.paper-item{color:#e8e8e8}
+  .brief-item:hover,.paper-item:hover,.paper-lead:hover{color:#ffb000}
+  .paper-lead{color:#ffffff}
+  .paper-dek{color:#9a9aa2}
+  .paper-story{border-bottom-color:#26262b}
+  .brief-ago{color:#8a8a93}
+  .brief-none{color:#8a8a93}
+  .paper-mast{border-bottom:2px solid #ffb000}
+  .paper-mast a{color:#ffb000;text-shadow:0 0 12px rgba(255,176,0,.40)}
+  .paper-kicker{color:#00e5ff}
+  .paper-nav button{background:#0c0c0e;border-color:#26262b;color:#8a8a93;border-radius:999px;-webkit-backdrop-filter:none;backdrop-filter:none}
+  .paper-nav button:hover{color:#ffb000;border-color:#ffb000}
+  .paper-nav button.active{background:#ffb000;color:#000000;border-color:#ffb000;box-shadow:0 0 14px rgba(255,176,0,.40)}
+  .paper-btn{background:#0c0c0e;border-color:#33333a;color:#ffb000;border-radius:999px;box-shadow:none;-webkit-backdrop-filter:none;backdrop-filter:none;text-transform:uppercase}
+  .paper-btn:hover:not(:disabled){background:#ffb000;color:#000000}
+  .paper-count{color:#8a8a93}
+  .ff-vs{color:#00e5ff}
+  .ff-team .nm{color:#e8e8e8}
+  .ff-team .sc{color:#ffffff}
+  .ff-meta{color:#9a9aa2}
+  .ff-asof{color:#8a8a93}
+  .ff-rung{border-bottom-color:#26262b}
+  .ff-rung .ff-place{color:#00e5ff}
+  .ff-rung .ff-name{color:#e8e8e8}
+  .ff-rung .ff-rec{color:#8a8a93}
+  .ff-bar{background:#1d1d21}
+  .ff-bar i{background:#ffb000;box-shadow:0 0 10px rgba(255,176,0,.55)}
+  .ff-rung.me{background:rgba(255,176,0,.08)}
+  .ff-rung.me .ff-name{color:#ffb000}
+  .ff-rung.me .ff-bar i{background:#00e5ff;box-shadow:0 0 10px rgba(0,229,255,.60)}
+  .ff-rung .ff-pf{color:#ffffff}
+  .skel{background:linear-gradient(100deg,#101012 40%,#17171a 50%,#101012 60%);border-color:#26262b;border-radius:8px}
+  .news-dim,.empty,.note{color:#8a8a93}
+  .next-when{color:#f2f2f2}
+  .next-name{color:#9a9aa2}
+  a.mkt-cell:hover{background:#121215}
+  .game-link:hover{background:rgba(255,255,255,.04)}
+  .game-link{border-radius:10px}
 </style>
 </head>
 <body>
@@ -515,7 +535,7 @@
           <div class="ff-team"><span class="nm">Glen's Sticky DVD Collection</span><span class="sc">0.00</span></div>
           <div class="ff-meta">Proj 125.07 – 108.21 · Win 63% · Yet to play 9 – 9</div>
         </div>
-        <div class="ff-chart"><svg viewBox="0 0 1240 460" role="img" aria-label="Standings bell curve by record, points-for on top of each team"><path d="M42.1,403.3 L58.1,402.8 L74.2,402.3 L90.2,401.6 L106.3,400.9 L122.3,400.0 L138.4,399.1 L154.4,398.0 L170.5,396.9 L186.5,395.6 L202.6,394.1 L218.6,392.5 L234.7,390.8 L250.8,388.9 L266.8,386.9 L282.9,384.7 L298.9,382.4 L315.0,379.9 L331.0,377.3 L347.1,374.6 L363.1,371.8 L379.2,368.9 L395.2,365.8 L411.3,362.8 L427.4,359.7 L443.4,356.6 L459.5,353.5 L475.5,350.5 L491.6,347.5 L507.6,344.7 L523.7,341.9 L539.7,339.4 L555.8,337.0 L571.8,334.9 L587.9,333.0 L603.9,331.4 L620.0,330.1 L636.1,329.1 L652.1,328.4 L668.2,328.1 L684.2,328.0 L700.3,328.3 L716.3,329.0 L732.4,330.0 L748.4,331.2 L764.5,332.8 L780.5,334.7 L796.6,336.8 L812.6,339.1 L828.7,341.6 L844.8,344.3 L860.8,347.1 L876.9,350.1 L892.9,353.1 L909.0,356.2 L925.0,359.3 L941.1,362.4 L957.1,365.5 L973.2,368.5 L989.2,371.4 L1005.3,374.3 L1021.4,377.0 L1037.4,379.6 L1053.5,382.1 L1069.5,384.4 L1085.6,386.6 L1101.6,388.7 L1117.7,390.6 L1133.7,392.3 L1149.8,393.9 L1165.8,395.4 L1181.9,396.7 L1197.9,397.9 L1197.9,406 L42.1,406 Z" fill="rgba(0,0,0,.05)"/><path d="M42.1,403.3 L58.1,402.8 L74.2,402.3 L90.2,401.6 L106.3,400.9 L122.3,400.0 L138.4,399.1 L154.4,398.0 L170.5,396.9 L186.5,395.6 L202.6,394.1 L218.6,392.5 L234.7,390.8 L250.8,388.9 L266.8,386.9 L282.9,384.7 L298.9,382.4 L315.0,379.9 L331.0,377.3 L347.1,374.6 L363.1,371.8 L379.2,368.9 L395.2,365.8 L411.3,362.8 L427.4,359.7 L443.4,356.6 L459.5,353.5 L475.5,350.5 L491.6,347.5 L507.6,344.7 L523.7,341.9 L539.7,339.4 L555.8,337.0 L571.8,334.9 L587.9,333.0 L603.9,331.4 L620.0,330.1 L636.1,329.1 L652.1,328.4 L668.2,328.1 L684.2,328.0 L700.3,328.3 L716.3,329.0 L732.4,330.0 L748.4,331.2 L764.5,332.8 L780.5,334.7 L796.6,336.8 L812.6,339.1 L828.7,341.6 L844.8,344.3 L860.8,347.1 L876.9,350.1 L892.9,353.1 L909.0,356.2 L925.0,359.3 L941.1,362.4 L957.1,365.5 L973.2,368.5 L989.2,371.4 L1005.3,374.3 L1021.4,377.0 L1037.4,379.6 L1053.5,382.1 L1069.5,384.4 L1085.6,386.6 L1101.6,388.7 L1117.7,390.6 L1133.7,392.3 L1149.8,393.9 L1165.8,395.4 L1181.9,396.7 L1197.9,397.9 " fill="none" stroke="#121212" stroke-width="3.5"/><line x1="79" y1="406" x2="1161" y2="406" stroke="#999999" stroke-width="1"/><line x1="105" y1="401" x2="105" y2="411" stroke="#999999" stroke-width="1.2"/><text x="105" y="429" text-anchor="middle" font-size="13.5" font-weight="700" fill="#121212">0-10</text><g><title>You're Doing Great! · 0-10 · PF 930.32</title><text x="105" y="345.9" text-anchor="middle" font-size="16.5" font-weight="800" fill="#22262d">930.32</text><circle cx="105" cy="364.9" r="9" fill="#8a8a86"/><text x="105" y="368.9" text-anchor="middle" font-size="10.5" font-weight="800" fill="#ffffff">14</text><text x="105" y="390.9" text-anchor="middle" font-size="14" font-weight="400" fill="#555555">You're Doing Great!</text></g><line x1="219.44444444444446" y1="401" x2="219.44444444444446" y2="411" stroke="#999999" stroke-width="1.2"/><text x="219.44444444444446" y="429" text-anchor="middle" font-size="13.5" font-weight="400" fill="#aaaaaa">1-9</text><line x1="333.8888888888889" y1="401" x2="333.8888888888889" y2="411" stroke="#999999" stroke-width="1.2"/><text x="333.8888888888889" y="429" text-anchor="middle" font-size="13.5" font-weight="700" fill="#121212">2-8</text><g><title>One Armed Bandits · 2-8 · PF 976.16</title><text x="333.8888888888889" y="321.9" text-anchor="middle" font-size="16.5" font-weight="800" fill="#22262d">976.16</text><circle cx="333.8888888888889" cy="340.9" r="9" fill="#8a8a86"/><text x="333.8888888888889" y="344.9" text-anchor="middle" font-size="10.5" font-weight="800" fill="#ffffff">13</text><text x="333.8888888888889" y="366.9" text-anchor="middle" font-size="14" font-weight="400" fill="#555555">One Armed Bandits</text></g><line x1="448.3333333333333" y1="401" x2="448.3333333333333" y2="411" stroke="#999999" stroke-width="1.2"/><text x="448.3333333333333" y="429" text-anchor="middle" font-size="13.5" font-weight="400" fill="#aaaaaa">3-7</text><line x1="562.7777777777778" y1="401" x2="562.7777777777778" y2="411" stroke="#999999" stroke-width="1.2"/><text x="562.7777777777778" y="429" text-anchor="middle" font-size="13.5" font-weight="700" fill="#121212">4-6</text><g><title>Biscuits and Gravy · 4-6 · PF 1264.72</title><text x="562.7777777777778" y="137.1" text-anchor="middle" font-size="16.5" font-weight="800" fill="#22262d">1264.72</text><circle cx="562.7777777777778" cy="156.1" r="9" fill="#8a8a86"/><text x="562.7777777777778" y="160.1" text-anchor="middle" font-size="10.5" font-weight="800" fill="#ffffff">10</text><text x="562.7777777777778" y="182.1" text-anchor="middle" font-size="14" font-weight="400" fill="#555555">Biscuits and Gravy</text></g><g><title>North American Clit Lickers · 4-6 · PF 1232.12</title><text x="562.7777777777778" y="209.1" text-anchor="middle" font-size="16.5" font-weight="800" fill="#22262d">1232.12</text><circle cx="562.7777777777778" cy="228.1" r="9" fill="#8a8a86"/><text x="562.7777777777778" y="232.1" text-anchor="middle" font-size="10.5" font-weight="800" fill="#ffffff">11</text><text x="562.7777777777778" y="254.1" text-anchor="middle" font-size="14" font-weight="400" fill="#555555">North American Clit…</text></g><g><title>Deep Dark Algo · 4-6 · PF 1230.72</title><text x="562.7777777777778" y="281.1" text-anchor="middle" font-size="16.5" font-weight="800" fill="#22262d">1230.72</text><circle cx="562.7777777777778" cy="300.1" r="9" fill="#8a8a86"/><text x="562.7777777777778" y="304.1" text-anchor="middle" font-size="10.5" font-weight="800" fill="#ffffff">12</text><text x="562.7777777777778" y="326.1" text-anchor="middle" font-size="14" font-weight="400" fill="#555555">Deep Dark Algo</text></g><line x1="677.2222222222222" y1="401" x2="677.2222222222222" y2="411" stroke="#999999" stroke-width="1.2"/><text x="677.2222222222222" y="429" text-anchor="middle" font-size="13.5" font-weight="700" fill="#121212">5-5</text><g><title>OOK &amp; the Baby Slides · 5-5 · PF 1138.72</title><text x="677.2222222222222" y="129.0" text-anchor="middle" font-size="16.5" font-weight="800" fill="#22262d">1138.72</text><circle cx="677.2222222222222" cy="148.0" r="9" fill="#8a8a86"/><text x="677.2222222222222" y="152.0" text-anchor="middle" font-size="10.5" font-weight="800" fill="#ffffff">7</text><text x="677.2222222222222" y="174.0" text-anchor="middle" font-size="14" font-weight="400" fill="#555555">OOK &amp; the Baby Slid…</text></g><g><title>Glen's Sticky DVD Collection · 5-5 · PF 1129.54</title><text x="677.2222222222222" y="201.0" text-anchor="middle" font-size="16.5" font-weight="800" fill="#22262d">1129.54</text><circle cx="677.2222222222222" cy="220.0" r="9" fill="#8a8a86"/><text x="677.2222222222222" y="224.0" text-anchor="middle" font-size="10.5" font-weight="800" fill="#ffffff">8</text><text x="677.2222222222222" y="246.0" text-anchor="middle" font-size="14" font-weight="400" fill="#555555">Glen's Sticky DVD C…</text></g><g><title>Boob Words · 5-5 · PF 1072.64</title><text x="677.2222222222222" y="273.0" text-anchor="middle" font-size="16.5" font-weight="800" fill="#22262d">1072.64</text><circle cx="677.2222222222222" cy="292.0" r="9" fill="#8a8a86"/><text x="677.2222222222222" y="296.0" text-anchor="middle" font-size="10.5" font-weight="800" fill="#ffffff">9</text><text x="677.2222222222222" y="318.0" text-anchor="middle" font-size="14" font-weight="400" fill="#555555">Boob Words</text></g><line x1="791.6666666666666" y1="401" x2="791.6666666666666" y2="411" stroke="#999999" stroke-width="1.2"/><text x="791.6666666666666" y="429" text-anchor="middle" font-size="13.5" font-weight="700" fill="#121212">6-4</text><g><title>Premier League Rejects · 6-4 · PF 1114.46</title><text x="791.6666666666666" y="137.1" text-anchor="middle" font-size="16.5" font-weight="800" fill="#22262d">1114.46</text><circle cx="791.6666666666666" cy="156.1" r="9" fill="#8a8a86"/><text x="791.6666666666666" y="160.1" text-anchor="middle" font-size="10.5" font-weight="800" fill="#ffffff">4</text><text x="791.6666666666666" y="182.1" text-anchor="middle" font-size="14" font-weight="400" fill="#555555">Premier League Reje…</text></g><g><title>Inflatable Volunteer Hero · 6-4 · PF 1110.24</title><text x="791.6666666666666" y="209.1" text-anchor="middle" font-size="16.5" font-weight="800" fill="#22262d">1110.24</text><circle cx="791.6666666666666" cy="228.1" r="9" fill="#8a8a86"/><text x="791.6666666666666" y="232.1" text-anchor="middle" font-size="10.5" font-weight="800" fill="#ffffff">5</text><text x="791.6666666666666" y="254.1" text-anchor="middle" font-size="14" font-weight="400" fill="#555555">Inflatable Voluntee…</text></g><g><title>Micah Kurtz · 6-4 · PF 1097.46</title><text x="791.6666666666666" y="281.1" text-anchor="middle" font-size="16.5" font-weight="800" fill="#22262d">1097.46</text><circle cx="791.6666666666666" cy="300.1" r="9" fill="#8a8a86"/><text x="791.6666666666666" y="304.1" text-anchor="middle" font-size="10.5" font-weight="800" fill="#ffffff">6</text><text x="791.6666666666666" y="326.1" text-anchor="middle" font-size="14" font-weight="400" fill="#555555">Micah Kurtz</text></g><line x1="906.1111111111111" y1="401" x2="906.1111111111111" y2="411" stroke="#999999" stroke-width="1.2"/><text x="906.1111111111111" y="429" text-anchor="middle" font-size="13.5" font-weight="700" fill="#121212">7-3</text><g><title>ScherThing · 7-3 · PF 1291.02</title><text x="906.1111111111111" y="228.6" text-anchor="middle" font-size="16.5" font-weight="800" fill="#121212">1291.02</text><circle cx="906.1111111111111" cy="247.6" r="9" fill="#121212"/><text x="906.1111111111111" y="251.6" text-anchor="middle" font-size="10.5" font-weight="800" fill="#ffffff">2</text><text x="906.1111111111111" y="273.6" text-anchor="middle" font-size="14" font-weight="700" fill="#121212">ScherThing</text></g><g><title>Charged Up Kyle · 7-3 · PF 1120.24</title><text x="906.1111111111111" y="300.6" text-anchor="middle" font-size="16.5" font-weight="800" fill="#22262d">1120.24</text><circle cx="906.1111111111111" cy="319.6" r="9" fill="#8a8a86"/><text x="906.1111111111111" y="323.6" text-anchor="middle" font-size="10.5" font-weight="800" fill="#ffffff">3</text><text x="906.1111111111111" y="345.6" text-anchor="middle" font-size="14" font-weight="400" fill="#555555">Charged Up Kyle</text></g><line x1="1020.5555555555555" y1="401" x2="1020.5555555555555" y2="411" stroke="#999999" stroke-width="1.2"/><text x="1020.5555555555555" y="429" text-anchor="middle" font-size="13.5" font-weight="400" fill="#aaaaaa">8-2</text><line x1="1135" y1="401" x2="1135" y2="411" stroke="#999999" stroke-width="1.2"/><text x="1135" y="429" text-anchor="middle" font-size="13.5" font-weight="700" fill="#121212">9-1</text><g><title>Cakefarts.com · 9-1 · PF 1237.52</title><text x="1135" y="337.4" text-anchor="middle" font-size="16.5" font-weight="800" fill="#22262d">1237.52</text><circle cx="1135" cy="356.4" r="9" fill="#8a8a86"/><text x="1135" y="360.4" text-anchor="middle" font-size="10.5" font-weight="800" fill="#ffffff">1</text><text x="1135" y="382.4" text-anchor="middle" font-size="14" font-weight="400" fill="#555555">Cakefarts.com</text></g></svg></div>
+        <div class="ff-ladder"><div class="ff-lcol"><div class="ff-rung"><span class="ff-place">1</span><span class="ff-name">Cakefarts.com</span><span class="ff-rec">9-1</span><span class="ff-bar"><i style="width:95.9%"></i></span><span class="ff-pf">1237.52</span></div><div class="ff-rung me"><span class="ff-place">2</span><span class="ff-name">ScherThing</span><span class="ff-rec">7-3</span><span class="ff-bar"><i style="width:100%"></i></span><span class="ff-pf">1291.02</span></div><div class="ff-rung"><span class="ff-place">3</span><span class="ff-name">Charged Up Kyle</span><span class="ff-rec">7-3</span><span class="ff-bar"><i style="width:86.8%"></i></span><span class="ff-pf">1120.24</span></div><div class="ff-rung"><span class="ff-place">4</span><span class="ff-name">Premier League Rejects</span><span class="ff-rec">6-4</span><span class="ff-bar"><i style="width:86.3%"></i></span><span class="ff-pf">1114.46</span></div><div class="ff-rung"><span class="ff-place">5</span><span class="ff-name">Inflatable Volunteer Hero</span><span class="ff-rec">6-4</span><span class="ff-bar"><i style="width:86%"></i></span><span class="ff-pf">1110.24</span></div><div class="ff-rung"><span class="ff-place">6</span><span class="ff-name">Micah Kurtz</span><span class="ff-rec">6-4</span><span class="ff-bar"><i style="width:85%"></i></span><span class="ff-pf">1097.46</span></div><div class="ff-rung"><span class="ff-place">7</span><span class="ff-name">OOK &amp; the Baby Slides</span><span class="ff-rec">5-5</span><span class="ff-bar"><i style="width:88.2%"></i></span><span class="ff-pf">1138.72</span></div></div><div class="ff-lcol"><div class="ff-rung"><span class="ff-place">8</span><span class="ff-name">Glen's Sticky DVD Collection</span><span class="ff-rec">5-5</span><span class="ff-bar"><i style="width:87.5%"></i></span><span class="ff-pf">1129.54</span></div><div class="ff-rung"><span class="ff-place">9</span><span class="ff-name">Boob Words</span><span class="ff-rec">5-5</span><span class="ff-bar"><i style="width:83.1%"></i></span><span class="ff-pf">1072.64</span></div><div class="ff-rung"><span class="ff-place">10</span><span class="ff-name">Biscuits and Gravy</span><span class="ff-rec">4-6</span><span class="ff-bar"><i style="width:98%"></i></span><span class="ff-pf">1264.72</span></div><div class="ff-rung"><span class="ff-place">11</span><span class="ff-name">North American Clit Lickers</span><span class="ff-rec">4-6</span><span class="ff-bar"><i style="width:95.4%"></i></span><span class="ff-pf">1232.12</span></div><div class="ff-rung"><span class="ff-place">12</span><span class="ff-name">Deep Dark Algo</span><span class="ff-rec">4-6</span><span class="ff-bar"><i style="width:95.3%"></i></span><span class="ff-pf">1230.72</span></div><div class="ff-rung"><span class="ff-place">13</span><span class="ff-name">One Armed Bandits</span><span class="ff-rec">2-8</span><span class="ff-bar"><i style="width:75.6%"></i></span><span class="ff-pf">976.16</span></div><div class="ff-rung"><span class="ff-place">14</span><span class="ff-name">You're Doing Great!</span><span class="ff-rec">0-10</span><span class="ff-bar"><i style="width:72.1%"></i></span><span class="ff-pf">930.32</span></div></div></div>
         <div class="ff-asof">Snapshot Thu, Nov 19 · 7:38 PM ET</div>
         <!--FF_END--></div>
       </a>
@@ -639,6 +659,19 @@ async function teamRecord(league, teamId){
   }catch(e){ return ""; }
 }
 
+async function ensureRecords(ev, leagueKey){
+  // Some scoreboard payloads (notably college) omit competitor records; the
+  // UP NEXT path has always patched them from the team endpoint — do the same
+  // for game-day cards so every team shows its record the same way.
+  const comp = (ev.competitions || [])[0] || {};
+  await Promise.all((comp.competitors || []).map(async c => {
+    if(!c.records || !c.records.length || !c.records[0].summary){
+      const rec = await teamRecord(leagueKey, (c.team || {}).id);
+      if(rec) c.records = [{summary: rec}];
+    }
+  }));
+}
+
 async function nextGame(fav){
   // Fallback when a favorite has no game on today's board: pull its schedule.
   try{
@@ -650,12 +683,7 @@ async function nextGame(fav){
     if(!upcoming) return `<a class="game game-link" href="${teamSchedUrl(fav.league, fav.id)}" target="_blank" rel="noopener"><div class="game-head">${leagueTagHtml(fav.league)}<span class="chip next">UP NEXT</span></div><div class="next-name">No upcoming game found on the schedule for the ${fav.name}.</div></a>`;
     const when = new Date(upcoming.date).toLocaleString([], {weekday:"short", month:"short", day:"numeric", hour:"numeric", minute:"2-digit"});
     const comps = (upcoming.competitions && upcoming.competitions[0] && upcoming.competitions[0].competitors) || [];
-    await Promise.all(comps.map(async c => {
-      if(!c.records || !c.records.length || !c.records[0].summary){
-        const rec = await teamRecord(fav.league, (c.team || {}).id);
-        if(rec) c.records = [{summary: rec}];
-      }
-    }));
+    await ensureRecords(upcoming, fav.league);
     const rows = comps.length >= 2
       ? [...comps].sort((a,b) => (a.homeAway === "home" ? 1 : 0) - (b.homeAway === "home" ? 1 : 0)).map(c => teamRow(c, "pre")).join("")
       : `<div class="next-name">${upcoming.name}</div>`;
@@ -673,7 +701,8 @@ async function renderFavorites(){
   for(const fav of FAVORITES){
     const ev = (board[fav.league] || []).find(e =>
       (e.competitions[0].competitors || []).some(c => (c.team||{}).id === fav.id));
-    cards.push(ev ? gameCard(ev, fav.league) : await nextGame(fav));
+    if(ev){ await ensureRecords(ev, fav.league); cards.push(gameCard(ev, fav.league)); }
+    else cards.push(await nextGame(fav));
   }
   el.innerHTML = cards.join("");
 }
@@ -789,9 +818,9 @@ async function loadWeather(){
 
 /* ---------- markets (CNBC: CORS-open quotes + daily bars) ---------- */
 const MKTS = [
-  {cell:"mkt-spx", sym:".SPX", name:"S&P 500", color:"#121212"},
-  {cell:"mkt-dji", sym:".DJI", name:"DOW JONES", color:"#1a56db"},
-  {cell:"mkt-ixic", sym:".IXIC", name:"NASDAQ COMPOSITE", color:"#b3151b"}
+  {cell:"mkt-spx", sym:".SPX", name:"S&P 500", color:"#ffb000"},
+  {cell:"mkt-dji", sym:".DJI", name:"DOW JONES", color:"#00e5ff"},
+  {cell:"mkt-ixic", sym:".IXIC", name:"NASDAQ COMPOSITE", color:"#ff2fd6"}
 ];
 function mktChartSVG(bars, color, maxPts){
   const closes = (maxPts ? bars.slice(-maxPts) : bars).map(b => parseFloat(b.close)).filter(n => isFinite(n));
@@ -971,22 +1000,13 @@ function paperShow(){
   paperEls().forEach(function(p,i){ p.classList.toggle("on", i===paperIdx); });
   paperBar();
 }
-function paperGo(n, animate){
+function paperGo(n){
+  // Instant page changes — Matt asked for the flip/roll animation to be
+  // removed (Nov 19, 2026). Navigation (buttons, selectors, swipe, keys,
+  // auto-turn) all still go through here.
   if(!paperTotal) return;
-  n=Math.max(0, Math.min(paperTotal-1, n));
-  if(n===paperIdx || paperFlipping){ paperShow(); return; }
-  const els=paperEls(), from=els[paperIdx], to=els[n];
-  const dir=(n>paperIdx)? "curl-next" : "curl-prev";
-  paperIdx=n;
-  if(!animate || !from || !to || window.matchMedia("(prefers-reduced-motion: reduce)").matches){ paperShow(); return; }
-  paperFlipping=true;
-  to.classList.add("on");
-  from.classList.add(dir);
-  const stage=document.getElementById("paperStage");
-  let band=null;
-  if(stage){ band=document.createElement("div"); band.className="paper-curl "+(dir==="curl-next"? "band-next" : "band-prev")+" go"; stage.appendChild(band); }
-  paperBar();
-  setTimeout(function(){ from.classList.remove("on", dir); if(band) band.remove(); paperFlipping=false; }, 1580);
+  paperIdx=Math.max(0, Math.min(paperTotal-1, n));
+  paperShow();
 }
 window.paperAuto=function(){
   if(paperTotal>1 && paperIdx<paperTotal-1){ paperGo(paperIdx+1, true); return true; }
@@ -1009,6 +1029,17 @@ async function loadBriefings(){
   const flagship=sorted.slice(0,4);
   const flagLinks=new Set(flagship.map(it=>it.link));
   const row=function(it, cls){ const d=newsDate(it), ago=d.getTime()? ' <span class="brief-ago">'+newsAgo(d)+'</span>' : ""; return '<a class="'+cls+'" href="'+newsEsc(it.link)+'" target="_blank" rel="noopener">'+newsEsc(it.title)+ago+'</a>'; };
+  const dek=function(it, max){
+    let s=String(it.description || it.content || "").replace(/<[^>]*>/g," ").replace(/\s+/g," ").trim();
+    if(s){ const ta=document.createElement("textarea"); ta.innerHTML=s; s=ta.value.replace(/\s+/g," ").trim(); }
+    if(s.length>max) s=s.slice(0,max).trimEnd()+"…";
+    return s;
+  };
+  const story=function(it, i){
+    const d=newsDate(it), ago=d.getTime()? ' <span class="brief-ago">'+newsAgo(d)+'</span>' : "";
+    const dk=dek(it, i===0? 230:160);
+    return '<div class="paper-story"><a class="'+(i===0? "paper-lead":"paper-item")+'" href="'+newsEsc(it.link)+'" target="_blank" rel="noopener">'+newsEsc(it.title)+ago+'</a>'+(dk? '<div class="paper-dek">'+newsEsc(dk)+'</div>' : "")+'</div>';
+  };
   const pages=[];
   const flagRows=flagship.length? flagship.map(function(it){ return row(it,"brief-item front-item"); }).join("") : '<div class="brief-none">Briefings unavailable right now</div>';
   pages.push({name:"Front Page", html:'<div class="front-cols"><div class="news-col"><div class="news-h">Flagship · Top Stories</div>'+flagRows+'</div><div class="news-col"><div class="news-h">📍 Local · 6abc</div><div class="news-list" id="newsLocal"><div class="news-dim">Loading headlines…</div></div></div></div><div class="news-trends" id="newsTrends" hidden><span class="news-trends-h">𝕏 Trending worldwide</span><span class="news-trend-list" id="newsTrendList"></span></div>'});
@@ -1024,9 +1055,9 @@ async function loadBriefings(){
     let body;
     if(!pool.length){
       const note=(b.name==="Americana")? "Americana publishes as a newsletter edition — tap the title above for the latest." : "No new stories in the latest pull.";
-      body='<div class="brief-none">'+note+'</div>';
+      body='<div class="paper-items"><div class="brief-none" style="margin:auto 0">'+note+'</div></div>';
     }else{
-      body=pool.map(function(it,i){ return row(it, i===0? "paper-lead":"paper-item"); }).join("");
+      body='<div class="paper-items">'+pool.map(story).join("")+'</div>';
     }
     pages.push({name:b.name, html:'<div class="paper-kicker">Semafor Briefing</div><div class="paper-mast"><a href="https://www.semafor.com/newsletters/'+b.slug+'/latest" target="_blank" rel="noopener">'+newsEsc(b.name)+'</a></div>'+body});
   });

@@ -22,58 +22,18 @@ const meta = [
   (m.me.yet != null && m.opp.yet != null) ? `Yet to play ${esc(m.me.yet)} – ${esc(m.opp.yet)}` : "",
 ].filter(Boolean).join(" · ");
 
-// Standings as a bell curve by record (Matt, Nov 13 2026): teams are placed on a
-// Gaussian curve at their win total, stacked when records tie, with each team's
-// total points-for (PF) printed on top of its marker. Readability pass (Matt,
-// Nov 19 2026): bigger canvas and type, the team's place inside its marker,
-// names truncated at 19 chars instead of 15.
-const games = (() => { const p = String(d.standings[0].record).split("-"); return (+p[0]) + (+p[1]); })();
-const byWins = new Map();
-for (const t of d.standings) {
-  const w = +String(t.record).split("-")[0];
-  if (!byWins.has(w)) byWins.set(w, []);
-  byWins.get(w).push(t);
-}
-for (const arr of byWins.values()) arr.sort((a, b) => parseFloat(b.pf) - parseFloat(a.pf));
-const winVals = d.standings.map((t) => +String(t.record).split("-")[0]);
-const mean = winVals.reduce((a, b) => a + b, 0) / winVals.length;
-const sd = Math.max(0.9, Math.sqrt(winVals.reduce((a, b) => a + (b - mean) ** 2, 0) / winVals.length));
-const minW = Math.min(...winVals), maxW = Math.max(...winVals);
-
-const W = 1240, H = 460, BASE = 406, PADX = 105;
-const X = (w) => PADX + (w - minW) * ((W - 2 * PADX) / Math.max(1, maxW - minW));
-const gauss = (x) => Math.exp(-((x - mean) ** 2) / (2 * sd * sd));
-const curveY = (w) => BASE - gauss(w) * 78;
-
-let path = "";
-for (let i = 0; i <= 72; i++) {
-  const w = minW - 0.55 + (i / 72) * (maxW - minW + 1.1);
-  path += `${i === 0 ? "M" : "L"}${X(w).toFixed(1)},${curveY(w).toFixed(1)} `;
-}
-const area = `${path}L${X(maxW + 0.55).toFixed(1)},${BASE} L${X(minW - 0.55).toFixed(1)},${BASE} Z`;
-
-const short = (s) => (s.length > 19 ? s.slice(0, 19).trimEnd() + "…" : s);
-const SLOT = 72;
-let cols = "";
-for (let w = minW; w <= maxW; w++) {
-  const x = X(w), teams = byWins.get(w) || [];
-  cols += `<line x1="${x}" y1="${BASE - 5}" x2="${x}" y2="${BASE + 5}" stroke="#999999" stroke-width="1.2"/>`;
-  cols += `<text x="${x}" y="${BASE + 23}" text-anchor="middle" font-size="13.5" font-weight="${teams.length ? 700 : 400}" fill="${teams.length ? "#121212" : "#aaaaaa"}">${w}-${games - w}</text>`;
-  teams.forEach((t, i) => {
-    const top = curveY(w) - (teams.length - i) * SLOT;
-    const me = t.team === m.me.name;
-    cols += `<g><title>${esc(t.team)} · ${esc(t.record)} · PF ${esc(t.pf)}</title>` +
-      `<text x="${x}" y="${(top + 17).toFixed(1)}" text-anchor="middle" font-size="16.5" font-weight="800" fill="${me ? "#121212" : "#22262d"}">${esc(t.pf)}</text>` +
-      `<circle cx="${x}" cy="${(top + 36).toFixed(1)}" r="9" fill="${me ? "#121212" : "#8a8a86"}"/>` +
-      `<text x="${x}" y="${(top + 40).toFixed(1)}" text-anchor="middle" font-size="10.5" font-weight="800" fill="#ffffff">${esc(t.place)}</text>` +
-      `<text x="${x}" y="${(top + 62).toFixed(1)}" text-anchor="middle" font-size="14" font-weight="${me ? 700 : 400}" fill="${me ? "#121212" : "#555555"}">${esc(short(t.team))}</text></g>`;
-  });
-}
-const chart = `<div class="ff-chart"><svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Standings bell curve by record, points-for on top of each team">` +
-  `<path d="${area}" fill="rgba(0,0,0,.05)"/>` +
-  `<path d="${path}" fill="none" stroke="#121212" stroke-width="3.5"/>` +
-  `<line x1="${PADX - 26}" y1="${BASE}" x2="${W - PADX + 26}" y2="${BASE}" stroke="#999999" stroke-width="1"/>` +
-  cols + `</svg></div>`;
+// Standings as a ranked PF ladder (Matt, Nov 19 2026 — replaces the Nov 13
+// bell curve, which he found hard to read twice): two columns of rungs in
+// standings order, each rung = place, team, record, a bar scaled to the
+// league-high PF, and the PF value. Same data as the curve showed.
+const maxPf = Math.max(...d.standings.map((t) => parseFloat(t.pf)));
+const rung = (t) => {
+  const me = t.team === m.me.name;
+  const pct = Math.max(4, Math.round((parseFloat(t.pf) / maxPf) * 1000) / 10);
+  return `<div class="ff-rung${me ? " me" : ""}"><span class="ff-place">${esc(t.place)}</span><span class="ff-name">${esc(t.team)}</span><span class="ff-rec">${esc(t.record)}</span><span class="ff-bar"><i style="width:${pct}%"></i></span><span class="ff-pf">${esc(t.pf)}</span></div>`;
+};
+const half = Math.ceil(d.standings.length / 2);
+const ladder = `<div class="ff-ladder"><div class="ff-lcol">${d.standings.slice(0, half).map(rung).join("")}</div><div class="ff-lcol">${d.standings.slice(half).map(rung).join("")}</div></div>`;
 
 const html = `<div class="ff-vs">Week ${esc(d.week)} matchup</div>
         <div class="ff-match">
@@ -81,7 +41,7 @@ const html = `<div class="ff-vs">Week ${esc(d.week)} matchup</div>
           <div class="ff-team"><span class="nm">${esc(m.opp.name)}</span><span class="sc">${esc(m.opp.score)}</span></div>
           ${meta ? `<div class="ff-meta">${meta}</div>` : ""}
         </div>
-        ${chart}
+        ${ladder}
         <div class="ff-asof">Snapshot ${esc(d.asOf)}</div>`;
 
 const file = DIR + "index.html";
