@@ -15,14 +15,14 @@
     --amber:#121212; --led-red:#b3151b; --led-green:#2e7d32; --led-cyan:#40606e; --led-magenta:#6d5fc0;
     --accent:#121212; --live:#b3151b; --gold:#121212;
     --blue:#121212; --dim:var(--muted); --panel2:#f7f7f5;
-    --radius:0px;
-    --sans:"Times New Roman",Times,serif;
-    --cond:"Times New Roman",Times,serif;
-    --mono:"Times New Roman",Times,serif;
+    --radius:20px;
+    --sans:-apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue",Arial,sans-serif;
+    --cond:-apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue",Arial,sans-serif;
+    --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
     --dotfont:var(--sans);
     --tahoma:var(--sans); --monofont:var(--mono);
-    --serif:"Times New Roman",Times,serif;
-    --nameplate:"Times New Roman",Times,serif;
+    --serif:-apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue",Arial,sans-serif;
+    --nameplate:-apple-system,BlinkMacSystemFont,"SF Pro Display","Helvetica Neue",Arial,sans-serif;
     --navbar:#ffffff;
     --tabbar:#121212;
     --glow:none;
@@ -204,12 +204,43 @@
   .paper-stage{position:relative;flex:1;min-height:560px;perspective:1400px}
   .paper-page{position:relative;background:#ffffff;border:1px solid #dfdfdd;padding:16px 20px;overflow:hidden;display:none}
   .paper-page.on{display:block}
-  .paper-page.turn-next,.paper-page.turn-prev{position:absolute;inset:0;z-index:5;display:block;backface-visibility:hidden;-webkit-backface-visibility:hidden}
-  .paper-page.turn-next{transform-origin:left center;animation:turnNext 1.5s ease forwards}
-  .paper-page.turn-prev{transform-origin:right center;animation:turnPrev 1.5s ease forwards}
-  @keyframes turnNext{0%{transform:rotateY(0deg);filter:brightness(1)}55%{filter:brightness(.85)}100%{transform:rotateY(-180deg);filter:brightness(.65)}}
-  @keyframes turnPrev{0%{transform:rotateY(0deg);filter:brightness(1)}55%{filter:brightness(.85)}100%{transform:rotateY(180deg);filter:brightness(.65)}}
-  @media (prefers-reduced-motion: reduce){ .paper-page.turn-next,.paper-page.turn-prev{animation:none} }
+  .paper-page.curl-next,.paper-page.curl-prev{position:absolute;inset:0;z-index:5;display:block}
+  .paper-page.curl-next{animation:curlNext 1.5s ease forwards}
+  .paper-page.curl-prev{animation:curlPrev 1.5s ease forwards}
+  @keyframes curlNext{
+    0%{clip-path:polygon(0 0,100% 0,100% 100%,100% 100%,0 100%)}
+    30%{clip-path:polygon(0 0,100% 0,100% 62%,66% 100%,0 100%)}
+    55%{clip-path:polygon(0 0,100% 0,100% 34%,40% 100%,0 100%)}
+    80%{clip-path:polygon(0 0,100% 0,100% 10%,14% 100%,0 100%)}
+    100%{clip-path:polygon(0 0,100% 0,100% 0,0 100%,0 100%)}
+  }
+  @keyframes curlPrev{
+    0%{clip-path:polygon(0 0,100% 0,100% 100%,0 100%,0 100%)}
+    30%{clip-path:polygon(0 0,100% 0,100% 100%,34% 100%,0 62%)}
+    55%{clip-path:polygon(0 0,100% 0,100% 100%,60% 100%,0 34%)}
+    80%{clip-path:polygon(0 0,100% 0,100% 100%,86% 100%,0 10%)}
+    100%{clip-path:polygon(0 0,100% 0,100% 100%,100% 100%,0 0)}
+  }
+  .paper-curl{position:absolute;z-index:6;pointer-events:none;width:68%;height:36%;opacity:0;border-radius:999px;
+    background:linear-gradient(180deg, rgba(70,70,80,.28) 0%, #e8e8e3 26%, #ffffff 50%, #f4f4f1 74%, rgba(70,70,80,.20) 100%);
+    filter:drop-shadow(-16px 14px 20px rgba(20,20,40,.28))}
+  .paper-curl.band-next{right:-6%;bottom:-6%}
+  .paper-curl.band-prev{left:-6%;bottom:-6%}
+  .paper-curl.band-next.go{animation:bandNext 1.5s ease forwards}
+  .paper-curl.band-prev.go{animation:bandPrev 1.5s ease forwards}
+  @keyframes bandNext{
+    0%{transform:translate(34%,34%) rotate(-45deg) scaleY(.55);opacity:0}
+    14%{opacity:1}
+    82%{opacity:1}
+    100%{transform:translate(-118%,-118%) rotate(-45deg) scaleY(1.25);opacity:0}
+  }
+  @keyframes bandPrev{
+    0%{transform:translate(-34%,34%) rotate(45deg) scaleY(.55);opacity:0}
+    14%{opacity:1}
+    82%{opacity:1}
+    100%{transform:translate(118%,-118%) rotate(45deg) scaleY(1.25);opacity:0}
+  }
+  @media (prefers-reduced-motion: reduce){ .paper-page.curl-next,.paper-page.curl-prev,.paper-curl{animation:none} }
   .paper-nav{display:flex;gap:4px;overflow-x:auto;padding-bottom:2px;scrollbar-width:none}
   .paper-nav::-webkit-scrollbar{display:none}
   .paper-nav button{appearance:none;flex:0 0 auto;background:#ffffff;border:1px solid #c9c9c6;color:#555555;font-family:var(--cond);font-size:11.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;padding:6px 11px;cursor:pointer;border-radius:0;white-space:nowrap}
@@ -345,6 +376,64 @@
   .ff-panel .panel-head{margin-bottom:6px}
   .ff-chart svg{max-height:52vh}
 }
+  /* ---------- iOS 27 Liquid Glass theme (Matt, Nov 19 2026) ----------
+     Refined Liquid Glass per WWDC26: mid-tinted glass that diffuses what's
+     behind it, a bright specular top edge with a faint darkened edge for
+     separation, one consistent corner radius per surface size, SF type,
+     floating pill nav. Supersedes the NYT newspaper theme. */
+  body{background-color:#edf0f7;color:#0b0b10;
+    background-image:
+      radial-gradient(900px 620px at 12% -8%, rgba(140,180,255,.50), rgba(140,180,255,0) 60%),
+      radial-gradient(880px 640px at 88% -10%, rgba(196,164,255,.42), rgba(196,164,255,0) 60%),
+      radial-gradient(760px 560px at 78% 108%, rgba(255,196,150,.40), rgba(255,196,150,0) 62%),
+      radial-gradient(700px 520px at 8% 104%, rgba(150,230,200,.36), rgba(150,230,200,0) 60%);
+    background-attachment:fixed}
+  .topbar{background:transparent;border-bottom:none}
+  .brand-name{font-weight:800;letter-spacing:-.02em;color:#0b0b10}
+  .date{color:rgba(60,60,67,.78);text-transform:none;letter-spacing:.01em;font-weight:500;font-size:12.5px}
+  .panel-head,.section-head{border-top:none}
+  .panel-title,.section-head h2{text-transform:none;letter-spacing:-.01em;font-size:15px;font-weight:700;color:#0b0b10}
+  .panel-note{color:rgba(60,60,67,.72)}
+  .game,.mkt-cell,.ff-match,.ff-chart,.news-col,.news-trends,.paper-page,#wxBody{
+    background:rgba(255,255,255,.58);
+    -webkit-backdrop-filter:blur(22px) saturate(180%);backdrop-filter:blur(22px) saturate(180%);
+    border:1px solid rgba(255,255,255,.65);
+    box-shadow:0 14px 34px rgba(27,33,66,.10), inset 0 1px 0 rgba(255,255,255,.85), inset 0 0 0 1px rgba(11,11,16,.03)}
+  .game{border-radius:22px;box-shadow:inset 4px 0 0 var(--tc,#cccccc), 0 14px 34px rgba(27,33,66,.10), inset 0 1px 0 rgba(255,255,255,.85)}
+  .mkt-cell,.ff-chart{border-radius:22px}
+  .ff-match,.news-col{border-radius:20px}
+  .news-trends{border-radius:16px}
+  .paper-page{border-radius:26px}
+  #wxBody{border-radius:24px;background:linear-gradient(135deg, rgba(110,170,255,.22), rgba(255,255,255,.55) 55%, rgba(170,210,255,.20))}
+  .game-head{border-bottom-color:rgba(11,11,16,.06)}
+  .trow + .trow{border-top-color:rgba(11,11,16,.05)}
+  .logo{border-radius:10px;border-color:rgba(11,11,16,.05);background:rgba(255,255,255,.75)}
+  .chip{border-radius:999px;border-color:rgba(11,11,16,.10);background:rgba(255,255,255,.55)}
+  .chip.live{border-color:#b3151b;background:#b3151b;color:#ffffff}
+  .chip.next{border-color:#1c1c1e;background:#1c1c1e;color:#ffffff}
+  .game-link{border-radius:24px}
+  .game-link:hover{background:rgba(255,255,255,.25)}
+  .skel{border-radius:22px;border-color:rgba(255,255,255,.6)}
+  .secnav{background:rgba(255,255,255,.5);-webkit-backdrop-filter:blur(22px) saturate(180%);backdrop-filter:blur(22px) saturate(180%);
+    border:1px solid rgba(255,255,255,.6);border-radius:999px;padding:5px;
+    box-shadow:0 10px 26px rgba(27,33,66,.12), inset 0 1px 0 rgba(255,255,255,.8)}
+  .secnav button{border-radius:999px;color:#3a3a3c;border-color:transparent;text-transform:none;letter-spacing:0;font-size:13px;font-weight:600}
+  .secnav button.active{background:#ffffff;color:#0b0b10;border-color:rgba(255,255,255,.9);box-shadow:0 3px 10px rgba(27,33,66,.18)}
+  .ticker{background:rgba(255,255,255,.55);-webkit-backdrop-filter:blur(22px) saturate(180%);backdrop-filter:blur(22px) saturate(180%);
+    border:1px solid rgba(255,255,255,.65);border-radius:20px;
+    box-shadow:0 12px 30px rgba(27,33,66,.10), inset 0 1px 0 rgba(255,255,255,.85)}
+  .ticker-label{background:transparent;border-right:1px solid rgba(11,11,16,.07)}
+  .tick{border-right-color:rgba(11,11,16,.06)}
+  .wx-stat,.wx-pair-row{border-top-color:rgba(11,11,16,.07)}
+  .wx-fc{border-left-color:rgba(11,11,16,.07)}
+  .wxmap-frame,.air-frame{border-radius:24px;box-shadow:0 14px 34px rgba(27,33,66,.12), 0 0 0 1px rgba(11,11,16,.06)}
+  .news-h{border-top:none;padding-top:0;text-transform:none;letter-spacing:-.01em;font-size:14.5px;font-weight:700}
+  .news-thumb{border-radius:10px;border-color:rgba(11,11,16,.05)}
+  .paper-mast{border-bottom:1px solid rgba(11,11,16,.12)}
+  .paper-nav button{border-radius:999px;background:rgba(255,255,255,.5);border-color:rgba(255,255,255,.6);color:#3a3a3c;-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px)}
+  .paper-nav button.active{background:#0b0b10;color:#ffffff;border-color:transparent}
+  .paper-btn{border-radius:999px;background:rgba(255,255,255,.55);border-color:rgba(255,255,255,.65);color:#0b0b10;-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);box-shadow:0 6px 16px rgba(27,33,66,.10)}
+  .paper-btn:hover:not(:disabled){background:#0b0b10;color:#ffffff}
 </style>
 </head>
 <body>
@@ -887,14 +976,17 @@ function paperGo(n, animate){
   n=Math.max(0, Math.min(paperTotal-1, n));
   if(n===paperIdx || paperFlipping){ paperShow(); return; }
   const els=paperEls(), from=els[paperIdx], to=els[n];
-  const dir=(n>paperIdx)? "turn-next" : "turn-prev";
+  const dir=(n>paperIdx)? "curl-next" : "curl-prev";
   paperIdx=n;
   if(!animate || !from || !to || window.matchMedia("(prefers-reduced-motion: reduce)").matches){ paperShow(); return; }
   paperFlipping=true;
   to.classList.add("on");
   from.classList.add(dir);
+  const stage=document.getElementById("paperStage");
+  let band=null;
+  if(stage){ band=document.createElement("div"); band.className="paper-curl "+(dir==="curl-next"? "band-next" : "band-prev")+" go"; stage.appendChild(band); }
   paperBar();
-  setTimeout(function(){ from.classList.remove("on", dir); paperFlipping=false; }, 1580);
+  setTimeout(function(){ from.classList.remove("on", dir); if(band) band.remove(); paperFlipping=false; }, 1580);
 }
 window.paperAuto=function(){
   if(paperTotal>1 && paperIdx<paperTotal-1){ paperGo(paperIdx+1, true); return true; }
