@@ -24,7 +24,9 @@ const meta = [
 
 // Standings as a bell curve by record (Matt, Nov 13 2026): teams are placed on a
 // Gaussian curve at their win total, stacked when records tie, with each team's
-// total points-for (PF) printed on top of its marker.
+// total points-for (PF) printed on top of its marker. Readability pass (Matt,
+// Nov 19 2026): bigger canvas and type, the team's place inside its marker,
+// names truncated at 19 chars instead of 15.
 const games = (() => { const p = String(d.standings[0].record).split("-"); return (+p[0]) + (+p[1]); })();
 const byWins = new Map();
 for (const t of d.standings) {
@@ -38,10 +40,10 @@ const mean = winVals.reduce((a, b) => a + b, 0) / winVals.length;
 const sd = Math.max(0.9, Math.sqrt(winVals.reduce((a, b) => a + (b - mean) ** 2, 0) / winVals.length));
 const minW = Math.min(...winVals), maxW = Math.max(...winVals);
 
-const W = 880, H = 378, BASE = 344, PADX = 64;
+const W = 1240, H = 460, BASE = 406, PADX = 105;
 const X = (w) => PADX + (w - minW) * ((W - 2 * PADX) / Math.max(1, maxW - minW));
 const gauss = (x) => Math.exp(-((x - mean) ** 2) / (2 * sd * sd));
-const curveY = (w) => BASE - gauss(w) * 66;
+const curveY = (w) => BASE - gauss(w) * 78;
 
 let path = "";
 for (let i = 0; i <= 72; i++) {
@@ -50,25 +52,26 @@ for (let i = 0; i <= 72; i++) {
 }
 const area = `${path}L${X(maxW + 0.55).toFixed(1)},${BASE} L${X(minW - 0.55).toFixed(1)},${BASE} Z`;
 
-const short = (s) => (s.length > 15 ? s.slice(0, 15).trimEnd() + "…" : s);
-const SLOT = 54;
+const short = (s) => (s.length > 19 ? s.slice(0, 19).trimEnd() + "…" : s);
+const SLOT = 72;
 let cols = "";
 for (let w = minW; w <= maxW; w++) {
   const x = X(w), teams = byWins.get(w) || [];
   cols += `<line x1="${x}" y1="${BASE - 5}" x2="${x}" y2="${BASE + 5}" stroke="#999999" stroke-width="1.2"/>`;
-  cols += `<text x="${x}" y="${BASE + 21}" text-anchor="middle" font-size="12" font-weight="${teams.length ? 700 : 400}" fill="${teams.length ? "#121212" : "#aaaaaa"}">${w}-${games - w}</text>`;
+  cols += `<text x="${x}" y="${BASE + 23}" text-anchor="middle" font-size="13.5" font-weight="${teams.length ? 700 : 400}" fill="${teams.length ? "#121212" : "#aaaaaa"}">${w}-${games - w}</text>`;
   teams.forEach((t, i) => {
     const top = curveY(w) - (teams.length - i) * SLOT;
     const me = t.team === m.me.name;
     cols += `<g><title>${esc(t.team)} · ${esc(t.record)} · PF ${esc(t.pf)}</title>` +
-      `<text x="${x}" y="${(top + 15).toFixed(1)}" text-anchor="middle" font-size="13" font-weight="800" fill="${me ? "#121212" : "#22262d"}">${esc(t.pf)}</text>` +
-      `<circle cx="${x}" cy="${(top + 30).toFixed(1)}" r="6" fill="${me ? "#121212" : "#8a8a86"}"/>` +
-      `<text x="${x}" y="${(top + 50).toFixed(1)}" text-anchor="middle" font-size="10.8" font-weight="${me ? 700 : 400}" fill="${me ? "#121212" : "#555555"}">${esc(short(t.team))}</text></g>`;
+      `<text x="${x}" y="${(top + 17).toFixed(1)}" text-anchor="middle" font-size="16.5" font-weight="800" fill="${me ? "#121212" : "#22262d"}">${esc(t.pf)}</text>` +
+      `<circle cx="${x}" cy="${(top + 36).toFixed(1)}" r="9" fill="${me ? "#121212" : "#8a8a86"}"/>` +
+      `<text x="${x}" y="${(top + 40).toFixed(1)}" text-anchor="middle" font-size="10.5" font-weight="800" fill="#ffffff">${esc(t.place)}</text>` +
+      `<text x="${x}" y="${(top + 62).toFixed(1)}" text-anchor="middle" font-size="14" font-weight="${me ? 700 : 400}" fill="${me ? "#121212" : "#555555"}">${esc(short(t.team))}</text></g>`;
   });
 }
 const chart = `<div class="ff-chart"><svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Standings bell curve by record, points-for on top of each team">` +
   `<path d="${area}" fill="rgba(0,0,0,.05)"/>` +
-  `<path d="${path}" fill="none" stroke="#121212" stroke-width="3"/>` +
+  `<path d="${path}" fill="none" stroke="#121212" stroke-width="3.5"/>` +
   `<line x1="${PADX - 26}" y1="${BASE}" x2="${W - PADX + 26}" y2="${BASE}" stroke="#999999" stroke-width="1"/>` +
   cols + `</svg></div>`;
 
