@@ -33,7 +33,7 @@ const rung = (t) => {
   return `<div class="ff-rung${me ? " me" : ""}"><span class="ff-place">${esc(t.place)}</span><span class="ff-name">${esc(t.team)}</span><span class="ff-rec">${esc(t.record)}</span><span class="ff-bar"><i style="width:${pct}%"></i></span><span class="ff-pf">${esc(t.pf)}</span></div>`;
 };
 const half = Math.ceil(d.standings.length / 2);
-const ladder = `<div class="ff-ladder"><div class="ff-lcol">${d.standings.slice(0, half).map(rung).join("")}</div><div class="ff-lcol">${d.standings.slice(half).map(rung).join("")}</div></div>`;
+const ladder = `<div class="ff-lad-h">Standings · bars show points for vs the league high</div><div class="ff-ladder"><div class="ff-lcol">${d.standings.slice(0, half).map(rung).join("")}</div><div class="ff-lcol">${d.standings.slice(half).map(rung).join("")}</div></div>`;
 
 const html = `<div class="ff-vs">Week ${esc(d.week)} matchup</div>
         <div class="ff-match">
