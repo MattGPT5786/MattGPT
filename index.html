@@ -454,6 +454,16 @@
   a.mkt-cell:hover{background:#121215}
   .game-link:hover{background:rgba(255,255,255,.04)}
   .game-link{border-radius:10px}
+  .secnav button:hover{color:#ffb000}
+  .secnav button.active:hover{color:#000000}
+  .paper-nav button.active:hover{color:#000000}
+  .ff-team.me .nm{color:#ffb000}
+  .logo{background:#f2f2ef;border-color:#3a3a41}
+  .tick img{background:#f2f2ef;border-radius:4px;padding:1px;box-sizing:content-box}
+  .tick{font-size:17px}
+  .tick .lg{color:#00e5ff}
+  .tick .st{color:#d8d8de}
+  .tick b{color:#ffffff}
 </style>
 </head>
 <body>
@@ -993,7 +1003,7 @@ function paperBar(){
   const c=document.getElementById("paperCount"), pv=document.getElementById("paperPrev"), nx=document.getElementById("paperNext");
   if(c) c.textContent=paperTotal? (paperNames[paperIdx]+" · Page "+(paperIdx+1)+" of "+paperTotal) : "";
   if(pv) pv.disabled=(paperIdx<=0);
-  if(nx) nx.disabled=(paperIdx>=paperTotal-1);
+  if(nx) nx.disabled=(paperTotal<=1);
   Array.prototype.forEach.call(document.querySelectorAll("#paperNav button"), function(b,i){ b.classList.toggle("active", i===paperIdx); });
 }
 function paperShow(){
@@ -1066,7 +1076,7 @@ async function loadBriefings(){
 (function(){
   const pv=document.getElementById("paperPrev"), nx=document.getElementById("paperNext"), stage=document.getElementById("paperStage"), nav=document.getElementById("paperNav");
   if(pv) pv.addEventListener("click", function(){ paperGo(paperIdx-1, true); if(window.__newsReset) window.__newsReset(); });
-  if(nx) nx.addEventListener("click", function(){ paperGo(paperIdx+1, true); if(window.__newsReset) window.__newsReset(); });
+  if(nx) nx.addEventListener("click", function(){ paperGo(paperIdx>=paperTotal-1? 0 : paperIdx+1, true); if(window.__newsReset) window.__newsReset(); });
   if(nav) nav.addEventListener("click", function(e){
     const b=e.target.closest("button[data-page]"); if(!b) return;
     paperGo(parseInt(b.getAttribute("data-page"),10), true);
