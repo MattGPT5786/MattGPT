@@ -176,9 +176,12 @@
   .paper-stage{position:relative;flex:1;min-height:560px;perspective:1400px}
   .paper-page{position:relative;background:#ffffff;border:1px solid #dfdfdd;padding:16px 20px;overflow:hidden;display:none}
   .paper-page.on{display:flex;flex-direction:column}
-  .paper-items{flex:1;display:flex;flex-direction:column;min-height:0}
-  .paper-story{flex:1;display:flex;flex-direction:column;justify-content:center;border-bottom:1px solid #e2e2e0;padding:10px 0;min-height:0}
-  .paper-story:last-child{border-bottom:none}
+  .paper-items{flex:1;display:grid;grid-template-columns:1fr 1fr;grid-auto-rows:1fr;min-height:0}
+  .paper-story{display:flex;flex-direction:column;justify-content:center;padding:12px 18px;min-height:0;min-width:0}
+  .paper-story:nth-child(even){border-left:1px solid #e2e2e0}
+  .paper-story:nth-child(n+3){border-top:1px solid #e2e2e0}
+  .paper-story:only-child{grid-column:1/-1}
+  .paper-items .brief-none{grid-column:1/-1;align-self:center}
   .paper-story .paper-item{margin:0}
   .paper-story .paper-item{font-size:17px;line-height:1.45}
   .paper-dek{font-family:var(--serif);font-size:14px;font-weight:400;color:var(--muted);line-height:1.6;margin-top:5px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
@@ -192,7 +195,8 @@
   .paper-btn:hover:not(:disabled){background:#121212;color:#ffffff}
   .paper-btn:focus-visible{outline:2px solid #121212;outline-offset:2px}
   .paper-btn:disabled{opacity:.35;cursor:default}
-  .local-items .news-list{flex:1;min-height:0;display:flex;flex-direction:column}
+  .local-items .news-list{flex:1;min-height:0;display:grid;grid-template-columns:1fr 1fr;grid-auto-rows:1fr}
+  .local-items .news-list .news-dim{grid-column:1/-1;align-self:center}
   .paper-mast{border-bottom:2px solid #121212;padding-bottom:8px;margin-bottom:14px}
   .paper-mast a{color:#121212;text-decoration:none;font-family:var(--serif);font-weight:800;font-size:27px;line-height:1.15}
   .paper-mast a:hover{text-decoration:underline}
@@ -366,7 +370,7 @@
   .paper-item{color:#dbe2ec}
   .paper-item:hover{color:#4da3ff}
   .paper-dek{color:#a7b6c8}
-  .paper-story{border-bottom-color:#1e2635}
+  .paper-story{border-color:#1e2635}
   .brief-ago{color:#93a5bb;font-size:12px;margin-left:6px}
   .brief-none{color:#7d8aa0}
   .paper-mast{border-bottom:2px solid #4da3ff}
