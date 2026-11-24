@@ -176,9 +176,12 @@
   .paper-stage{position:relative;flex:1;min-height:560px;perspective:1400px}
   .paper-page{position:relative;background:#ffffff;border:1px solid #dfdfdd;padding:16px 20px;overflow:hidden;display:none}
   .paper-page.on{display:flex;flex-direction:column}
-  .paper-items{flex:1;display:flex;flex-direction:column;min-height:0}
-  .paper-story{flex:1;display:flex;flex-direction:column;justify-content:center;border-bottom:1px solid #e2e2e0;padding:10px 0;min-height:0}
-  .paper-story:last-child{border-bottom:none}
+  .paper-items{flex:1;display:grid;grid-template-columns:1fr 1fr;grid-auto-rows:1fr;min-height:0}
+  .paper-story{display:flex;flex-direction:column;justify-content:center;padding:12px 18px;min-height:0;min-width:0}
+  .paper-story:nth-child(even){border-left:1px solid #e2e2e0}
+  .paper-story:nth-child(n+3){border-top:1px solid #e2e2e0}
+  .paper-story:only-child{grid-column:1/-1}
+  .paper-items .brief-none{grid-column:1/-1;align-self:center}
   .paper-story .paper-item{margin:0}
   .paper-story .paper-item{font-size:17px;line-height:1.45}
   .paper-dek{font-family:var(--serif);font-size:14px;font-weight:400;color:var(--muted);line-height:1.6;margin-top:5px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
@@ -192,7 +195,8 @@
   .paper-btn:hover:not(:disabled){background:#121212;color:#ffffff}
   .paper-btn:focus-visible{outline:2px solid #121212;outline-offset:2px}
   .paper-btn:disabled{opacity:.35;cursor:default}
-  .local-items .news-list{flex:1;min-height:0;display:flex;flex-direction:column}
+  .local-items .news-list{flex:1;min-height:0;display:grid;grid-template-columns:1fr 1fr;grid-auto-rows:1fr}
+  .local-items .news-list .news-dim{grid-column:1/-1;align-self:center}
   .paper-mast{border-bottom:2px solid #121212;padding-bottom:8px;margin-bottom:14px}
   .paper-mast a{color:#121212;text-decoration:none;font-family:var(--serif);font-weight:800;font-size:27px;line-height:1.15}
   .paper-mast a:hover{text-decoration:underline}
@@ -366,7 +370,7 @@
   .paper-item{color:#dbe2ec}
   .paper-item:hover{color:#4da3ff}
   .paper-dek{color:#a7b6c8}
-  .paper-story{border-bottom-color:#1e2635}
+  .paper-story{border-color:#1e2635}
   .brief-ago{color:#93a5bb;font-size:12px;margin-left:6px}
   .brief-none{color:#7d8aa0}
   .paper-mast{border-bottom:2px solid #4da3ff}
@@ -477,14 +481,14 @@
       <a class="block-link" href="https://football.fantasysports.yahoo.com/f1/490839" target="_blank" rel="noopener">
       <div class="panel-head"><span class="panel-title">🏈 Fantasy Football</span></div>
       <div id="ffBody"><!--FF_START-->
-        <div class="ff-vs">Week 11 matchup</div>
+        <div class="ff-vs">Week 12 matchup</div>
         <div class="ff-match">
           <div class="ff-team me"><span class="nm">ScherThing</span><span class="sc">0.00</span></div>
-          <div class="ff-team"><span class="nm">Glen's Sticky DVD Collection</span><span class="sc">0.00</span></div>
-          <div class="ff-meta">Proj 125.07 – 108.21 · Win 63% · Yet to play 9 – 9</div>
+          <div class="ff-team"><span class="nm">Inflatable Volunteer Hero</span><span class="sc">0.00</span></div>
+          <div class="ff-meta">Proj 126.08 – 125.32 · Win 51% · Yet to play 9 – 9</div>
         </div>
-        <div class="ff-lad-h">Standings · bars show points for vs the league high</div><div class="ff-ladder"><div class="ff-lcol"><div class="ff-rung"><span class="ff-place">1</span><span class="ff-name">Cakefarts.com</span><span class="ff-rec">9-1</span><span class="ff-bar"><i style="width:95.9%"></i></span><span class="ff-pf">1237.52</span></div><div class="ff-rung me"><span class="ff-place">2</span><span class="ff-name">ScherThing</span><span class="ff-rec">7-3</span><span class="ff-bar"><i style="width:100%"></i></span><span class="ff-pf">1291.02</span></div><div class="ff-rung"><span class="ff-place">3</span><span class="ff-name">Charged Up Kyle</span><span class="ff-rec">7-3</span><span class="ff-bar"><i style="width:86.8%"></i></span><span class="ff-pf">1120.24</span></div><div class="ff-rung"><span class="ff-place">4</span><span class="ff-name">Premier League Rejects</span><span class="ff-rec">6-4</span><span class="ff-bar"><i style="width:86.3%"></i></span><span class="ff-pf">1114.46</span></div><div class="ff-rung"><span class="ff-place">5</span><span class="ff-name">Inflatable Volunteer Hero</span><span class="ff-rec">6-4</span><span class="ff-bar"><i style="width:86%"></i></span><span class="ff-pf">1110.24</span></div><div class="ff-rung"><span class="ff-place">6</span><span class="ff-name">Micah Kurtz</span><span class="ff-rec">6-4</span><span class="ff-bar"><i style="width:85%"></i></span><span class="ff-pf">1097.46</span></div><div class="ff-rung"><span class="ff-place">7</span><span class="ff-name">OOK &amp; the Baby Slides</span><span class="ff-rec">5-5</span><span class="ff-bar"><i style="width:88.2%"></i></span><span class="ff-pf">1138.72</span></div></div><div class="ff-lcol"><div class="ff-rung"><span class="ff-place">8</span><span class="ff-name">Glen's Sticky DVD Collection</span><span class="ff-rec">5-5</span><span class="ff-bar"><i style="width:87.5%"></i></span><span class="ff-pf">1129.54</span></div><div class="ff-rung"><span class="ff-place">9</span><span class="ff-name">Boob Words</span><span class="ff-rec">5-5</span><span class="ff-bar"><i style="width:83.1%"></i></span><span class="ff-pf">1072.64</span></div><div class="ff-rung"><span class="ff-place">10</span><span class="ff-name">Biscuits and Gravy</span><span class="ff-rec">4-6</span><span class="ff-bar"><i style="width:98%"></i></span><span class="ff-pf">1264.72</span></div><div class="ff-rung"><span class="ff-place">11</span><span class="ff-name">North American Clit Lickers</span><span class="ff-rec">4-6</span><span class="ff-bar"><i style="width:95.4%"></i></span><span class="ff-pf">1232.12</span></div><div class="ff-rung"><span class="ff-place">12</span><span class="ff-name">Deep Dark Algo</span><span class="ff-rec">4-6</span><span class="ff-bar"><i style="width:95.3%"></i></span><span class="ff-pf">1230.72</span></div><div class="ff-rung"><span class="ff-place">13</span><span class="ff-name">One Armed Bandits</span><span class="ff-rec">2-8</span><span class="ff-bar"><i style="width:75.6%"></i></span><span class="ff-pf">976.16</span></div><div class="ff-rung"><span class="ff-place">14</span><span class="ff-name">You're Doing Great!</span><span class="ff-rec">0-10</span><span class="ff-bar"><i style="width:72.1%"></i></span><span class="ff-pf">930.32</span></div></div></div>
-        <div class="ff-asof">Snapshot Thu, Nov 19 · 7:38 PM ET</div>
+        <div class="ff-lad-h">Standings · bars show points for vs the league high</div><div class="ff-ladder"><div class="ff-lcol"><div class="ff-rung"><span class="ff-place">1</span><span class="ff-name">Cakefarts.com</span><span class="ff-rec">10-1</span><span class="ff-bar"><i style="width:97.5%"></i></span><span class="ff-pf">1364.96</span></div><div class="ff-rung me"><span class="ff-place">2</span><span class="ff-name">ScherThing</span><span class="ff-rec">8-3</span><span class="ff-bar"><i style="width:100%"></i></span><span class="ff-pf">1399.34</span></div><div class="ff-rung"><span class="ff-place">3</span><span class="ff-name">Inflatable Volunteer Hero</span><span class="ff-rec">7-4</span><span class="ff-bar"><i style="width:87.7%"></i></span><span class="ff-pf">1227.84</span></div><div class="ff-rung"><span class="ff-place">4</span><span class="ff-name">Charged Up Kyle</span><span class="ff-rec">7-4</span><span class="ff-bar"><i style="width:87.5%"></i></span><span class="ff-pf">1224.48</span></div><div class="ff-rung"><span class="ff-place">5</span><span class="ff-name">OOK &amp; the Baby Slides</span><span class="ff-rec">6-5</span><span class="ff-bar"><i style="width:91%"></i></span><span class="ff-pf">1273.98</span></div><div class="ff-rung"><span class="ff-place">6</span><span class="ff-name">Premier League Rejects</span><span class="ff-rec">6-5</span><span class="ff-bar"><i style="width:85.2%"></i></span><span class="ff-pf">1192.40</span></div><div class="ff-rung"><span class="ff-place">7</span><span class="ff-name">Boob Words</span><span class="ff-rec">6-5</span><span class="ff-bar"><i style="width:84.6%"></i></span><span class="ff-pf">1183.50</span></div></div><div class="ff-lcol"><div class="ff-rung"><span class="ff-place">8</span><span class="ff-name">Micah Kurtz</span><span class="ff-rec">6-5</span><span class="ff-bar"><i style="width:84.4%"></i></span><span class="ff-pf">1180.76</span></div><div class="ff-rung"><span class="ff-place">9</span><span class="ff-name">Biscuits and Gravy</span><span class="ff-rec">5-6</span><span class="ff-bar"><i style="width:98.4%"></i></span><span class="ff-pf">1377.22</span></div><div class="ff-rung"><span class="ff-place">10</span><span class="ff-name">Glen's Sticky DVD Collection</span><span class="ff-rec">5-6</span><span class="ff-bar"><i style="width:87.2%"></i></span><span class="ff-pf">1219.92</span></div><div class="ff-rung"><span class="ff-place">11</span><span class="ff-name">North American Clit Lickers</span><span class="ff-rec">4-7</span><span class="ff-bar"><i style="width:96.9%"></i></span><span class="ff-pf">1355.66</span></div><div class="ff-rung"><span class="ff-place">12</span><span class="ff-name">Deep Dark Algo</span><span class="ff-rec">4-7</span><span class="ff-bar"><i style="width:94.4%"></i></span><span class="ff-pf">1320.82</span></div><div class="ff-rung"><span class="ff-place">13</span><span class="ff-name">One Armed Bandits</span><span class="ff-rec">3-8</span><span class="ff-bar"><i style="width:77.4%"></i></span><span class="ff-pf">1083.20</span></div><div class="ff-rung"><span class="ff-place">14</span><span class="ff-name">You're Doing Great!</span><span class="ff-rec">0-11</span><span class="ff-bar"><i style="width:71.9%"></i></span><span class="ff-pf">1006.68</span></div></div></div>
+        <div class="ff-asof">Snapshot Tue, Nov 24 · 8:30 AM ET</div>
         <!--FF_END--></div>
       </a>
     </section>
